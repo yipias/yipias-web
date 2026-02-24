@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  
+  <!-- META TAGS ANTI-CACHÉ -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
+  <title>YipiAs - Transporte Turístico</title>
+
+  <!-- Fuente Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- CSS principal -->
+  <link rel="stylesheet" href="styles.css?v=9">
+</head>
+<body>
+
+<!-- Cabecero -->
+<nav class="navbar">
+  <div class="container">
+    <div class="brand-container">
+      <img src="img/YipiAs_logo.png" alt="Icono YipiAs" class="brand-icon">
+      <img src="img/banner.png" alt="YipiAs" class="brand-logo-wide">
+    </div>
+    
+    <!-- Botón hamburguesa (SIEMPRE VISIBLE) -->
+    <button class="hamburger-btn" id="hamburgerBtn">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+  </div>
+  
+  <!-- Menú que se despliega - FUERA del container pero DENTRO del navbar -->
+  <div class="mobile-menu" id="mobileMenu">
+    <ul class="mobile-nav-links">
+      <li><a href="terminos.html">Términos y Condiciones</a></li>
+<li><a href="privacidad.html">Políticas de Privacidad</a></li>
+      <li><a href="#destinos">Algunos destinos</a></li>
+      <li><a href="#servicios">Nuestros servicios</a></li>
+      <li><a href="#reservas">Reservas</a></li>
+      <li><a href="#sobre-nosotros">Sobre nosotros</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Secciones de términos y privacidad (anclas) -->
+<div id="terminos" style="scroll-margin-top: 80px;"></div>
+<div id="privacidad" style="scroll-margin-top: 80px;"></div>
+
+<!-- Hero -->
+<header class="hero" style="background-image:url('img/piura_fondo.jpg');">
+  <div class="container hero-content">
+    <h1>Explora Piura en modo Premium</h1>
+    <p class="lead">Traslados turísticos y en la ciudad. Reserva en segundos.</p>
+    <a class="btn btn-red" href="#reservas">Reservar ahora</a>
+  </div>
+</header>
+
+<!-- Nuestros destinos -->
+<section id="destinos" class="section">
+  <div class="container">
+    <h2>Algunos destinos</h2>
+    <div class="destinations-scroll" aria-label="Carrusel de destinos">
+      <!-- Tarjetas con imágenes locales -->
+      <div class="dest-card">
+        <img src="img/catacaos.jpg" alt="Catacaos">
+        <div class="dest-info"><strong>Catacaos</strong><span>Artesanías y gastronomía</span></div>
+      </div>
+      <div class="dest-card">
+        <img src="img/mancora.jpg" alt="Máncora">
+        <div class="dest-info"><strong>Máncora</strong><span>Playas, gastronomía y surf</span></div>
+      </div>
+      <div class="dest-card">
+        <img src="img/sechura.jpeg" alt="Sechura">
+        <div class="dest-info"><strong>Sechura</strong><span>Desierto y cultura</span></div>
+      </div>
+      <div class="dest-card">
+        <img src="img/punta-sal.jpg" alt="Punta Sal">
+        <div class="dest-info"><strong>Punta Sal</strong><span>Royal Decameron y más</span></div>
+      </div>
+      <div class="dest-card">
+        <img src="img/vichayito.jpg" alt="Vichayito">
+        <div class="dest-info"><strong>Vichayito</strong><span>Playas, hoteles y gastronomía</span></div>
+      </div>
+      <div class="dest-card">
+        <img src="img/zorritos.jpg" alt="Zorritos">
+        <div class="dest-info"><strong>Zorritos</strong><span>Hotelería Playera y más</span></div>
+      </div>
+      <div class="dest-card">
+        <img src="img/nuro.png" alt="Órganos">
+        <div class="dest-info"><strong>Órganos</strong><span>El Ñuro y más playas</span></div>
+      </div>
+      <div class="dest-card">
+        <img src="img/morropon.jpg" alt="Huancabamba">
+        <div class="dest-info"><strong>Huancabamba</strong><span>Canchaque, Morropón y más</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- Servicios -->
+<section id="servicios" class="section servicios">
+  <div class="container">
+    <h2 class="section-title reveal">Nuestros Servicios</h2>
+    <p class="section-subtitle reveal">Conoce por qué somos la mejor opción para tus viajes</p>
+    
+    <div class="servicios-grid">
+      
+      <!-- Tarjeta 1: Soporte 24/7 -->
+      <div class="servicio-card con-imagen-lateral reveal">
+        <div class="servicio-imagen-lateral">
+          <img src="img/callcenter.jpg" alt="Soporte 24/7">
+        </div>
+        <div class="servicio-contenido-lateral">
+          <div class="servicio-icon-wrapper">
+            <div class="servicio-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8 10a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+          </div>
+          <h3>Soporte 24/7</h3>
+          <p>Optimizamos continuamente nuestro servicio con mejoras y contamos con especialistas a tu disposición. Atención las 24 horas del día.</p>
+        </div>
+      </div>
+      
+      <!-- Tarjeta 2: Conductores Profesionales -->
+      <div class="servicio-card con-imagen-lateral reveal">
+        <div class="servicio-imagen-lateral">
+          <img src="img/profesionalidad.jpg" alt="Conductores Profesionales">
+        </div>
+        <div class="servicio-contenido-lateral">
+          <div class="servicio-icon-wrapper">
+            <div class="servicio-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+          </div>
+          <h3>Conductores Profesionales</h3>
+          <p>Nuestros conductores cuentan con evaluaciones psicológicas y verificaciones de antecedentes.</p>
+        </div>
+      </div>
+      
+      <!-- Tarjeta 3: 25 Años de Experiencia -->
+      <div class="servicio-card con-imagen-lateral reveal">
+        <div class="servicio-imagen-lateral">
+          <img src="img/experiencia.jpeg" alt="25 Años de Experiencia">
+        </div>
+        <div class="servicio-contenido-lateral">
+          <div class="servicio-icon-wrapper">
+            <div class="servicio-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+          </div>
+          <h3>25 Años de Experiencia</h3>
+          <p>Trabajamos para tu satisfacción. Calidad, seguridad y experiencia que nos respaldan con más de 25 años en el mercado peruano.</p>
+        </div>
+      </div>
+
+      <!-- Tarjeta 4: Flota Moderna -->
+      <div class="servicio-card con-imagen-lateral reveal">
+        <div class="servicio-imagen-lateral">
+          <img src="img/modernidad.jpg" alt="Flota Moderna">
+        </div>
+        <div class="servicio-contenido-lateral">
+          <div class="servicio-icon-wrapper">
+            <div class="servicio-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9L18 10"/><path d="M7 17H5c-.6 0-1-.4-1-1v-3c0-.9.7-1.7 1.5-1.9L10 10"/><path d="M14 8h4"/><path d="M14 12h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M12 22v-4"/><path d="M10 22h4"/><path d="M9 13.5c0-1.4 1.3-2.5 3-2.5s3 1.1 3 2.5"/></svg>
+            </div>
+          </div>
+          <h3>Flota Moderna</h3>
+          <p>Vehículos de última generación, con un máximo de 5 años de antiguedad y equipados con aire acondicionado.</p>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+<!-- Reservas -->
+<section id="reservas" class="section">
+  <div class="container">
+    <h2 class="section-title">Reservas</h2>
+    <p class="section-subtitle reveal">Las reservas pueden realizarse en cualquier momento, y con un mínimo de 30 minutos de anticipación.</p>
+    
+    <!-- Pestañas -->
+    <div class="tab-container reveal">
+      <button class="tab-btn" id="tabProgramada">Reserva de punto a punto</button>
+      <button class="tab-btn" id="tabPorHoras">Reserva por horas</button>
+    </div>
+    
+    <div class="grid">
+      <!-- Columna izquierda: Formularios -->
+      <div class="col form-col">
+        
+        <!-- FORMULARIO RESERVA PROGRAMADA -->
+        <form id="formProgramada" class="form hidden-form reveal">
+          
+          <!-- Selector de tipo de persona -->
+          <div class="persona-selector">
+            <button type="button" class="persona-btn active" data-tipo="natural" data-form="programada">Persona Natural</button>
+            <button type="button" class="persona-btn" data-tipo="juridica" data-form="programada">Persona Jurídica</button>
+          </div>
+          
+          <!-- Campos para Persona Natural -->
+          <div id="progCamposNatural" class="persona-campos active-campos">
+            <div class="input-wrapper">
+              <label>Nombres</label>
+              <input id="progNombres" class="input" required>
+              <span class="clear-input" data-target="progNombres">✕</span>
+            </div>
+            
+            <div class="input-wrapper">
+              <label>Apellidos</label>
+              <input id="progApellidos" class="input" placeholder="Ingresa tus apellidos" required>
+              <span class="clear-input" data-target="progApellidos">✕</span>
+            </div>
+            
+            <div class="input-wrapper">
+              <label>DNI</label>
+              <input id="progDni" class="input" placeholder="Ingresa tu DNI" required>
+              <span class="clear-input" data-target="progDni">✕</span>
+            </div>
+          </div>
+          
+          <!-- Campos para Persona Jurídica -->
+          <div id="progCamposJuridica" class="persona-campos hidden-campos">
+            <div class="input-wrapper">
+              <label>Nombres (Representante)</label>
+              <input id="progNombresRep" class="input" placeholder="Nombres del representante" required>
+              <span class="clear-input" data-target="progNombresRep">✕</span>
+            </div>
+            
+            <div class="input-wrapper">
+              <label>Razón Social</label>
+              <input id="progRazonSocial" class="input" placeholder="Ingresa la razón social" required>
+              <span class="clear-input" data-target="progRazonSocial">✕</span>
+            </div>
+            
+            <div class="input-wrapper">
+              <label>RUC</label>
+              <input id="progRuc" class="input" placeholder="Ingresa el RUC" required>
+              <span class="clear-input" data-target="progRuc">✕</span>
+            </div>
+          </div>
+          
+          <!-- Campos comunes -->
+          <div class="input-wrapper">
+            <label>Teléfono</label>
+            <input id="progTelefono" type="tel" class="input" placeholder="Ingresa tu número" required>
+            <span class="clear-input" data-target="progTelefono">✕</span>
+          </div>
+          
+          <div class="input-wrapper">
+            <label>Lugar de recojo</label>
+            <input id="pickup" class="input" placeholder="Escribe o selecciona en el mapa" required>
+            <span class="clear-input" data-target="pickup">✕</span>
+          </div>
+          
+          <!-- Botón de ubicación -->
+          <div class="current-location-btn" id="useMyLocationPickup">
+            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <span>Usar mi ubicación actual</span>
+          </div>
+          
+          <div class="input-wrapper">
+            <label>Destino final</label>
+            <input id="dropoff" class="input" placeholder="Escribe o selecciona en el mapa" required>
+            <span class="clear-input" data-target="dropoff">✕</span>
+          </div>
+          
+          <div class="row-grid">
+            <div class="input-wrapper">
+              <label>Fecha del viaje</label>
+              <input id="progFecha" type="date" class="input" required>
+              <span class="clear-input" data-target="progFecha">✕</span>
+            </div>
+            
+            <!-- Selector de hora -->
+            <div class="time-picker-wrapper">
+              <label>Hora de inicio</label>
+              <div class="time-input-group">
+                <input type="text" id="progHoraInput" class="input time-input" placeholder="HH:MM" maxlength="5" required>
+                <span class="clear-input" data-target="progHoraInput">✕</span>
+              </div>
+              <input type="hidden" id="progHoraInicio" value="">
+            </div>
+          </div>
+          
+          <div class="input-wrapper">
+            <label>Número de pasajeros</label>
+            <input id="progPax" type="number" min="1" value="1" class="input" placeholder="Máximo 6 asientos" required>
+            <span class="clear-input" data-target="progPax">✕</span>
+          </div>
+
+          <div class="meta">
+            <div><strong>Distancia estimada:</strong> <span id="progDistance">—</span></div>
+            <div><strong>Precio estimado:</strong> <span id="progPrice" class="price">S/ 0.00</span></div>
+          </div>
+
+          <div class="actions">
+            <button type="button" id="progReserveBtn" class="btn success btn-block">Reservar</button>
+          </div>
+        </form>
+        
+        <!-- FORMULARIO RESERVA POR HORAS -->
+        <form id="formPorHoras" class="form hidden-form reveal">
+          
+          <!-- Selector de tipo de persona -->
+          <div class="persona-selector">
+            <button type="button" class="persona-btn active" data-tipo="natural" data-form="horas">Persona Natural</button>
+            <button type="button" class="persona-btn" data-tipo="juridica" data-form="horas">Persona Jurídica</button>
+          </div>
+          
+          <!-- Campos para Persona Natural -->
+          <div id="horasCamposNatural" class="persona-campos active-campos">
+            <div class="input-wrapper">
+              <label>Nombres</label>
+              <input id="horasNombres" class="input" required>
+              <span class="clear-input" data-target="horasNombres">✕</span>
+            </div>
+            
+            <div class="input-wrapper">
+              <label>Apellidos</label>
+              <input id="horasApellidos" class="input" placeholder="Ingresa tus apellidos" required>
+              <span class="clear-input" data-target="horasApellidos">✕</span>
+            </div>
+            
+            <div class="input-wrapper">
+              <label>DNI</label>
+              <input id="horasDni" class="input" placeholder="Ingresa tu DNI" required>
+              <span class="clear-input" data-target="horasDni">✕</span>
+            </div>
+          </div>
+          
+          <!-- Campos para Persona Jurídica -->
+          <div id="horasCamposJuridica" class="persona-campos hidden-campos">
+            <div class="input-wrapper">
+              <label>Nombres (Representante)</label>
+              <input id="horasNombresRep" class="input" placeholder="Nombres del representante" required>
+              <span class="clear-input" data-target="horasNombresRep">✕</span>
+            </div>
+            
+            <div class="input-wrapper">
+              <label>Razón Social</label>
+              <input id="horasRazonSocial" class="input" placeholder="Ingresa la razón social" required>
+              <span class="clear-input" data-target="horasRazonSocial">✕</span>
+            </div>
+            
+            <div class="input-wrapper">
+              <label>RUC</label>
+              <input id="horasRuc" class="input" placeholder="Ingresa el RUC" required>
+              <span class="clear-input" data-target="horasRuc">✕</span>
+            </div>
+          </div>
+          
+          <!-- Campos comunes -->
+          <div class="input-wrapper">
+            <label>Teléfono</label>
+            <input id="horasTelefono" type="tel" class="input" placeholder="Ingresa tu número" required>
+            <span class="clear-input" data-target="horasTelefono">✕</span>
+          </div>
+          
+          <div class="input-wrapper">
+            <label>Lugar de recojo</label>
+            <input id="horasRecojo" class="input" placeholder="Escribe o selecciona en el mapa" required>
+            <span class="clear-input" data-target="horasRecojo">✕</span>
+          </div>
+          
+          <!-- Botón de ubicación -->
+          <div class="current-location-btn" id="useMyLocationHoras">
+            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <span>Usar mi ubicación actual</span>
+          </div>
+          
+          <div class="row-grid">
+            <div class="input-wrapper">
+              <label>Fecha del servicio</label>
+              <input id="horasFecha" type="date" class="input" required>
+              <span class="clear-input" data-target="horasFecha">✕</span>
+            </div>
+            
+            <!-- Selector de hora -->
+            <div class="time-picker-wrapper">
+              <label>Hora de inicio</label>
+              <div class="time-input-group">
+                <input type="text" id="horasHoraInput" class="input time-input" placeholder="HH:MM" maxlength="5" required>
+                <span class="clear-input" data-target="horasHoraInput">✕</span>
+              </div>
+              <input type="hidden" id="horasHoraInicio" value="">
+            </div>
+          </div>
+          
+          <div class="input-wrapper">
+            <label>Horas a contratar</label>
+            <select id="horasCantidad" class="input" required>
+              <option value="1">1 hora</option>
+              <option value="2">2 horas</option>
+              <option value="3" selected>3 horas</option>
+              <option value="4">4 horas</option>
+              <option value="5">5 horas</option>
+              <option value="6">6 horas</option>
+              <option value="7">7 horas</option>
+              <option value="8">8 horas</option>
+              <option value="9">9 horas</option>
+              <option value="10">10 horas</option>
+              <option value="11">11 horas</option>
+              <option value="12">12 horas</option>
+            </select>
+          </div>
+          
+          <div class="input-wrapper">
+            <label>Número de pasajeros</label>
+            <input id="horasPax" type="number" min="1" value="1" class="input" placeholder="Máximo 6 asientos" required>
+            <span class="clear-input" data-target="horasPax">✕</span>
+          </div>
+
+          <div class="meta">
+            <div><strong>Precio estimado:</strong> <span id="horasPrice" class="price">S/ 75.00</span></div>
+          </div>
+
+          <div class="actions">
+            <button type="button" id="horasReserveBtn" class="btn success btn-block">Reservar</button>
+          </div>
+        </form>
+        
+      </div>
+      
+      <!-- Columna derecha: Mapa -->
+      <div class="col map-col">
+        <div id="map" class="map reveal"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Sobre Nosotros -->
+<section id="sobre-nosotros" class="section about-section">
+  <div class="container">
+    
+    <div class="about-logo reveal">
+      <img src="img/premium.png" alt="YipiAs" class="about-logo-img">
+    </div>
+    
+    <h2 class="about-title reveal">Sobre Nosotros</h2>
+    
+    <div class="about-divider reveal"></div>
+    
+    <div class="about-content reveal">
+      <p class="about-text">
+        Somos una empresa dedicada al servicio de <span class="about-highlight">transporte seguro y confiable</span>, 
+        orientada a personas que llegan a Piura con el propósito de disfrutar de sus playas, 
+        su reconocido arte culinario y su valioso patrimonio histórico.
+      </p>
+      
+      <p class="about-text">
+        Nuestra empresa se distingue por ofrecer un servicio de <span class="about-highlight">alta calidad</span>, 
+        respaldado por una flota de vehículos modernos, así como por choferes debidamente calificados, 
+        comprometidos con la seguridad, puntualidad y comodidad de nuestros usuarios.
+      </p>
+      
+      <p class="about-text">
+        Operamos formalmente bajo el <span class="about-highlight">RUC N.° 20610695257</span>, 
+        registrados legalmente como Plataformas y Soluciones S.A.C. Emitimos facturas y boletas.
+      </p>
+    </div>
+    
+    <div class="about-legal reveal">
+      <div class="legal-item">
+        <span class="legal-label">RUC:</span>
+        <span class="legal-value">20610695257</span>
+      </div>
+      <div class="legal-item">
+        <span class="legal-label">Razón Social:</span>
+        <span class="legal-value">Plataformas y Soluciones S.A.C</span>
+      </div>
+      <div class="legal-item">
+        <span class="legal-label">Marca:</span>
+        <span class="legal-value">YipiAs Perú</span>
+      </div>
+    </div>
+    
+    <div class="about-contact reveal">
+      <div class="contact-item">
+        <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8 10a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+        <span>+51 904 635 462</span>
+      </div>
+      <div class="contact-item">
+        <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        <span>soporte@yipias.com</span>
+      </div>
+    </div>
+    
+    <div class="about-copyright reveal">
+      © <span id="year"></span> YipiAs · Transporte Turístico Autorizado
+    </div>
+    
+  </div>
+</section>
+
+<!-- Contacto -->
+<footer id="contacto" class="footer">
+  <div class="container">
+    <div>Contacto: +51 904 635 462 · Email: soporte@yipias.com</div>
+    <div class="muted">© <span id="year"></span> YipiAs</div>
+  </div>
+</footer>
+
+<!-- Scripts - ORDEN CORRECTO -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="main.js?v=9"></script>
+
+<!-- Google Maps JS -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCP3jgrVjb4nKEoiJM9-yPaM30hPgKmWls&libraries=places&callback=initMap"></script>
+
+<!-- Botón flotante de WhatsApp -->
+<a href="https://wa.me/51904635462?text=¡Hola!%20Deseo%20más%20información" 
+   class="whatsapp-float" 
+   target="_blank">
+  <img src="img/whatsapp-icon.png" alt="WhatsApp" class="whatsapp-icon">
+</a>
+
+<!-- MODAL DE EXPLICACIÓN PARA RESERVA PROGRAMADA -->
+<div id="modalExplicacionProgramada" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="modal-close">&times;</span>
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+      <h3>Reserva de un punto a punto</h3>
+    </div>
+    <div class="modal-body">
+      <p>Este tipo de reserva te permite programar un viaje con:</p>
+      <p class="modal-mensaje">• Destino específico (puede ser fuera de Piura)</p>
+      <p class="modal-mensaje">• Fecha y hora exacta</p>
+      <p class="modal-mensaje">• Tarifa según kilometraje</p>
+      <p class="modal-consulta">El precio se calcula en base a la distancia y número de pasajeros.</p>
+      <p class="modal-consulta">Mínimo 30 minutos de anticipación.</p>
+      <button class="btn modal-close-btn">Entendido</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DE EXPLICACIÓN PARA RESERVA POR HORAS -->
+<div id="modalExplicacionHoras" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="modal-close">&times;</span>
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+      </div>
+      <h3>Reserva por horas</h3>
+    </div>
+    <div class="modal-body">
+      <p>Ideal para recorridos dentro de la ciudad:</p>
+      <p class="modal-mensaje">• Contratas el vehículo por horas</p>
+      <p class="modal-mensaje">• Válido solo en zonas urbanas</p>
+      <p class="modal-mensaje">• Máximo 20 km por hora</p>
+      <p class="modal-consulta">Pasados los 30 minutos se considera hora completa.</p>
+      <p class="modal-consulta">Kilómetro adicional: S/3.00</p>
+      <button class="btn modal-close-btn">Entendido</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DE CONFIRMACIÓN PARA RESERVA PROGRAMADA -->
+<div id="modalProgramada" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="modal-close">&times;</span>
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
+      <h3>¡Reserva confirmada!</h3>
+    </div>
+    <div class="modal-body">
+      <p>Tu reserva se ha realizado correctamente.</p>
+      <p class="modal-mensaje">Nos estaremos poniendo en contacto contigo en la brevedad del tiempo para confirmar los detalles.</p>
+      <p class="modal-consulta">¿Tienes alguna consulta? Escríbenos por WhatsApp:</p>
+      <p class="modal-consulta">La tarifa no incluye peajes, estacionamiento ni paradas adicionales.</p>
+      <p class="modal-consulta">El tiempo de cortesía es de 5 minutos, pasado el tiempo se genera un cargo adicional.</p>
+      <p class="modal-consulta">Cada pasajero, incluidos niños, ocupan un asiento y deben ser declarados al momento de la reserva.</p>
+      <a href="#" id="modalProgramadaBtn" class="modal-whatsapp-btn">
+        <img src="img/whatsapp-icon.png" alt="WhatsApp" class="modal-whatsapp-icon">
+        Contactar por WhatsApp
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DE CONFIRMACIÓN PARA RESERVA POR HORAS -->
+<div id="modalPorHoras" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="modal-close">&times;</span>
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
+      <h3>¡Reserva confirmada!</h3>
+    </div>
+    <div class="modal-body">
+      <p>Tu reserva por horas se ha realizado correctamente.</p>
+      <p class="modal-mensaje">Nos estaremos poniendo en contacto contigo en la brevedad del tiempo para confirmar los detalles.</p>
+      <p class="modal-consulta">¿Tienes alguna consulta? Escríbenos por WhatsApp:</p>
+  
+      <a href="#" id="modalPorHorasBtn" class="modal-whatsapp-btn">
+        <img src="img/whatsapp-icon.png" alt="WhatsApp" class="modal-whatsapp-icon">
+        Contactar por WhatsApp
+      </a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

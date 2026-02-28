@@ -1,42 +1,68 @@
 // src/components/Header/MobileMenu.jsx
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const MobileMenu = ({ isOpen, onClose }) => {
-  const handleLinkClick = (e) => {
-    e.preventDefault();
-    const targetId = e.currentTarget.getAttribute('href');
-    
-    if (targetId === '#') return;
-    
-    // Si es un enlace interno (ej: #destinos)
-    if (targetId.startsWith('#')) {
-      const targetElement = document.querySelector(targetId);
-      if (targetElement) {
-        window.scrollTo({ 
-          top: targetElement.offsetTop - 70, 
-          behavior: 'smooth' 
-        });
-      }
-    } else {
-      // Para GitHub Pages con HashRouter, los enlaces deben incluir #
-      window.location.href = targetId;
+
+  const handleScroll = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      window.scrollTo({
+        top: element.offsetTop - 70,
+        behavior: 'smooth'
+      });
     }
-    
     onClose();
   };
 
   return (
     <div className={`mobile-menu ${isOpen ? 'open' : ''}`} id="mobileMenu">
       <ul className="mobile-nav-links">
-        {/* CAMBIADO: /terminos → #/terminos */}
-        <li><a href="#/terminos" onClick={handleLinkClick}>Términos y Condiciones</a></li>
-        {/* CAMBIADO: /privacidad → #/privacidad */}
-        <li><a href="#/privacidad" onClick={handleLinkClick}>Políticas de Privacidad</a></li>
-        <li><a href="#destinos" onClick={handleLinkClick}>Algunos destinos</a></li>
-        <li><a href="#servicios" onClick={handleLinkClick}>Nuestros servicios</a></li>
-        <li><a href="#reservas" onClick={handleLinkClick}>Reservas</a></li>
-        <li><a href="#sobre-nosotros" onClick={handleLinkClick}>Sobre nosotros</a></li>
-        <li><a href="#contacto" onClick={handleLinkClick}>Contacto</a></li>
+
+        {/* RUTAS REALES (HashRouter las maneja automáticamente) */}
+        <li>
+          <Link to="/terminos" onClick={onClose}>
+            Términos y Condiciones
+          </Link>
+        </li>
+
+        <li>
+          <Link to="/privacidad" onClick={onClose}>
+            Políticas de Privacidad
+          </Link>
+        </li>
+
+        {/* SCROLL INTERNO EN MISMA PÁGINA */}
+        <li>
+          <button onClick={() => handleScroll('destinos')}>
+            Algunos destinos
+          </button>
+        </li>
+
+        <li>
+          <button onClick={() => handleScroll('servicios')}>
+            Nuestros servicios
+          </button>
+        </li>
+
+        <li>
+          <button onClick={() => handleScroll('reservas')}>
+            Reservas
+          </button>
+        </li>
+
+        <li>
+          <button onClick={() => handleScroll('sobre-nosotros')}>
+            Sobre nosotros
+          </button>
+        </li>
+
+        <li>
+          <button onClick={() => handleScroll('contacto')}>
+            Contacto
+          </button>
+        </li>
+
       </ul>
     </div>
   );

@@ -36,7 +36,6 @@ function App() {
               <ServiciosGrid />
               <ReservasTabs />
               <SobreNosotros />
-              <Footer />
               <WhatsAppFloat />
             </div>
           }
@@ -45,6 +44,8 @@ function App() {
         <Route path="/terminos" element={<Terminos />} />
         <Route path="/privacidad" element={<Privacidad />} />
       </Routes>
+
+      <Footer />
 
       {showAuthModal && (
         <AuthModal

@@ -1,4 +1,5 @@
 // src/components/Header/Header.jsx
+console.log("HEADER RENDER");
 import React, { useState } from 'react';
 import { UserCircle, LogOut } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';

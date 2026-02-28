@@ -419,3 +419,28 @@
     font-size: 0.85rem;
   }
 }
+
+.mobile-nav-links li a,
+.mobile-nav-links li button {
+  display: block;
+  width: 100%;
+  padding: 0.8rem 1.5rem;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  text-decoration: none;
+  text-align: left;
+  font-size: 0.95rem;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif; /* 👈 importante */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+}
+
+.mobile-nav-links li a:hover,
+.mobile-nav-links li button:hover {
+  background: rgba(13, 110, 253, 0.15);
+  color: #0d6efd;
+  border-left-color: #0d6efd;
+}

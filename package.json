@@ -1,6 +1,5 @@
 {
   "name": "yipias-react",
-  "homepage": "https://yipias.github.io",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,7 +10,7 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "deploy-full": "git add . && git commit -m 'Actualización' && git push origin master && npm run deploy"
+    "deploy-full": "git add . && git commit -m \"Actualización\" && git push origin master && npm run deploy"
   },
   "dependencies": {
     "firebase": "^12.9.0",

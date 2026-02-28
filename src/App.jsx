@@ -1,6 +1,5 @@
-// src/App.jsx
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header/Header';
 import Hero from './components/Hero/Hero';
 import DestinosSlider from './components/Destinos/DestinosSlider';
@@ -11,17 +10,22 @@ import Footer from './components/Footer/Footer';
 import WhatsAppFloat from './components/WhatsApp/WhatsAppFloat';
 import Terminos from './pages/Terminos';
 import Privacidad from './pages/Privacidad';
-import ScrollToTop from './components/ScrollToTop'; // ← IMPORTAR
+import ScrollToTop from './components/ScrollToTop';
+import AuthModal from './components/Auth/AuthModal';
+import { useState } from 'react';
 import './assets/global.css';
 
 function App() {
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
   return (
-    <BrowserRouter>
-      <ScrollToTop /> {/* ← AGREGAR AQUÍ */}
+    <HashRouter>
+      <ScrollToTop />
+      <Header onOpenAuth={() => setShowAuthModal(true)} />
+      
       <Routes>
         <Route path="/" element={
           <div className="App">
-            <Header />
             <Hero />
             <DestinosSlider />
             <hr />
@@ -35,7 +39,16 @@ function App() {
         <Route path="/terminos" element={<Terminos />} />
         <Route path="/privacidad" element={<Privacidad />} />
       </Routes>
-    </BrowserRouter>
+
+      {showAuthModal && (
+        <AuthModal 
+          onClose={() => {
+            setShowAuthModal(false);
+            document.body.style.overflow = 'auto';
+          }} 
+        />
+      )}
+    </HashRouter>
   );
 }
 

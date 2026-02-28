@@ -55,7 +55,7 @@ const Header = () => {
             
             <div className="nav-right">
               {currentUser ? (
-                // USUARIO LOGUEADO - ícono + nombre (ambos clickeables)
+                // USUARIO LOGUEADO - ícono + nombre
                 <div className="user-profile-wrapper">
                   <div 
                     className="user-profile"

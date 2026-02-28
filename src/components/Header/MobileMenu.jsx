@@ -18,7 +18,7 @@ const MobileMenu = ({ isOpen, onClose }) => {
         });
       }
     } else {
-      // Si es una página de React (ej: /terminos)
+      // Para GitHub Pages con HashRouter, los enlaces deben incluir #
       window.location.href = targetId;
     }
     
@@ -28,8 +28,10 @@ const MobileMenu = ({ isOpen, onClose }) => {
   return (
     <div className={`mobile-menu ${isOpen ? 'open' : ''}`} id="mobileMenu">
       <ul className="mobile-nav-links">
-        <li><a href="/terminos" onClick={handleLinkClick}>Términos y Condiciones</a></li>
-        <li><a href="/privacidad" onClick={handleLinkClick}>Políticas de Privacidad</a></li>
+        {/* CAMBIADO: /terminos → #/terminos */}
+        <li><a href="#/terminos" onClick={handleLinkClick}>Términos y Condiciones</a></li>
+        {/* CAMBIADO: /privacidad → #/privacidad */}
+        <li><a href="#/privacidad" onClick={handleLinkClick}>Políticas de Privacidad</a></li>
         <li><a href="#destinos" onClick={handleLinkClick}>Algunos destinos</a></li>
         <li><a href="#servicios" onClick={handleLinkClick}>Nuestros servicios</a></li>
         <li><a href="#reservas" onClick={handleLinkClick}>Reservas</a></li>

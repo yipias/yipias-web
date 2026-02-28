@@ -1,0 +1,139 @@
+/* src/pages/Terminos.css */
+
+.terminos-page {
+  background: #121212;
+  min-height: calc(100vh - 70px - 80px); /* Resta header y footer */
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.terminos-container {
+  max-width: 1000px;
+  width: 100%;
+  background: #1e1e1e;
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.terminos-container h1 {
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.02em;
+  font-family: var(--font-titulos);
+}
+
+.terminos-container .fecha {
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 1rem;
+}
+
+.terminos-container h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #dc3545;
+  margin: 2rem 0 1rem 0;
+  letter-spacing: -0.01em;
+  font-family: var(--font-titulos);
+}
+
+.terminos-container h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #dc3545;
+  margin: 1.5rem 0 0.5rem 0;
+  font-family: var(--font-titulos);
+}
+
+.terminos-container p {
+  margin-bottom: 1rem;
+  color: #d0d0d0;
+  font-weight: 300;
+  font-family: var(--font-textos);
+  line-height: 1.7;
+}
+
+.terminos-container strong {
+  color: white;
+  font-weight: 600;
+}
+
+.terminos-container ul {
+  margin: 1rem 0 1.5rem 2rem;
+}
+
+.terminos-container li {
+  margin-bottom: 0.5rem;
+  color: #c0c0c0;
+  font-family: var(--font-textos);
+  font-weight: 300;
+}
+
+.terminos-container .legal-block {
+  background: #2a2a2a;
+  padding: 1.2rem 1.5rem;
+  border-radius: 16px;
+  border-left: 4px solid #dc3545;
+  margin: 1.5rem 0;
+}
+
+.terminos-container hr {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  margin: 2rem 0;
+}
+
+.terminos-container .contacto-final {
+  margin-top: 2rem;
+  text-align: center;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.terminos-container .footer-checkbox {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.terminos-container .footer-checkbox label {
+  color: #aaa;
+  font-size: 0.95rem;
+  cursor: pointer;
+  max-width: 500px;
+  text-align: center;
+  font-family: var(--font-textos);
+}
+
+.terminos-container .footer-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #dc3545;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .terminos-container {
+    padding: 1.5rem 1rem;
+  }
+  
+  .terminos-container h1 {
+    font-size: 1.6rem;
+  }
+  
+  .terminos-container h2 {
+    font-size: 1.1rem;
+  }
+}

@@ -1,0 +1,23 @@
+/* src/components/Reservas/Mapa.css */
+.map-loading,
+.map-error {
+  height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-light);
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.map-error {
+  color: var(--accent);
+}
+
+@media (max-width: 768px) {
+  .map-loading,
+  .map-error {
+    height: 320px;
+  }
+}

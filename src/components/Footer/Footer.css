@@ -1,0 +1,17 @@
+/* src/components/Footer/Footer.css */
+
+.footer {
+  padding: 1.25rem 0;
+  background: var(--bg-light);
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.footer div {
+  color: var(--text-secondary);
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.9rem;
+}

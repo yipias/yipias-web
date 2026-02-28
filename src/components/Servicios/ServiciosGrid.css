@@ -1,0 +1,226 @@
+/* src/components/Servicios/ServiciosGrid.css */
+
+.servicios {
+  background: var(--bg);
+  padding: 4.5rem 0;
+}
+
+/* ===== TITULOS ===== */
+
+.section-title {
+  text-align: center;
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+  position: relative;
+  letter-spacing: -0.5px;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  width: 70px;
+  height: 4px;
+  background: var(--primary);
+  margin: 1rem auto;
+  border-radius: 2px;
+}
+
+.section-subtitle {
+  text-align: center;
+  font-size: 1.05rem;
+  color: var(--muted);
+  margin-bottom: 3.5rem;
+}
+
+/* ===== GRID ===== */
+
+.servicios-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.2rem;
+}
+
+/* ===== TARJETAS ===== */
+
+.servicio-card.con-imagen-lateral {
+  background: var(--card);
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: row;
+  height: 240px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+.servicio-card.con-imagen-lateral:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
+  border-color: var(--primary);
+}
+
+/* ===== IMAGEN ===== */
+
+.servicio-imagen-lateral {
+  width: 200px;
+  height: 240px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.servicio-imagen-lateral img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.servicio-card.con-imagen-lateral:hover .servicio-imagen-lateral img {
+  transform: scale(1.08);
+}
+
+/* ===== CONTENIDO CORREGIDO ===== */
+
+.servicio-contenido-lateral {
+  flex: 1;
+  padding: 1rem 1.6rem 1.6rem 1.6rem; /* Ajustado arriba en vez de usar margin negativo */
+  display: flex;
+  flex-direction: column;
+  height: 240px;
+  overflow: visible;
+  position: relative;
+}
+
+.servicio-contenido-lateral .servicio-icon-wrapper {
+  margin-bottom: 0.6rem;
+  flex-shrink: 0;
+  /* Eliminado margin-top negativo */
+}
+
+.servicio-contenido-lateral .servicio-icon {
+  background: linear-gradient(135deg, var(--primary), #1e40af);
+  color: #fff;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+/* Asegura que el SVG no se corte */
+.servicio-icon svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+/* ===== TEXTOS ===== */
+
+.servicio-contenido-lateral h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.4rem 0;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.servicio-contenido-lateral p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 0.92rem;
+  margin: 0;
+  overflow-y: auto;
+  padding-right: 0.3rem;
+  flex: 1;
+}
+
+/* Scroll personalizado elegante */
+
+.servicio-contenido-lateral p::-webkit-scrollbar {
+  width: 4px;
+}
+
+.servicio-contenido-lateral p::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 992px) {
+
+  .servicios-grid {
+    grid-template-columns: 1fr;
+    gap: 1.8rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .servicio-card.con-imagen-lateral {
+    height: auto;
+    flex-direction: column;
+  }
+
+  .servicio-imagen-lateral {
+    width: 100%;
+    height: 210px;
+  }
+
+  .servicio-contenido-lateral {
+    height: auto;
+    min-height: 190px;
+    padding: 1.4rem;
+  }
+
+  .servicio-contenido-lateral p {
+    max-height: 130px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .servicios {
+    padding: 3.5rem 0;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .servicio-imagen-lateral {
+    height: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .section-title {
+    font-size: 1.6rem;
+  }
+
+  .servicio-contenido-lateral {
+    padding: 1.2rem;
+  }
+
+  .servicio-contenido-lateral h3 {
+    font-size: 1.15rem;
+  }
+
+  .servicio-contenido-lateral p {
+    font-size: 0.85rem;
+    max-height: 110px;
+  }
+}

@@ -1,0 +1,210 @@
+/* src/components/Reservas/FormularioPorHoras.css */
+
+.horas-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Reutiliza los mismos estilos del formulario programada */
+.horas-form .persona-selector {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.horas-form .persona-btn {
+  flex: 1;
+  max-width: 200px;
+  padding: 0.6rem 0.5rem;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text-secondary);
+  border-radius: 30px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.horas-form .persona-btn:hover {
+  background: var(--bg-light);
+  border-color: var(--primary);
+  color: var(--text);
+}
+
+.horas-form .persona-btn.active {
+  background: #033604 !important;
+  color: white !important;
+  border-color: #033604 !important;
+}
+
+.horas-form .persona-campos {
+  transition: opacity 0.3s ease;
+}
+
+.horas-form .persona-campos.active-campos {
+  display: block;
+  opacity: 1;
+}
+
+.horas-form .persona-campos.hidden-campos {
+  display: none;
+  opacity: 0;
+}
+
+/* ===== BOTONES CORREGIDOS - AMBOS CON MISMO ANCHO ===== */
+.horas-form .select-map-btn,
+.horas-form .current-location-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: rgba(13, 110, 253, 0.1);
+  border: 1px solid var(--border);
+  border-radius: 30px;
+  padding: 0.6rem 1rem;
+  margin: 0.25rem 0 0.5rem 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  width: 100%;  /* AMBOS CON MISMO ANCHO */
+  max-width: 100%;
+}
+
+.horas-form .select-map-btn:hover,
+.horas-form .current-location-btn:hover {
+  background: rgba(13, 110, 253, 0.2);
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.horas-form .select-map-btn svg,
+.horas-form .current-location-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+}
+
+.horas-form .select-map-btn.active-mode {
+  background: rgba(220, 53, 69, 0.2);
+  border-color: #dc3545;
+  color: #dc3545;
+}
+
+.horas-form .select-map-btn.active-mode svg {
+  stroke: #dc3545;
+}
+
+.horas-form .location-icon {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+}
+
+/* ===== GRID Y OTROS ESTILOS ===== */
+.horas-form .row-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.horas-form .time-picker-wrapper {
+  width: 100%;
+}
+
+.horas-form .time-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  width: 100%;
+}
+
+.horas-form .time-input {
+  flex: 1;
+  min-width: 100px;
+  text-align: center;
+  font-family: monospace;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+
+.horas-form select.input {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+}
+
+.horas-form .meta {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: var(--text-secondary);
+}
+
+.horas-form .price {
+  color: var(--price-color);
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+
+.horas-form .clear-input {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: var(--muted);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 5;
+}
+
+.horas-form .clear-input:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--primary);
+  transform: scale(1.1);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .horas-form .row-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .horas-form .persona-selector {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .horas-form .persona-btn {
+    max-width: 100%;
+  }
+  
+  .horas-form .select-map-btn,
+  .horas-form .current-location-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

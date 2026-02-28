@@ -1,0 +1,421 @@
+/* src/components/Header/Header.css */
+
+.navbar {
+  background: var(--bg-light);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  min-height: 70px;
+  width: 100%;
+  position: relative;
+  z-index: 9999;
+}
+
+.navbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  width: 100%;
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  display: block;
+  filter: brightness(1.2);
+}
+
+.brand-logo-wide {
+  width: 120px;
+  height: auto;
+  max-height: 45px;
+  object-fit: contain;
+  display: block;
+  filter: brightness(1.2);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ===== BOTÓN DE USUARIO (NO LOGUEADO) ===== */
+.user-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+  margin-left: 15px;
+  padding: 0;
+}
+
+.user-btn svg {
+  width: 28px;
+  height: 28px;
+  stroke: white;
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.user-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ===== PERFIL DE USUARIO (LOGUEADO) ===== */
+.user-profile-wrapper {
+  position: relative;
+  margin-left: 15px;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  height: 40px;
+  border-radius: 20px;
+  padding: 0 12px 0 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(13, 110, 253, 0.3);
+  transition: all 0.2s ease;
+}
+
+.user-profile:hover {
+  background: var(--primary-light);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.4);
+}
+
+.user-icon {
+  width: 24px;
+  height: 24px;
+  stroke: white;
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.user-name {
+  line-height: 1;
+  text-transform: capitalize;
+}
+
+/* ===== MENÚ DE LOGOUT ===== */
+.logout-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--bg-light);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.5rem;
+  min-width: 150px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  animation: slideDown 0.2s ease;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+
+.logout-btn svg {
+  stroke: currentColor;
+}
+
+/* Botón hamburguesa */
+.hamburger-btn {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 22px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 100;
+}
+
+.hamburger-line {
+  width: 100%;
+  height: 3px;
+  background: var(--text);
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.hamburger-btn.active .hamburger-line:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+
+.hamburger-btn.active .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-btn.active .hamburger-line:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+/* Menú móvil */
+.mobile-menu {
+  position: absolute;
+  top: 70px;
+  right: 2rem;
+  width: 280px;
+  background: rgba(30, 30, 30, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+
+.mobile-menu.open {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important;
+}
+
+.mobile-nav-links {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+.mobile-nav-links li a {
+  display: block;
+  padding: 0.8rem 1.5rem;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+}
+
+.mobile-nav-links li a:hover {
+  background: rgba(13, 110, 253, 0.15);
+  color: #0d6efd;
+  border-left-color: #0d6efd;
+}
+
+.mobile-nav-links li:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Animaciones */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (min-width: 1025px) {
+  .mobile-menu {
+    top: 60px !important;
+    right: 1rem !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .navbar .container {
+    justify-content: space-between;
+    position: relative;
+    padding: 0 1rem;
+  }
+  
+  .brand-container {
+    margin: 0;
+    order: 2;
+  }
+  
+  .nav-right {
+    order: 3;
+    margin-left: auto;
+  }
+  
+  .hamburger-btn {
+    position: static;
+    transform: none;
+    order: 1;
+  }
+  
+  .mobile-menu {
+    top: 70px !important;
+    right: 1rem !important;
+    width: calc(100% - 2rem);
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    min-height: 70px;
+  }
+  
+  .navbar .container {
+    padding: 0 0.8rem;
+  }
+  
+  .brand-icon {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .brand-logo-wide {
+    width: 90px;
+    max-height: 32px;
+  }
+  
+  .user-profile-wrapper {
+    margin-left: 5px;
+  }
+  
+  .user-profile {
+    height: 36px;
+    padding: 0 10px 0 6px;
+  }
+  
+  .user-icon {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .user-name {
+    font-size: 0.9rem;
+  }
+  
+  .user-btn {
+    width: 36px;
+    height: 36px;
+    margin-left: 5px;
+  }
+  
+  .user-btn svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .logout-menu {
+    right: -10px;
+    min-width: 140px;
+  }
+  
+  .mobile-menu {
+    top: 70px !important;
+    right: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 0 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand-icon {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .brand-logo-wide {
+    width: 80px;
+    max-height: 28px;
+  }
+  
+  .nav-right {
+    gap: 5px;
+  }
+  
+  .user-profile {
+    height: 32px;
+    padding: 0 8px 0 4px;
+  }
+  
+  .user-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .user-name {
+    font-size: 0.8rem;
+  }
+  
+  .user-btn {
+    width: 32px;
+    height: 32px;
+    margin-left: 3px;
+  }
+  
+  .user-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .hamburger-btn {
+    width: 26px;
+    height: 20px;
+  }
+  
+  .logout-menu {
+    min-width: 130px;
+  }
+  
+  .logout-btn {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+  }
+}

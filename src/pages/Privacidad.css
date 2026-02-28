@@ -1,0 +1,132 @@
+/* src/pages/Privacidad.css */
+
+.privacidad-page {
+  background: #121212;
+  min-height: calc(100vh - 70px - 80px);
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.privacidad-container {
+  max-width: 900px;
+  width: 100%;
+  background: #1e1e1e;
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.privacidad-container h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.02em;
+  font-family: var(--font-titulos);
+}
+
+.privacidad-container .fecha {
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 1rem;
+}
+
+.privacidad-container h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #0d6efd;
+  margin: 1.8rem 0 0.8rem 0;
+  letter-spacing: -0.01em;
+  font-family: var(--font-titulos);
+}
+
+.privacidad-container p {
+  color: #d0d0d0;
+  font-weight: 300;
+  margin-bottom: 0.8rem;
+  font-family: var(--font-textos);
+  line-height: 1.7;
+}
+
+.privacidad-container strong {
+  color: white;
+  font-weight: 600;
+}
+
+.privacidad-container ul {
+  margin: 0.8rem 0 1.5rem 2rem;
+}
+
+.privacidad-container li {
+  color: #c0c0c0;
+  margin-bottom: 0.4rem;
+  font-family: var(--font-textos);
+  font-weight: 300;
+}
+
+.privacidad-container .legal-block {
+  background: #2a2a2a;
+  padding: 1.2rem 1.5rem;
+  border-radius: 16px;
+  border-left: 4px solid #0d6efd;
+  margin: 1.5rem 0;
+}
+
+.privacidad-container .footer-checkbox {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.privacidad-container .footer-checkbox label {
+  color: #aaa;
+  font-size: 0.95rem;
+  cursor: pointer;
+  max-width: 500px;
+  text-align: center;
+  font-family: var(--font-textos);
+}
+
+.privacidad-container .footer-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #0d6efd;
+  cursor: pointer;
+}
+
+.privacidad-container .contacto-final {
+  margin-top: 2rem;
+  text-align: center;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.privacidad-container hr {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  margin: 2rem 0;
+}
+
+@media (max-width: 600px) {
+  .privacidad-container {
+    padding: 1.5rem 1rem;
+  }
+  
+  .privacidad-container h1 {
+    font-size: 1.6rem;
+  }
+  
+  .privacidad-container .footer-checkbox {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

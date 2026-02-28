@@ -1,0 +1,43 @@
+/* src/assets/global.css */
+:root {
+  --primary: #0d6efd;
+  --primary-light: #3d8bfd;
+  --accent: #ff6b6b;
+  --bg: #121212;
+  --bg-light: #1e1e1e;
+  --card: #2d2d2d;
+  --muted: #a0a0a0;
+  --text: #ffffff;
+  --text-secondary: #e0e0e0;
+  --border: rgba(255, 255, 255, 0.1);
+  --radius: 12px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --price-color: #4caf50;
+  --container-width: 1100px;
+  --gap: 1.25rem;
+  font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  font-weight: 300; /* ← IMPORTANTE: peso por defecto más delgado */
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  font-weight: 300; /* ← FORZAR peso delgado en todo el body */
+}
+
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 1rem;
+}

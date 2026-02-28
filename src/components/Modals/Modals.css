@@ -1,0 +1,223 @@
+/* src/components/Modals/Modals.css */
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* CONTENIDO DEL MODAL - CENTRADO Y CON TAMAÑO VARIABLE */
+.modal-content {
+  background: var(--bg-light);
+  padding: 0;
+  width: 90%;
+  max-width: 500px; /* Aumentado para mejor visualización */
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border);
+  
+  /* Centrado perfecto */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  animation: slideInModal 0.4s ease;
+}
+
+/* Pantallas grandes - 60% del ancho como pediste */
+@media (min-width: 1024px) {
+  .modal-content {
+    width: 60%;
+    max-width: 600px;
+  }
+}
+
+/* Tablets */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .modal-content {
+    width: 70%;
+    max-width: 550px;
+  }
+}
+
+/* Móviles */
+@media (max-width: 767px) {
+  .modal-content {
+    width: 90%;
+    max-width: 400px;
+  }
+}
+
+@keyframes slideInModal {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.modal-header {
+  padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+  text-align: center;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  right: 1.2rem;
+  top: 1rem;
+  color: var(--muted);
+  font-size: 1.8rem;
+  font-weight: 300;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  color: var(--primary);
+}
+
+.modal-icon {
+  width: 70px;
+  height: 70px;
+  background: rgba(76, 175, 80, 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  color: #4caf50;
+}
+
+.modal-icon svg {
+  width: 40px;
+  height: 40px;
+}
+
+.modal-header h3 {
+  color: var(--text);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.modal-body {
+  padding: 1rem 1.5rem 2rem 1.5rem;
+  text-align: center;
+}
+
+.modal-body p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.modal-mensaje {
+  background: rgba(13, 110, 253, 0.1);
+  padding: 0.8rem;
+  border-radius: 10px;
+  border-left: 3px solid var(--primary);
+  font-weight: 400;
+  margin: 1.2rem 0;
+}
+
+.modal-consulta {
+  font-size: 0.95rem;
+  margin: 1rem 0 0.8rem;
+}
+
+.modal-whatsapp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: #25d366;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.modal-whatsapp-btn:hover {
+  background: #128c7e;
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+}
+
+.modal-whatsapp-icon {
+  width: 22px;
+  height: 22px;
+  filter: brightness(0) invert(1);
+}
+
+/* ===== BOTÓN "ENTENDIDO" CORREGIDO ===== */
+.modal-close-btn {
+  margin-top: 1.5rem;
+  padding: 0.75rem 2rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+  min-width: 120px;
+  border: none;
+  outline: none;
+}
+
+.modal-close-btn:hover {
+  background: var(--primary-light);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+}
+
+.modal-close-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-header h3 {
+    font-size: 1.3rem;
+  }
+  
+  .modal-body p {
+    font-size: 0.95rem;
+  }
+  
+  .modal-whatsapp-btn {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
+  }
+  
+  .modal-close-btn {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}

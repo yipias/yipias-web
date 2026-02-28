@@ -1,0 +1,65 @@
+/* src/components/Hero/Hero.css */
+.hero {
+  height: 56vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  /* border-bottom: 1px solid var(--border);  ← LÍNEA ELIMINADA */
+  position: relative;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4));
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  padding: 3rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.hero h1 {
+  font-size: 2.0rem;
+  margin: 0 0 0.5rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.lead {
+  font-size: 0.95rem;
+  margin: 0 0 1rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.hero-content .btn {
+  display: inline-block;
+  margin: 0 auto;
+}
+
+.btn-red {
+  background: #dc3545;
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-red:hover {
+  background: #bb2d3b;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}

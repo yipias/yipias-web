@@ -1,0 +1,183 @@
+/* src/components/Reservas/FormularioProgramada.css */
+
+.programada-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Selector de persona */
+.persona-selector {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.persona-btn {
+  flex: 1;
+  max-width: 200px;
+  padding: 0.6rem 0.5rem;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text-secondary);
+  border-radius: 30px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.persona-btn:hover {
+  background: var(--bg-light);
+  border-color: var(--primary);
+  color: var(--text);
+}
+
+.persona-btn.active {
+  background: #033604 !important;
+  color: white !important;
+  border-color: #033604 !important;
+}
+
+/* Campos de persona */
+.persona-campos {
+  transition: opacity 0.3s ease;
+}
+
+.persona-campos.active-campos {
+  display: block;
+  opacity: 1;
+}
+
+.persona-campos.hidden-campos {
+  display: none;
+  opacity: 0;
+}
+
+/* Botón de ubicación */
+.current-location-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(13, 110, 253, 0.1);
+  border: 1px solid var(--border);
+  border-radius: 30px;
+  padding: 0.6rem 1rem;
+  margin: 0.25rem 0 0.5rem 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.current-location-btn:hover {
+  background: rgba(13, 110, 253, 0.2);
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.location-icon {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+}
+
+/* Grid para fecha y hora */
+.row-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+/* Selector de hora */
+.time-picker-wrapper {
+  width: 100%;
+}
+
+.time-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  width: 100%;
+}
+
+.time-input {
+  flex: 1;
+  min-width: 100px;
+  text-align: center;
+  font-family: monospace;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+
+/* Meta (distancia y precio) */
+.meta {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: var(--text-secondary);
+}
+
+.price {
+  color: var(--price-color);
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+
+/* Botón X para limpiar inputs */
+.clear-input {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: var(--muted);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 5;
+}
+
+.clear-input:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--primary);
+  transform: scale(1.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .row-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .persona-selector {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .persona-btn {
+    max-width: 100%;
+  }
+  
+  .current-location-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

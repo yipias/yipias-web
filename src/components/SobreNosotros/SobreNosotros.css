@@ -1,0 +1,206 @@
+/* src/components/SobreNosotros/SobreNosotros.css */
+
+.about-section {
+  background: var(--bg);
+  padding: 5rem 0;
+  position: relative;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 300; /* Control global del peso */
+}
+
+/* ===== LOGO ===== */
+.about-logo {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.about-logo-img {
+  max-width: 300px;
+  height: auto;
+  filter: brightness(1.2);
+  opacity: 0.95;
+  transition: opacity 0.3s ease;
+}
+
+.about-logo-img:hover {
+  opacity: 1;
+}
+
+/* ===== TITULO ===== */
+.about-title {
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 200; /* Más fino y elegante */
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text);
+  margin: 0 0 1.5rem 0;
+}
+
+/* ===== DIVIDER ===== */
+.about-divider {
+  width: 60px;
+  height: 2px;
+  background: var(--primary);
+  margin: 0 auto 2.5rem auto;
+  opacity: 0.6;
+}
+
+/* ===== CONTENIDO ===== */
+.about-content {
+  max-width: 800px;
+  margin: 0 auto 3rem auto;
+}
+
+/* ===== TEXTO PRINCIPAL ===== */
+.about-text {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  font-size: 1.05rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  letter-spacing: 0.3px;
+  font-weight: 300;
+}
+
+.about-highlight {
+  color: var(--primary);
+  font-weight: 400; /* Solo ligeramente más fuerte */
+}
+
+/* ===== BLOQUE LEGAL ===== */
+.about-legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2.5rem;
+  margin: 2.5rem 0;
+  padding: 2rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.legal-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.legal-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 0.3rem;
+  font-weight: 300;
+}
+
+.legal-value {
+  font-size: 1rem;
+  color: var(--text);
+  font-weight: 400;
+}
+
+/* ===== CONTACTO ===== */
+.about-contact {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2.5rem;
+  margin: 2.5rem 0 2rem 0;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 300;
+  transition: color 0.3s ease;
+}
+
+.contact-item:hover {
+  color: var(--primary);
+}
+
+.contact-icon {
+  width: 18px;
+  height: 18px;
+  opacity: 0.7;
+}
+
+/* ===== COPYRIGHT ===== */
+.about-copyright {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  font-weight: 300;
+}
+
+/* ===== REVEAL (mantener solo aquí o en global, no duplicar) ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: opacity, transform;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .about-section {
+    padding: 3rem 0;
+  }
+
+  .about-title {
+    font-size: 1.8rem;
+  }
+
+  .about-text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    text-align: left;
+    padding: 0 0.5rem;
+  }
+
+  .about-legal {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .about-contact {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .about-logo-img {
+    max-width: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-title {
+    font-size: 1.5rem;
+  }
+
+  .legal-item {
+    width: 100%;
+  }
+
+  .contact-item {
+    font-size: 0.9rem;
+  }
+}

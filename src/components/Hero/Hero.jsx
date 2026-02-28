@@ -20,7 +20,7 @@ const Hero = () => {
       style={{ backgroundImage: "url('/img/piura_fondo.png')" }}
     >
       <div className="container hero-content">
-        <h1>Explora Piura sin miedo</h1>
+        <h1>Explora Piura en modo Premium</h1>
         <p className="lead">Traslados turísticos y en la ciudad. Reserva en segundos.</p>
         <a 
           className="btn btn-red" 

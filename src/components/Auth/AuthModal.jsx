@@ -1,13 +1,27 @@
 // src/components/Auth/AuthModal.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { auth, db } from '../../firebase/config';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  sendPasswordResetEmail 
+} from 'firebase/auth';
 import { collection, query, where, getDocs, setDoc, doc } from 'firebase/firestore';
-import { User, Mail, Lock, CheckCircle, Phone, CreditCard } from 'lucide-react';
+import { 
+  User, Mail, Lock, CheckCircle, Phone, CreditCard, 
+  Eye, EyeOff, HelpCircle, AlertCircle, Check 
+} from 'lucide-react';
 import './AuthModal.css';
 
 const AuthModal = ({ onClose, onSuccess }) => {
   const [modo, setModo] = useState('login');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [resetPasswordMode, setResetPasswordMode] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetSent, setResetSent] = useState(false);
+  
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -22,9 +36,57 @@ const AuthModal = ({ onClose, onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [aceptaTerminos, setAceptaTerminos] = useState(false);
 
+  // ===== DETECTAR PARÁMETROS DE FIREBASE EN LA URL =====
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode');
+    
+    if (mode === 'verifyEmail') {
+      setSuccess('Correo verificado exitosamente. Ya puedes iniciar sesión.');
+      setModo('login');
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    
+    if (mode === 'resetPassword') {
+      setSuccess('Contraseña restablecida. Ahora puedes iniciar sesión.');
+      setModo('login');
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // ===== FUNCIÓN PARA RESTABLECER CONTRASEÑA =====
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      await sendPasswordResetEmail(auth, resetEmail);
+      setResetSent(true);
+      setSuccess('Correo de recuperación enviado. Revisa tu bandeja de entrada.');
+      setLoading(false);
+      
+      setTimeout(() => {
+        setResetPasswordMode(false);
+        setResetSent(false);
+        setResetEmail('');
+        setSuccess('');
+      }, 3000);
+      
+    } catch (error) {
+      console.error('Error:', error);
+      if (error.code === 'auth/user-not-found') {
+        setError('No existe una cuenta con este correo');
+      } else {
+        setError('Error al enviar correo de recuperación');
+      }
+      setLoading(false);
+    }
   };
 
   const handleLogin = async (e) => {
@@ -40,6 +102,13 @@ const AuthModal = ({ onClose, onSuccess }) => {
       );
       
       const user = userCredential.user;
+
+      // VERIFICAR SI EL EMAIL ESTÁ VERIFICADO
+      if (!user.emailVerified) {
+        setError('Por favor verifica tu correo electrónico antes de iniciar sesión. Revisa tu bandeja de entrada.');
+        setLoading(false);
+        return;
+      }
       
       const userDoc = await getDocs(query(
         collection(db, 'usuarios'), 
@@ -48,7 +117,7 @@ const AuthModal = ({ onClose, onSuccess }) => {
       
       if (!userDoc.empty) {
         const userData = userDoc.docs[0].data();
-        setSuccess(`¡Bienvenido ${userData.nombres}!`);
+        setSuccess(`Bienvenido ${userData.nombres}!`);
         sessionStorage.setItem('user', JSON.stringify(userData));
         
         if (onSuccess) onSuccess(userData);
@@ -141,6 +210,9 @@ const AuthModal = ({ onClose, onSuccess }) => {
       );
       const user = userCredential.user;
 
+      // ENVIAR CORREO DE VERIFICACIÓN
+      await sendEmailVerification(user);
+
       // Guardar datos en Firestore
       const userData = {
         nombres: nombres,
@@ -152,12 +224,13 @@ const AuthModal = ({ onClose, onSuccess }) => {
         rol: 'cliente',
         fechaRegistro: new Date().toISOString(),
         uid: user.uid,
-        estado: 'activo'
+        estado: 'activo',
+        emailVerified: false
       };
 
       await setDoc(doc(db, 'usuarios', user.uid), userData);
 
-      setSuccess('¡Registro exitoso! Ya puedes iniciar sesión.');
+      setSuccess('Registro exitoso. Hemos enviado un correo de verificación a tu email. Por favor verifica antes de iniciar sesión.');
 
       setTimeout(() => {
         setModo('login');
@@ -170,7 +243,7 @@ const AuthModal = ({ onClose, onSuccess }) => {
           confirmPassword: '' 
         });
         setAceptaTerminos(false);
-      }, 2000);
+      }, 4000);
 
     } catch (error) {
       console.error('Error:', error);
@@ -182,6 +255,83 @@ const AuthModal = ({ onClose, onSuccess }) => {
     }
     setLoading(false);
   };
+
+  // Si está en modo recuperación de contraseña
+  if (resetPasswordMode) {
+    return (
+      <div className="auth-modal-overlay" onClick={onClose}>
+        <div className="auth-modal-card" onClick={(e) => e.stopPropagation()}>
+          <button className="auth-modal-close" onClick={onClose}>×</button>
+          
+          <div className="auth-logo">
+            <img src="/img/premium.png" alt="YipiAs" />
+          </div>
+
+          <h3 style={{ textAlign: 'center', marginBottom: '1rem', color: 'var(--text)' }}>
+            Recuperar Contraseña
+          </h3>
+
+          {!resetSent ? (
+            <form onSubmit={handleResetPassword} className="auth-form">
+              <div className="input-group">
+                <Mail size={18} className="input-icon" />
+                <input
+                  type="email"
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                  required
+                  placeholder="Ingresa tu correo electrónico"
+                />
+              </div>
+
+              {error && (
+                <div className="auth-error">
+                  <AlertCircle size={16} style={{ marginRight: '6px' }} />
+                  {error}
+                </div>
+              )}
+              {success && (
+                <div className="auth-success">
+                  <Check size={16} style={{ marginRight: '6px' }} />
+                  {success}
+                </div>
+              )}
+
+              <button type="submit" className="auth-submit" disabled={loading}>
+                {loading ? 'Enviando...' : 'Enviar correo de recuperación'}
+              </button>
+
+              <button 
+                type="button" 
+                className="auth-submit" 
+                style={{ background: 'transparent', color: 'var(--primary)', marginTop: '0.5rem' }}
+                onClick={() => setResetPasswordMode(false)}
+              >
+                Volver al inicio de sesión
+              </button>
+            </form>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '1rem' }}>
+              <div className="auth-success">
+                <Check size={16} style={{ marginRight: '6px' }} />
+                {success}
+              </div>
+              <button 
+                className="auth-submit" 
+                style={{ marginTop: '1rem' }}
+                onClick={() => {
+                  setResetPasswordMode(false);
+                  setResetSent(false);
+                }}
+              >
+                Volver al inicio de sesión
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="auth-modal-overlay" onClick={onClose}>
@@ -236,20 +386,49 @@ const AuthModal = ({ onClose, onSuccess }) => {
               />
             </div>
 
-            <div className="input-group">
+            <div className="input-group" style={{ position: 'relative' }}>
               <Lock size={18} className="input-icon" />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
                 required
                 placeholder="Contraseña"
+                style={{ paddingRight: '40px' }}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="password-toggle-btn"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
 
-            {error && <div className="auth-error">{error}</div>}
-            {success && <div className="auth-success">{success}</div>}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '-0.5rem', marginBottom: '0.5rem' }}>
+              <button
+                type="button"
+                onClick={() => setResetPasswordMode(true)}
+                className="forgot-password-btn"
+              >
+                <HelpCircle size={14} />
+                ¿Olvidaste tu contraseña?
+              </button>
+            </div>
+
+            {error && (
+              <div className="auth-error">
+                <AlertCircle size={16} style={{ marginRight: '6px' }} />
+                {error}
+              </div>
+            )}
+            {success && (
+              <div className="auth-success">
+                <Check size={16} style={{ marginRight: '6px' }} />
+                {success}
+              </div>
+            )}
 
             <button type="submit" className="auth-submit" disabled={loading}>
               {loading ? 'Ingresando...' : 'Iniciar Sesión'}
@@ -307,28 +486,44 @@ const AuthModal = ({ onClose, onSuccess }) => {
               />
             </div>
 
-            <div className="input-group">
+            <div className="input-group" style={{ position: 'relative' }}>
               <Lock size={18} className="input-icon" />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
                 required
                 placeholder="Contraseña (mín. 6 caracteres)"
+                style={{ paddingRight: '40px' }}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="password-toggle-btn"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
 
-            <div className="input-group">
+            <div className="input-group" style={{ position: 'relative' }}>
               <Lock size={18} className="input-icon" />
               <input
-                type="password"
+                type={showConfirmPassword ? "text" : "password"}
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 required
                 placeholder="Confirmar contraseña"
+                style={{ paddingRight: '40px' }}
               />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="password-toggle-btn"
+              >
+                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
 
             <label className="checkbox-label">
@@ -341,8 +536,18 @@ const AuthModal = ({ onClose, onSuccess }) => {
               <span>Acepto los términos y condiciones, junto a las políticas de privacidad</span>
             </label>
 
-            {error && <div className="auth-error">{error}</div>}
-            {success && <div className="auth-success">{success}</div>}
+            {error && (
+              <div className="auth-error">
+                <AlertCircle size={16} style={{ marginRight: '6px' }} />
+                {error}
+              </div>
+            )}
+            {success && (
+              <div className="auth-success">
+                <Check size={16} style={{ marginRight: '6px' }} />
+                {success}
+              </div>
+            )}
 
             <button type="submit" className="auth-submit" disabled={loading}>
               {loading ? 'Registrando...' : 'Registrarme'}

@@ -159,6 +159,7 @@
   transition: all 0.2s ease;
   background: var(--card);
   color: var(--text);
+  padding-right: 40px; /* ← ESPACIO PARA EL BOTÓN DE OJO */
 }
 
 .input-group input:focus {
@@ -338,4 +339,124 @@
 .conductor-link a:hover {
   color: var(--primary-light);
   text-decoration: underline;
+}
+
+/* ===== BOTÓN DE OLVIDÉ CONTRASEÑA ===== */
+.forgot-password-btn {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.5rem 0;
+  transition: color 0.2s ease;
+}
+
+.forgot-password-btn:hover {
+  color: var(--primary-light);
+  text-decoration: underline;
+}
+
+/* ===== BOTÓN DE MOSTRAR CONTRASEÑA ===== */
+.password-toggle-btn {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  z-index: 10;
+  transition: color 0.2s ease;
+}
+
+.password-toggle-btn:hover {
+  color: var(--primary);
+}
+
+/* ===== TÍTULO DE RECUPERACIÓN ===== */
+.reset-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--text);
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+/* ===== BOTÓN VOLVER (RECUPERACIÓN) ===== */
+.back-button {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 0.8rem;
+  border-radius: 40px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.back-button:hover {
+  background: var(--bg-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* ===== CONTENEDOR DE RECUPERACIÓN ===== */
+.reset-container {
+  text-align: center;
+  padding: 1rem;
+}
+
+.reset-container .auth-success {
+  margin-bottom: 1rem;
+}
+
+/* ===== BOTÓN DE OLVIDÉ CONTRASEÑA ===== */
+.forgot-password-btn {
+  background: transparent;
+  border: none;
+  color: #dc3545;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.5rem 0;
+  transition: color 0.2s ease;
+}
+
+.forgot-password-btn:hover {
+  color: #bb2d3b;
+  text-decoration: underline;
+}
+
+/* ===== BOTÓN DE MOSTRAR CONTRASEÑA ===== */
+.password-toggle-btn {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #a0a0a0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  z-index: 10;
+  transition: color 0.2s ease;
+}
+
+.password-toggle-btn:hover {
+  color: #dc3545;
 }

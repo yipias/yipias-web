@@ -14,14 +14,22 @@ import Terminos from './pages/Terminos';
 import Privacidad from './pages/Privacidad';
 import ScrollToTop from './components/ScrollToTop';
 import AuthModal from './components/Auth/AuthModal';
+import SplashScreen from './components/SplashScreen/SplashScreen'; // ← AGREGADO
 
 import './assets/global.css';
 
 function App() {
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [splashVisible, setSplashVisible] = useState(true); // ← AGREGADO
+
+  const handleSplashFinish = () => {
+    setSplashVisible(false);
+  };
 
   return (
     <>
+      {splashVisible && <SplashScreen onFinish={handleSplashFinish} />} {/* ← AGREGADO */}
+      
       <ScrollToTop />
       <Header onOpenAuth={() => setShowAuthModal(true)} />
 

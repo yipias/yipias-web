@@ -315,3 +315,27 @@
     max-width: 120px;
   }
 }
+
+/* ===== ENLACE PARA CONDUCTORES ===== */
+.conductor-link {
+  text-align: center;
+  margin: 0.5rem 0 1rem 0;
+  padding: 0.5rem;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.conductor-link a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.conductor-link a:hover {
+  color: var(--primary-light);
+  text-decoration: underline;
+}

@@ -6,22 +6,18 @@ export const useFirebaseReservas = () => {
   
   const guardarReservaProgramada = async (datos) => {
     try {
-      // Preparar datos exactamente como en main.js
+      // Preparar datos - SIN tipoPersona
       const reservaData = {
         tipoReserva: 'programada',
         fechaReserva: serverTimestamp(),
-        tipoPersona: datos.tipoPersona,
-        nombres: datos.nombres,
-        apellidos: datos.apellidos,
-        documento: datos.documento,
-        telefono: datos.telefono,
-        lugarRecojo: datos.lugarRecojo,
-        destino: datos.destino,
-        fechaViaje: datos.fechaViaje,
-        horaInicio: datos.horaInicio,
-        pasajeros: datos.pasajeros,
-        distancia: datos.distancia,
-        precio: datos.precio,
+        lugarRecojo: datos.lugarRecojo || '',
+        destino: datos.destino || '',
+        fechaViaje: datos.fechaViaje || '',
+        horaInicio: datos.horaInicio || '',
+        horaOriginal: datos.horaOriginal || '',
+        pasajeros: datos.pasajeros || 1,
+        distancia: datos.distancia || '—',
+        precio: datos.precio || 'S/ 0.00',
         recojoLat: datos.recojoLat || null,
         recojoLng: datos.recojoLng || null,
         destinoLat: datos.destinoLat || null,
@@ -29,21 +25,14 @@ export const useFirebaseReservas = () => {
         mapsLink: datos.mapsLink || null
       };
 
-      // Guardar en Firebase
       const docRef = await addDoc(collection(db, 'reservas'), reservaData);
       console.log('✅ Reserva programada guardada en Firebase con ID:', docRef.id);
-      
-      // 🚫 ELIMINADA LA REDIRECCIÓN A WHATSAPP
-      // Solo retornamos éxito para que se muestre el modal
       
       return { success: true, id: docRef.id };
       
     } catch (error) {
       console.error('❌ Error al guardar en Firebase:', error);
       alert('Reserva recibida, pero hubo un problema técnico. Te contactaremos igualmente.');
-      
-      // 🚫 TAMBIÉN ELIMINADA AQUÍ
-      
       return { success: false, error };
     }
   };
@@ -53,17 +42,13 @@ export const useFirebaseReservas = () => {
       const reservaData = {
         tipoReserva: 'horas',
         fechaReserva: serverTimestamp(),
-        tipoPersona: datos.tipoPersona,
-        nombres: datos.nombres,
-        apellidos: datos.apellidos,
-        documento: datos.documento,
-        telefono: datos.telefono,
-        lugarRecojo: datos.lugarRecojo,
-        fechaServicio: datos.fechaServicio,
-        horaInicio: datos.horaInicio,
-        horasContratadas: datos.horasContratadas,
-        pasajeros: datos.pasajeros,
-        precio: datos.precio,
+        lugarRecojo: datos.lugarRecojo || '',
+        fechaServicio: datos.fechaServicio || '',
+        horaInicio: datos.horaInicio || '',
+        horaOriginal: datos.horaOriginal || '',
+        horasContratadas: datos.horasContratadas || 1,
+        pasajeros: datos.pasajeros || 1,
+        precio: datos.precio || 'S/ 38.00',
         recojoLat: datos.recojoLat || null,
         recojoLng: datos.recojoLng || null,
         mapsLink: datos.mapsLink || null
@@ -72,14 +57,11 @@ export const useFirebaseReservas = () => {
       const docRef = await addDoc(collection(db, 'reservas'), reservaData);
       console.log('✅ Reserva por horas guardada en Firebase con ID:', docRef.id);
       
-      // 🚫 ELIMINADA LA REDIRECCIÓN A WHATSAPP
-      
       return { success: true, id: docRef.id };
       
     } catch (error) {
       console.error('❌ Error al guardar en Firebase:', error);
       alert('Reserva recibida, pero hubo un problema técnico. Te contactaremos igualmente.');
-      
       return { success: false, error };
     }
   };

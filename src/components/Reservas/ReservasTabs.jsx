@@ -1,15 +1,17 @@
 // src/components/Reservas/ReservasTabs.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import { useLimpiarInputs } from '../../hooks/useLimpiarInputs';
-import { useFormatoHora } from '../../hooks/useFormatoHora';
 import { useFechaMinima } from '../../hooks/useFechaMinima';
 import { useValidaciones } from '../../hooks/useValidaciones';
 import { useUbicacionActual } from '../../hooks/useUbicacionActual';
 import { useModales } from '../../hooks/useModales';
 import { useFirebaseReservas } from '../../hooks/useFirebaseReservas';
+import { useFormatoHoraAMPM } from '../../hooks/useFormatoHoraAMPM';
+import { useAuth } from '../../context/AuthContext'; // ← IMPORTAR AUTH
 import FormularioProgramada from './FormularioProgramada';
 import FormularioPorHoras from './FormularioPorHoras';
 import MapaOriginal from './MapaOriginal';
+import AuthModal from '../Auth/AuthModal'; // ← IMPORTAR MODAL DE AUTENTICACIÓN
 // Modales
 import ExplicacionProgramada from '../Modals/ExplicacionProgramada';
 import ExplicacionPorHoras from '../Modals/ExplicacionPorHoras';
@@ -22,28 +24,43 @@ import { obtenerTarifaKm, obtenerTarifaHoras } from '../../utils/calculos';
 
 const ReservasTabs = () => {
   useLimpiarInputs();
-  useFormatoHora();
   useFechaMinima();
   const { validarFechaHoraReserva, validarPasajeros } = useValidaciones();
   const { obtenerUbicacionActual } = useUbicacionActual();
   const modales = useModales();
   const { guardarReservaProgramada, guardarReservaHoras } = useFirebaseReservas();
+  const { currentUser } = useAuth(); // ← ESTADO DE AUTENTICACIÓN
   
+  // Estados para pestañas y selección
   const [activeTab, setActiveTab] = useState('');
   const [selectedInput, setSelectedInput] = useState(null);
   const [activeMode, setActiveMode] = useState(null);
+  const [showAuthModal, setShowAuthModal] = useState(false); // ← CONTROL DEL MODAL DE LOGIN
+  
+  // Estados para direcciones
   const [pickupAddress, setPickupAddress] = useState('');
   const [dropoffAddress, setDropoffAddress] = useState('');
   const [horasAddress, setHorasAddress] = useState('');
+  
+  // Estados para ubicaciones
   const [pickupLocation, setPickupLocation] = useState(null);
   const [dropoffLocation, setDropoffLocation] = useState(null);
   const [horasLocation, setHorasLocation] = useState(null);
+  
+  // Estados para marcadores
   const [markers, setMarkers] = useState({
     pickup: null,
     dropoff: null,
     horas: null
   });
   
+  // Estados para hora con AM/PM
+  const { ampm: progAmpm, setAmpm: setProgAmpm, formatearHoraParaFirebase } = useFormatoHoraAMPM();
+  const { ampm: horasAmpm, setAmpm: setHorasAmpm } = useFormatoHoraAMPM();
+  const [progHora, setProgHora] = useState('');
+  const [horasHora, setHorasHora] = useState('');
+  
+  // Refs
   const mapRef = useRef(null);
   const directionsRendererRef = useRef(null);
   const autocompleteRefs = useRef({
@@ -52,8 +69,18 @@ const ReservasTabs = () => {
     horas: null
   });
 
-  // ===== FUNCIÓN PARA LIMPIAR FORMULARIO =====
-  const limpiarFormulario = () => {
+  // ===== LIMPIAR RUTA =====
+  const limpiarRuta = () => {
+    if (directionsRendererRef.current) {
+      directionsRendererRef.current.setMap(null);
+      directionsRendererRef.current = null;
+    }
+  };
+
+  // ===== LIMPIAR TODO AL CAMBIAR DE PESTAÑA =====
+  const limpiarTodo = () => {
+    console.log('🧹 Limpiando todo al cambiar de pestaña');
+    
     // Limpiar estados de direcciones
     setPickupAddress('');
     setDropoffAddress('');
@@ -64,16 +91,16 @@ const ReservasTabs = () => {
     setDropoffLocation(null);
     setHorasLocation(null);
     
+    // Limpiar horas
+    setProgHora('');
+    setHorasHora('');
+    setProgAmpm('AM');
+    setHorasAmpm('AM');
+    
     // Limpiar marcadores del mapa
-    if (markers.pickup) {
-      markers.pickup.setMap(null);
-    }
-    if (markers.dropoff) {
-      markers.dropoff.setMap(null);
-    }
-    if (markers.horas) {
-      markers.horas.setMap(null);
-    }
+    Object.values(markers).forEach(marker => {
+      if (marker) marker.setMap(null);
+    });
     
     setMarkers({
       pickup: null,
@@ -81,44 +108,15 @@ const ReservasTabs = () => {
       horas: null
     });
     
-    // Limpiar inputs del DOM
-    const inputs = [
-      'progNombres', 'progApellidos', 'progDni',
-      'progNombresRep', 'progRazonSocial', 'progRuc',
-      'progTelefono', 'pickup', 'dropoff', 'progPax',
-      'horasNombres', 'horasApellidos', 'horasDni',
-      'horasNombresRep', 'horasRazonSocial', 'horasRuc',
-      'horasTelefono', 'horasRecojo', 'horasPax'
-    ];
+    // Limpiar ruta
+    limpiarRuta();
     
+    // Limpiar inputs del DOM
+    const inputs = ['pickup', 'dropoff', 'horasRecojo', 'progHoraInput', 'horasHoraInput'];
     inputs.forEach(id => {
       const input = document.getElementById(id);
       if (input) input.value = '';
     });
-    
-    // Resetear selects
-    const horasSelect = document.getElementById('horasCantidad');
-    if (horasSelect) horasSelect.value = '3';
-    
-    // Resetear fechas a hoy
-    const progFecha = document.getElementById('progFecha');
-    const horasFecha = document.getElementById('horasFecha');
-    const hoy = new Date().toISOString().split('T')[0];
-    
-    if (progFecha) progFecha.value = hoy;
-    if (horasFecha) horasFecha.value = hoy;
-    
-    // Limpiar inputs de hora
-    const progHora = document.getElementById('progHoraInput');
-    const horasHora = document.getElementById('horasHoraInput');
-    if (progHora) progHora.value = '';
-    if (horasHora) horasHora.value = '';
-    
-    // Limpiar hiddens de hora
-    const progHoraHidden = document.getElementById('progHoraInicio');
-    const horasHoraHidden = document.getElementById('horasHoraInicio');
-    if (progHoraHidden) progHoraHidden.value = '';
-    if (horasHoraHidden) horasHoraHidden.value = '';
     
     // Limpiar distancia y precio
     const progDistance = document.getElementById('progDistance');
@@ -127,18 +125,20 @@ const ReservasTabs = () => {
     
     if (progDistance) progDistance.textContent = '—';
     if (progPrice) progPrice.textContent = 'S/ 0.00';
-    if (horasPrice) horasPrice.textContent = 'S/ 75.00';
-    
-    // Limpiar ruta del mapa
-    if (directionsRendererRef.current) {
-      directionsRendererRef.current.setMap(null);
-      directionsRendererRef.current = null;
-    }
-    
-    console.log('🧹 Formulario limpiado');
+    if (horasPrice) horasPrice.textContent = 'S/ 38.00';
   };
 
+  // ===== MANEJAR CAMBIO DE PESTAÑA =====
   const handleTabClick = (tab) => {
+    // Si NO hay usuario logueado, mostrar modal de autenticación
+    if (!currentUser) {
+      setShowAuthModal(true);
+      document.body.style.overflow = 'hidden';
+      return;
+    }
+    
+    // Si HAY usuario logueado, proceder normalmente
+    limpiarTodo();
     setActiveTab(tab);
     if (tab === 'programada') {
       modales.mostrarExplicacionProgramada();
@@ -147,11 +147,15 @@ const ReservasTabs = () => {
     }
   };
 
-  // Función para agregar marcador
+  // ===== AGREGAR MARCADOR (SIEMPRE LIMPIA EL ANTERIOR) =====
   const addMarker = (type, location, address, placeName = null) => {
     if (!mapRef.current || !window.google) return;
     
+    console.log(`📍 Agregando marcador tipo: ${type}`, location);
+    
+    // Si ya existe un marcador del mismo tipo, eliminarlo
     if (markers[type]) {
+      console.log(`🗑️ Eliminando marcador anterior tipo: ${type}`);
       markers[type].setMap(null);
     }
     
@@ -160,34 +164,45 @@ const ReservasTabs = () => {
     
     const markerTitle = placeName || title;
     
+    // Configurar icono según tipo
+    const iconConfig = {
+      url: type === 'pickup' ? 'https://maps.google.com/mapfiles/ms/icons/green-dot.png' :
+           type === 'dropoff' ? 'https://maps.google.com/mapfiles/ms/icons/red-dot.png' :
+           'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+      scaledSize: new window.google.maps.Size(40, 40)
+    };
+    
+    // Configurar label según tipo
+    const labelConfig = {
+      text: type === 'pickup' ? 'A' : type === 'dropoff' ? 'B' : 'H',
+      color: 'white',
+      fontSize: '14px',
+      fontWeight: 'bold'
+    };
+    
     const markerConfig = {
       position: location,
       map: mapRef.current,
       title: markerTitle,
-      icon: {
-        url: type === 'pickup' ? 'http://maps.google.com/mapfiles/ms/icons/green-dot.png' :
-             type === 'dropoff' ? 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' :
-             'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-        scaledSize: new window.google.maps.Size(40, 40)
-      },
-      label: {
-        text: type === 'pickup' ? 'A' : type === 'dropoff' ? 'B' : 'H',
-        color: 'white',
-        fontSize: '14px',
-        fontWeight: 'bold'
-      }
+      icon: iconConfig,
+      label: labelConfig
     };
     
     const newMarker = new window.google.maps.Marker(markerConfig);
     
-    setMarkers(prev => ({
-      ...prev,
-      [type]: newMarker
-    }));
+    // Actualizar estado
+    setMarkers(prev => {
+      const newMarkers = { ...prev, [type]: newMarker };
+      return newMarkers;
+    });
+    
+    // Centrar mapa
+    mapRef.current.panTo(location);
+    mapRef.current.setZoom(15);
   };
 
-  // Función para calcular distancia y precio
-  const calculateDistanceAndPrice = (origin, destination) => {
+  // ===== CALCULAR RUTA Y PRECIO (RUTA MÁS CORTA) =====
+  const calcularRutaYDistancia = (origin, destination) => {
     if (!mapRef.current || !window.google || !origin || !destination) return;
 
     const directionsService = new window.google.maps.DirectionsService();
@@ -196,14 +211,25 @@ const ReservasTabs = () => {
       {
         origin,
         destination,
-        travelMode: window.google.maps.TravelMode.DRIVING
+        travelMode: window.google.maps.TravelMode.DRIVING,
+        provideRouteAlternatives: true
       },
       (result, status) => {
         if (status === 'OK') {
-          if (directionsRendererRef.current) {
-            directionsRendererRef.current.setMap(null);
-          }
+          // Buscar la ruta con menor distancia
+          let shortestRoute = result.routes[0];
+          let shortestDistance = result.routes[0].legs[0].distance.value;
           
+          // Recorrer todas las rutas alternativas
+          result.routes.forEach(route => {
+            const distance = route.legs[0].distance.value;
+            if (distance < shortestDistance) {
+              shortestDistance = distance;
+              shortestRoute = route;
+            }
+          });
+          
+          // Crear nuevo renderizador con la ruta más corta
           directionsRendererRef.current = new window.google.maps.DirectionsRenderer({
             map: mapRef.current,
             suppressMarkers: true,
@@ -214,17 +240,19 @@ const ReservasTabs = () => {
             }
           });
           
-          directionsRendererRef.current.setDirections(result);
+          // Mostrar solo la ruta más corta
+          directionsRendererRef.current.setDirections({
+            ...result,
+            routes: [shortestRoute]
+          });
           
-          const distance = result.routes[0].legs[0].distance.value / 1000;
+          // Calcular distancia y precio
+          const distance = shortestDistance / 1000;
           const paxInput = document.getElementById('progPax');
-          let pax = 1;
+          let pax = paxInput ? parseInt(paxInput.value) || 1 : 1;
           
-          if (paxInput) {
-            pax = parseInt(paxInput.value) || 1;
-            if (pax > 6) pax = 6;
-            if (pax < 1) pax = 1;
-          }
+          if (pax > 6) pax = 6;
+          if (pax < 1) pax = 1;
           
           const distanceSpan = document.getElementById('progDistance');
           if (distanceSpan) {
@@ -236,18 +264,27 @@ const ReservasTabs = () => {
             const priceSpan = document.getElementById('progPrice');
             if (priceSpan && tarifa) {
               priceSpan.textContent = `S/ ${tarifa}.00`;
-              console.log(`📊 Distancia: ${distance}km, Pasajeros: ${pax}, Tarifa: S/ ${tarifa}.00`);
+              console.log(`📍 Ruta más corta: ${distance}km, Pasajeros: ${pax}, Tarifa: S/ ${tarifa}.00`);
             }
           } catch (error) {
             console.log('Error calculando tarifa:', error);
-            if (error.message.includes('máximo')) {
-              document.getElementById('progPax').value = 6;
-            }
           }
+        } else {
+          console.log('❌ Error calculando ruta:', status);
         }
       }
     );
   };
+
+  // ===== EFECTO PARA TRAZAR RUTA CUANDO AMBOS PUNTOS CAMBIAN =====
+  useEffect(() => {
+    if (activeTab !== 'programada') return;
+    if (pickupLocation && dropoffLocation) {
+      console.log('🔄 Trazando ruta por cambio en ubicaciones');
+      limpiarRuta();
+      calcularRutaYDistancia(pickupLocation, dropoffLocation);
+    }
+  }, [pickupLocation, dropoffLocation, activeTab]);
 
   // ===== EFECTO PARA ACTUALIZAR PRECIO EN TIEMPO REAL (PROGRAMADA) =====
   useEffect(() => {
@@ -371,10 +408,6 @@ const ReservasTabs = () => {
           setPickupAddress(displayName);
           setPickupLocation(location);
           addMarker('pickup', location, displayName, place.name);
-          
-          if (dropoffLocation) {
-            calculateDistanceAndPrice(location, dropoffLocation);
-          }
         }
       });
       
@@ -400,10 +433,6 @@ const ReservasTabs = () => {
           setDropoffAddress(displayName);
           setDropoffLocation(location);
           addMarker('dropoff', location, displayName, place.name);
-          
-          if (pickupLocation) {
-            calculateDistanceAndPrice(pickupLocation, location);
-          }
         }
       });
       
@@ -458,22 +487,18 @@ const ReservasTabs = () => {
   };
 
   const handlePlaceSelected = (inputType, address, location, placeName = null) => {
+    if (markers[inputType]) {
+      markers[inputType].setMap(null);
+    }
+    
     if (inputType === 'pickup') {
       setPickupAddress(address);
       setPickupLocation(location);
       addMarker('pickup', location, address, placeName);
-      
-      if (dropoffLocation) {
-        calculateDistanceAndPrice(location, dropoffLocation);
-      }
     } else if (inputType === 'dropoff') {
       setDropoffAddress(address);
       setDropoffLocation(location);
       addMarker('dropoff', location, address, placeName);
-      
-      if (pickupLocation) {
-        calculateDistanceAndPrice(pickupLocation, location);
-      }
     } else if (inputType === 'horas') {
       setHorasAddress(address);
       setHorasLocation(location);
@@ -501,10 +526,6 @@ const ReservasTabs = () => {
         setPickupAddress(result.address);
         setPickupLocation(result.location);
         addMarker('pickup', result.location, result.address);
-        
-        if (dropoffLocation) {
-          calculateDistanceAndPrice(result.location, dropoffLocation);
-        }
       }
     } catch (error) {
       console.log('Error en ubicación actual:', error);
@@ -532,7 +553,6 @@ const ReservasTabs = () => {
 
   const handleReservaProgramada = async () => {
     const fecha = document.getElementById('progFecha')?.value;
-    const hora = document.getElementById('progHoraInicio')?.value;
     const pax = parseInt(document.getElementById('progPax')?.value) || 1;
     
     if (pax < 1 || pax > 6) {
@@ -540,57 +560,32 @@ const ReservasTabs = () => {
       return;
     }
     
-    const nombres = document.getElementById('progNombres')?.value;
-    const apellidos = document.getElementById('progApellidos')?.value;
-    const dni = document.getElementById('progDni')?.value;
-    const telefono = document.getElementById('progTelefono')?.value;
-    const recojo = document.getElementById('pickup')?.value;
-    const destino = document.getElementById('dropoff')?.value;
-    const distancia = document.getElementById('progDistance')?.textContent || '—';
-    const precio = document.getElementById('progPrice')?.textContent || 'S/ 0.00';
-    
-    const esNatural = document.querySelector('#formProgramada .persona-btn.active')?.textContent.includes('Natural');
-    
-    if (!validarFechaHoraReserva(fecha, hora)) return;
-    if (!validarPasajeros(pax)) return;
-    if (!nombres || !apellidos || !dni || !telefono || !recojo || !destino) {
-      alert('Por favor completa todos los campos');
+    if (!pickupLocation || !dropoffLocation) {
+      alert('Por favor selecciona punto de recojo y destino final');
       return;
     }
     
-    let recojoLat = null, recojoLng = null, destinoLat = null, destinoLng = null;
+    const horaFormateada = formatearHoraParaFirebase(progHora, progAmpm);
     
-    if (pickupLocation) {
-      recojoLat = pickupLocation.lat;
-      recojoLng = pickupLocation.lng;
-    }
+    const distancia = document.getElementById('progDistance')?.textContent || '—';
+    const precio = document.getElementById('progPrice')?.textContent || 'S/ 0.00';
     
-    if (dropoffLocation) {
-      destinoLat = dropoffLocation.lat;
-      destinoLng = dropoffLocation.lng;
-    }
-    
-    const mapsLink = (recojoLat && recojoLng && destinoLat && destinoLng) 
-      ? `https://www.google.com/maps/dir/${recojoLat},${recojoLng}/${destinoLat},${destinoLng}`
-      : null;
+    const mapsLink = `https://www.google.com/maps/dir/${pickupLocation.lat},${pickupLocation.lng}/${dropoffLocation.lat},${dropoffLocation.lng}`;
     
     const datosReserva = {
-      tipoPersona: esNatural ? 'natural' : 'juridica',
-      nombres: nombres,
-      apellidos: apellidos,
-      documento: dni,
-      telefono: telefono,
-      lugarRecojo: recojo,
-      destino: destino,
+      tipoReserva: 'programada',
+      lugarRecojo: pickupAddress,
+      destino: dropoffAddress,
       fechaViaje: fecha,
-      horaInicio: hora,
+      horaInicio: horaFormateada,
+      horaOriginal: `${progHora} ${progAmpm}`,
       pasajeros: pax,
       distancia: distancia,
       precio: precio,
-      recojoLat: recojoLat,
-      recojoLng: recojoLng,
-      destinoLat: destinoLat,
-      destinoLng: destinoLng,
+      recojoLat: pickupLocation.lat,
+      recojoLng: pickupLocation.lng,
+      destinoLat: dropoffLocation.lat,
+      destinoLng: dropoffLocation.lng,
       mapsLink: mapsLink
     };
     
@@ -598,62 +593,42 @@ const ReservasTabs = () => {
     
     if (resultado.success) {
       modales.mostrarConfirmacionProgramada();
-      limpiarFormulario(); // ← LIMPIAR DESPUÉS DE RESERVAR
+      limpiarTodo();
     }
   };
 
   const handleReservaHoras = async () => {
     const fecha = document.getElementById('horasFecha')?.value;
-    const hora = document.getElementById('horasHoraInicio')?.value;
     const pax = parseInt(document.getElementById('horasPax')?.value) || 1;
+    const horas = parseInt(document.getElementById('horasCantidad')?.value) || 1;
     
     if (pax < 1 || pax > 6) {
       alert('El número de pasajeros debe ser entre 1 y 6');
       return;
     }
     
-    const nombres = document.getElementById('horasNombres')?.value;
-    const apellidos = document.getElementById('horasApellidos')?.value;
-    const dni = document.getElementById('horasDni')?.value;
-    const telefono = document.getElementById('horasTelefono')?.value;
-    const recojo = document.getElementById('horasRecojo')?.value;
-    const horas = parseInt(document.getElementById('horasCantidad')?.value) || 3;
-    const precio = document.getElementById('horasPrice')?.textContent || 'S/ 75.00';
-    
-    const esNatural = document.querySelector('#formPorHoras .persona-btn.active')?.textContent.includes('Natural');
-    
-    if (!validarFechaHoraReserva(fecha, hora)) return;
-    if (!validarPasajeros(pax)) return;
-    if (!nombres || !apellidos || !dni || !telefono || !recojo) {
-      alert('Por favor completa todos los campos');
+    if (!horasLocation) {
+      alert('Por favor selecciona punto de recojo');
       return;
     }
     
-    let recojoLat = null, recojoLng = null;
+    const horaFormateada = formatearHoraParaFirebase(horasHora, horasAmpm);
     
-    if (horasLocation) {
-      recojoLat = horasLocation.lat;
-      recojoLng = horasLocation.lng;
-    }
+    const precio = document.getElementById('horasPrice')?.textContent || 'S/ 38.00';
     
-    const mapsLink = (recojoLat && recojoLng) 
-      ? `https://www.google.com/maps/search/?api=1&query=${recojoLat},${recojoLng}`
-      : null;
+    const mapsLink = `https://www.google.com/maps/search/?api=1&query=${horasLocation.lat},${horasLocation.lng}`;
     
     const datosReserva = {
-      tipoPersona: esNatural ? 'natural' : 'juridica',
-      nombres: nombres,
-      apellidos: apellidos,
-      documento: dni,
-      telefono: telefono,
-      lugarRecojo: recojo,
+      tipoReserva: 'horas',
+      lugarRecojo: horasAddress,
       fechaServicio: fecha,
-      horaInicio: hora,
+      horaInicio: horaFormateada,
+      horaOriginal: `${horasHora} ${horasAmpm}`,
       horasContratadas: horas,
       pasajeros: pax,
       precio: precio,
-      recojoLat: recojoLat,
-      recojoLng: recojoLng,
+      recojoLat: horasLocation.lat,
+      recojoLng: horasLocation.lng,
       mapsLink: mapsLink
     };
     
@@ -661,7 +636,7 @@ const ReservasTabs = () => {
     
     if (resultado.success) {
       modales.mostrarConfirmacionHoras();
-      limpiarFormulario(); // ← LIMPIAR DESPUÉS DE RESERVAR
+      limpiarTodo();
     }
   };
 
@@ -670,7 +645,7 @@ const ReservasTabs = () => {
       <div className="container">
         <h2 className="section-title">Reservas</h2>
         <p className="section-subtitle reveal">
-          Las reservas pueden realizarse en cualquier momento, y con un mínimo de 30 minutos de anticipación.
+          Las reservas pueden realizarse en cualquier momento.
         </p>
         
         <div className="tab-container reveal">
@@ -700,6 +675,12 @@ const ReservasTabs = () => {
                 onReservar={handleReservaProgramada}
                 onUbicacionActual={handleUbicacionActualPickup}
                 activeMode={activeMode}
+                horaValue={progHora}
+                onHoraChange={setProgHora}
+                ampm={progAmpm}
+                onAmpmChange={setProgAmpm}
+                markers={markers}
+                setMarkers={setMarkers}
               />
             ) : activeTab === 'porhoras' ? (
               <FormularioPorHoras 
@@ -709,6 +690,12 @@ const ReservasTabs = () => {
                 onReservar={handleReservaHoras}
                 onUbicacionActual={handleUbicacionActualHoras}
                 activeMode={activeMode}
+                horaValue={horasHora}
+                onHoraChange={setHorasHora}
+                ampm={horasAmpm}
+                onAmpmChange={setHorasAmpm}
+                markers={markers}
+                setMarkers={setMarkers}
               />
             ) : (
               <div className="form" style={{ padding: '2rem', textAlign: 'center' }}>
@@ -728,6 +715,20 @@ const ReservasTabs = () => {
           </div>
         </div>
       </div>
+
+      {/* MODAL DE AUTENTICACIÓN */}
+      {showAuthModal && (
+        <AuthModal 
+          onClose={() => {
+            setShowAuthModal(false);
+            document.body.style.overflow = 'auto';
+          }}
+          onSuccess={() => {
+            setShowAuthModal(false);
+            document.body.style.overflow = 'auto';
+          }}
+        />
+      )}
 
       {modales.modalExplicacionProgramada && (
         <ExplicacionProgramada onClose={modales.cerrarModales} />

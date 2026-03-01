@@ -1,5 +1,6 @@
 // src/components/Reservas/FormularioProgramada.jsx
-import React, { useState } from 'react';
+import React from 'react';
+import SelectorHoraAMPM from './SelectorHoraAMPM';
 import './FormularioProgramada.css';
 
 const FormularioProgramada = ({ 
@@ -10,120 +11,55 @@ const FormularioProgramada = ({
   onSelectInMap, 
   onReservar,
   onUbicacionActual,
-  activeMode
+  activeMode,
+  horaValue,
+  onHoraChange,
+  ampm,
+  onAmpmChange,
+  markers,
+  setMarkers
 }) => {
-  const [tipoPersona, setTipoPersona] = useState('natural');
 
-  const handlePaxChange = (e) => {
-    let value = parseInt(e.target.value);
-    if (value > 6) e.target.value = 6;
-    if (value < 1) e.target.value = 1;
+  const handlePickupChange = (e) => {
+    const newValue = e.target.value;
+    setPickupAddress(newValue);
+    
+    // Si el input está vacío, eliminar el marcador
+    if (newValue === '' && markers?.pickup) {
+      markers.pickup.setMap(null);
+      setMarkers(prev => ({ ...prev, pickup: null }));
+    }
+  };
+
+  const handleDropoffChange = (e) => {
+    const newValue = e.target.value;
+    setDropoffAddress(newValue);
+    
+    // Si el input está vacío, eliminar el marcador
+    if (newValue === '' && markers?.dropoff) {
+      markers.dropoff.setMap(null);
+      setMarkers(prev => ({ ...prev, dropoff: null }));
+    }
+  };
+
+  const handlePickupClear = () => {
+    setPickupAddress('');
+    if (markers?.pickup) {
+      markers.pickup.setMap(null);
+      setMarkers(prev => ({ ...prev, pickup: null }));
+    }
+  };
+
+  const handleDropoffClear = () => {
+    setDropoffAddress('');
+    if (markers?.dropoff) {
+      markers.dropoff.setMap(null);
+      setMarkers(prev => ({ ...prev, dropoff: null }));
+    }
   };
 
   return (
     <div className="form programada-form">
-      {/* Selector de tipo de persona */}
-      <div className="persona-selector">
-        <button 
-          type="button" 
-          className={`persona-btn ${tipoPersona === 'natural' ? 'active' : ''}`}
-          onClick={() => setTipoPersona('natural')}
-        >
-          Persona Natural
-        </button>
-        <button 
-          type="button" 
-          className={`persona-btn ${tipoPersona === 'juridica' ? 'active' : ''}`}
-          onClick={() => setTipoPersona('juridica')}
-        >
-          Persona Jurídica
-        </button>
-      </div>
-      
-      {/* Campos para Persona Natural */}
-      <div className={`persona-campos ${tipoPersona === 'natural' ? 'active-campos' : 'hidden-campos'}`}>
-        <div className="input-wrapper">
-          <label>Nombres</label>
-          <input 
-            type="text" 
-            className="input" 
-            placeholder="Ingresa tus nombres" 
-            id="progNombres"
-          />
-          <span className="clear-input" data-target="progNombres">✕</span>
-        </div>
-        
-        <div className="input-wrapper">
-          <label>Apellidos</label>
-          <input 
-            type="text" 
-            className="input" 
-            placeholder="Ingresa tus apellidos" 
-            id="progApellidos"
-          />
-          <span className="clear-input" data-target="progApellidos">✕</span>
-        </div>
-        
-        <div className="input-wrapper">
-          <label>DNI</label>
-          <input 
-            type="text" 
-            className="input" 
-            placeholder="Ingresa tu DNI" 
-            id="progDni"
-          />
-          <span className="clear-input" data-target="progDni">✕</span>
-        </div>
-      </div>
-      
-      {/* Campos para Persona Jurídica */}
-      <div className={`persona-campos ${tipoPersona === 'juridica' ? 'active-campos' : 'hidden-campos'}`}>
-        <div className="input-wrapper">
-          <label>Nombres (Representante)</label>
-          <input 
-            type="text" 
-            className="input" 
-            placeholder="Nombres del representante" 
-            id="progNombresRep"
-          />
-          <span className="clear-input" data-target="progNombresRep">✕</span>
-        </div>
-        
-        <div className="input-wrapper">
-          <label>Razón Social</label>
-          <input 
-            type="text" 
-            className="input" 
-            placeholder="Ingresa la razón social" 
-            id="progRazonSocial"
-          />
-          <span className="clear-input" data-target="progRazonSocial">✕</span>
-        </div>
-        
-        <div className="input-wrapper">
-          <label>RUC</label>
-          <input 
-            type="text" 
-            className="input" 
-            placeholder="Ingresa el RUC" 
-            id="progRuc"
-          />
-          <span className="clear-input" data-target="progRuc">✕</span>
-        </div>
-      </div>
-      
-      {/* Campos comunes */}
-      <div className="input-wrapper">
-        <label>Teléfono</label>
-        <input 
-          type="tel" 
-          className="input" 
-          placeholder="Ingresa tu número" 
-          id="progTelefono"
-        />
-        <span className="clear-input" data-target="progTelefono">✕</span>
-      </div>
-      
       {/* Lugar de recojo */}
       <div className="input-wrapper">
         <label>Lugar de recojo</label>
@@ -133,9 +69,9 @@ const FormularioProgramada = ({
           placeholder="Escribe o selecciona en el mapa" 
           value={pickupAddress}
           id="pickup"
-          onChange={(e) => setPickupAddress(e.target.value)}
+          onChange={handlePickupChange}
         />
-        <span className="clear-input" data-target="pickup">✕</span>
+        <span className="clear-input" onClick={handlePickupClear}>✕</span>
       </div>
       
       {/* Botón de selección en mapa para recojo */}
@@ -174,9 +110,9 @@ const FormularioProgramada = ({
           placeholder="Escribe o selecciona en el mapa" 
           value={dropoffAddress}
           id="dropoff"
-          onChange={(e) => setDropoffAddress(e.target.value)}
+          onChange={handleDropoffChange}
         />
-        <span className="clear-input" data-target="dropoff">✕</span>
+        <span className="clear-input" onClick={handleDropoffClear}>✕</span>
       </div>
       
       {/* Botón de selección en mapa para destino */}
@@ -203,23 +139,17 @@ const FormularioProgramada = ({
           />
         </div>
         
-        <div className="time-picker-wrapper">
-          <label>Hora de inicio</label>
-          <div className="time-input-group">
-            <input 
-              type="text" 
-              className="input time-input" 
-              placeholder="HH:MM" 
-              maxLength="5" 
-              id="progHoraInput"
-            />
-            <input type="hidden" id="progHoraInicio" />
-            <span className="clear-input" data-target="progHoraInput">✕</span>
-          </div>
-        </div>
+        {/* SELECTOR DE HORA CON AM/PM */}
+        <SelectorHoraAMPM 
+          value={horaValue}
+          onChange={onHoraChange}
+          ampm={ampm}
+          onAmpmChange={onAmpmChange}
+          id="progHoraInput"
+        />
+        <input type="hidden" id="progHoraInicio" />
       </div>
       
-      {/* Número de pasajeros con validación */}
       <div className="input-wrapper">
         <label>Número de pasajeros (máx. 6)</label>
         <input 
@@ -229,8 +159,6 @@ const FormularioProgramada = ({
           defaultValue="1" 
           className="input" 
           id="progPax"
-          onInput={handlePaxChange}
-          onBlur={handlePaxChange}
         />
         <span className="clear-input" data-target="progPax">✕</span>
       </div>

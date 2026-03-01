@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { auth, db } from '../../firebase/config';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { collection, query, where, getDocs, setDoc, doc } from 'firebase/firestore';
-import { User, Mail, Lock, CheckCircle } from 'lucide-react'; // SOLO ÍCONOS NECESARIOS
+import { User, Mail, Lock, CheckCircle, Phone, CreditCard } from 'lucide-react';
 import './AuthModal.css';
 
 const AuthModal = ({ onClose, onSuccess }) => {
@@ -12,7 +12,9 @@ const AuthModal = ({ onClose, onSuccess }) => {
     email: '',
     password: '',
     nombres: '',
-    confirmPassword: '' // Solo para registro
+    telefono: '',
+    dni: '',
+    confirmPassword: ''
   });
   
   const [error, setError] = useState('');
@@ -31,7 +33,6 @@ const AuthModal = ({ onClose, onSuccess }) => {
     setLoading(true);
 
     try {
-      // Iniciar sesión con email y contraseña
       const userCredential = await signInWithEmailAndPassword(
         auth, 
         formData.email, 
@@ -40,7 +41,6 @@ const AuthModal = ({ onClose, onSuccess }) => {
       
       const user = userCredential.user;
       
-      // Obtener datos adicionales de Firestore
       const userDoc = await getDocs(query(
         collection(db, 'usuarios'), 
         where('uid', '==', user.uid)
@@ -89,6 +89,18 @@ const AuthModal = ({ onClose, onSuccess }) => {
       return;
     }
 
+    if (formData.dni.length < 8 || formData.dni.length > 12) {
+      setError('El DNI debe tener entre 8 y 12 dígitos');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.telefono.length < 9) {
+      setError('El teléfono debe tener al menos 9 dígitos');
+      setLoading(false);
+      return;
+    }
+
     const nombreCompleto = formData.nombres.trim();
     if (!nombreCompleto.includes(' ')) {
       setError('Ingresa tu nombre completo (nombres y apellidos)');
@@ -100,6 +112,26 @@ const AuthModal = ({ onClose, onSuccess }) => {
       const espacioIndex = nombreCompleto.indexOf(' ');
       const nombres = nombreCompleto.substring(0, espacioIndex).trim();
       const apellidos = nombreCompleto.substring(espacioIndex + 1).trim();
+
+      // Verificar si el DNI ya está registrado
+      const dniQuery = query(collection(db, 'usuarios'), where('dni', '==', formData.dni));
+      const dniSnapshot = await getDocs(dniQuery);
+      
+      if (!dniSnapshot.empty) {
+        setError('Este DNI ya está registrado');
+        setLoading(false);
+        return;
+      }
+
+      // Verificar si el email ya está registrado
+      const emailQuery = query(collection(db, 'usuarios'), where('email', '==', formData.email));
+      const emailSnapshot = await getDocs(emailQuery);
+      
+      if (!emailSnapshot.empty) {
+        setError('Este email ya está registrado');
+        setLoading(false);
+        return;
+      }
 
       // Crear usuario en Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(
@@ -115,6 +147,8 @@ const AuthModal = ({ onClose, onSuccess }) => {
         apellidos: apellidos,
         nombreCompleto: nombreCompleto,
         email: formData.email,
+        telefono: formData.telefono,
+        dni: formData.dni,
         rol: 'cliente',
         fechaRegistro: new Date().toISOString(),
         uid: user.uid,
@@ -123,11 +157,18 @@ const AuthModal = ({ onClose, onSuccess }) => {
 
       await setDoc(doc(db, 'usuarios', user.uid), userData);
 
-      setSuccess('✅ ¡Registro exitoso! Ya puedes iniciar sesión.');
+      setSuccess('¡Registro exitoso! Ya puedes iniciar sesión.');
 
       setTimeout(() => {
         setModo('login');
-        setFormData({ email: '', password: '', nombres: '', confirmPassword: '' });
+        setFormData({ 
+          email: '', 
+          password: '', 
+          nombres: '', 
+          telefono: '', 
+          dni: '', 
+          confirmPassword: '' 
+        });
         setAceptaTerminos(false);
       }, 2000);
 
@@ -149,7 +190,7 @@ const AuthModal = ({ onClose, onSuccess }) => {
         
         {/* LOGO DE YIPIAS */}
         <div className="auth-logo">
-          <img src="/img/banner.png" alt="YipiAs" />
+          <img src="/img/premium.png" alt="YipiAs" />
         </div>
 
         {/* Selector deslizante */}
@@ -167,6 +208,18 @@ const AuthModal = ({ onClose, onSuccess }) => {
           >
             Registrarse
           </button>
+        </div>
+
+        {/* ENLACE PARA CONDUCTORES - WHATSAPP */}
+        <div className="conductor-link">
+          <span>¿Eres conductor? </span>
+          <a 
+            href="https://wa.me/51904635462?text=¡Hola!%20Deseo%20más%20información%20para%20ser%20conductor%20de%20YipiAs%20Premium."
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+            Haz clic aquí
+          </a>
         </div>
 
         {modo === 'login' ? (
@@ -229,6 +282,32 @@ const AuthModal = ({ onClose, onSuccess }) => {
             </div>
 
             <div className="input-group">
+              <Phone size={18} className="input-icon" />
+              <input
+                type="tel"
+                name="telefono"
+                value={formData.telefono}
+                onChange={handleChange}
+                required
+                placeholder="Ingresa tu teléfono"
+                maxLength="9"
+              />
+            </div>
+
+            <div className="input-group">
+              <CreditCard size={18} className="input-icon" />
+              <input
+                type="text"
+                name="dni"
+                value={formData.dni}
+                onChange={handleChange}
+                required
+                placeholder="Ingresa tu DNI"
+                maxLength="8"
+              />
+            </div>
+
+            <div className="input-group">
               <Lock size={18} className="input-icon" />
               <input
                 type="password"
@@ -259,7 +338,7 @@ const AuthModal = ({ onClose, onSuccess }) => {
                 onChange={(e) => setAceptaTerminos(e.target.checked)}
               />
               <CheckCircle size={16} className={`checkbox-icon ${aceptaTerminos ? 'checked' : ''}`} />
-              <span>Acepto términos y condiciones</span>
+              <span>Acepto los términos y condiciones, junto a las políticas de privacidad</span>
             </label>
 
             {error && <div className="auth-error">{error}</div>}

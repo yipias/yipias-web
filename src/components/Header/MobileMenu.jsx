@@ -31,14 +31,7 @@ const MobileMenu = ({ isOpen, onClose }) => {
     <div className={`mobile-menu ${isOpen ? 'open' : ''}`} id="mobileMenu">
       <ul className="mobile-nav-links">
 
-        {/* 1. RESERVAS (PRIMERO SIEMPRE) */}
-        <li>
-          <button onClick={handleReservasClick}>
-            Reservas
-          </button>
-        </li>
-
-        {/* 2. MIS RESERVAS (solo si está logueado) */}
+        {/* 1. MIS RESERVAS (PRIMERO SIEMPRE QUE ESTÉ LOGEADO) */}
         {currentUser && (
           <li>
             <Link to="/mis-reservas" onClick={onClose}>
@@ -47,17 +40,24 @@ const MobileMenu = ({ isOpen, onClose }) => {
           </li>
         )}
 
-        {/* 3. ALGUNOS DESTINOS */}
+        {/* 2. ALGUNOS DESTINOS */}
         <li>
           <button onClick={() => handleScroll('destinos')}>
             Algunos destinos
           </button>
         </li>
 
-        {/* 4. NUESTROS SERVICIOS */}
+        {/* 3. NUESTROS SERVICIOS */}
         <li>
           <button onClick={() => handleScroll('servicios')}>
             Nuestros servicios
+          </button>
+        </li>
+
+        {/* 4. RESERVAS */}
+        <li>
+          <button onClick={handleReservasClick}>
+            Reservas
           </button>
         </li>
 

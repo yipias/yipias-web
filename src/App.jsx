@@ -12,7 +12,8 @@ import WhatsAppFloat from './components/WhatsApp/WhatsAppFloat';
 
 import Terminos from './pages/Terminos';
 import Privacidad from './pages/Privacidad';
-import MisReservas from './pages/MisReservas'; // ← NUEVA IMPORTACIÓN
+import MisReservas from './pages/MisReservas';
+import ConductorRegistro from './pages/ConductorRegistro'; // ← NUEVA IMPORTACIÓN
 import ScrollToTop from './components/ScrollToTop';
 import AuthModal from './components/Auth/AuthModal';
 import SplashScreen from './components/SplashScreen/SplashScreen';
@@ -52,7 +53,8 @@ function App() {
 
         <Route path="/terminos" element={<Terminos />} />
         <Route path="/privacidad" element={<Privacidad />} />
-        <Route path="/mis-reservas" element={<MisReservas />} /> {/* ← NUEVA RUTA */}
+        <Route path="/mis-reservas" element={<MisReservas />} />
+        <Route path="/conductor-registro" element={<ConductorRegistro />} /> {/* ← NUEVA RUTA */}
       </Routes>
 
       <Footer />

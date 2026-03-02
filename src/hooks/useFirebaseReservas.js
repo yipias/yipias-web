@@ -6,10 +6,12 @@ export const useFirebaseReservas = () => {
   
   const guardarReservaProgramada = async (datos) => {
     try {
-      // Preparar datos - SIN tipoPersona
+      // Preparar datos - AGREGADOS email, nombreCompleto y estado
       const reservaData = {
         tipoReserva: 'programada',
         fechaReserva: serverTimestamp(),
+        email: datos.email || '',                    // ← NUEVO
+        nombreCompleto: datos.nombreCompleto || '',  // ← NUEVO
         lugarRecojo: datos.lugarRecojo || '',
         destino: datos.destino || '',
         fechaViaje: datos.fechaViaje || '',
@@ -22,7 +24,8 @@ export const useFirebaseReservas = () => {
         recojoLng: datos.recojoLng || null,
         destinoLat: datos.destinoLat || null,
         destinoLng: datos.destinoLng || null,
-        mapsLink: datos.mapsLink || null
+        mapsLink: datos.mapsLink || null,
+        estado: 'pendiente'                           // ← NUEVO
       };
 
       const docRef = await addDoc(collection(db, 'reservas'), reservaData);
@@ -42,6 +45,8 @@ export const useFirebaseReservas = () => {
       const reservaData = {
         tipoReserva: 'horas',
         fechaReserva: serverTimestamp(),
+        email: datos.email || '',                    // ← NUEVO
+        nombreCompleto: datos.nombreCompleto || '',  // ← NUEVO
         lugarRecojo: datos.lugarRecojo || '',
         fechaServicio: datos.fechaServicio || '',
         horaInicio: datos.horaInicio || '',
@@ -51,7 +56,8 @@ export const useFirebaseReservas = () => {
         precio: datos.precio || 'S/ 38.00',
         recojoLat: datos.recojoLat || null,
         recojoLng: datos.recojoLng || null,
-        mapsLink: datos.mapsLink || null
+        mapsLink: datos.mapsLink || null,
+        estado: 'pendiente'                           // ← NUEVO
       };
 
       const docRef = await addDoc(collection(db, 'reservas'), reservaData);

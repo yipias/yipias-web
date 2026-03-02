@@ -1,11 +1,13 @@
 // src/components/Modals/ConfirmacionProgramada.jsx
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { History, MessageCircle } from 'lucide-react'; // ← IMPORTAR ÍCONOS
 import { WHATSAPP_PHONE } from '../../utils/constants';
 import './Modals.css';
 
 const ConfirmacionProgramada = ({ onClose }) => {
   const handleWhatsApp = () => {
-    const mensaje = "Envía este mensaje para confirmar tu reserva.";
+    const mensaje = "¡Hola! Quiero hacer una consulta sobre mi reserva en YipiAs.";
     window.open(`https://wa.me/${WHATSAPP_PHONE.replace(/\D/g,'')}?text=${encodeURIComponent(mensaje)}`, '_blank');
     onClose();
   };
@@ -25,15 +27,33 @@ const ConfirmacionProgramada = ({ onClose }) => {
         </div>
         <div className="modal-body">
           <p>Tu reserva se ha realizado correctamente.</p>
-          <p className="modal-mensaje">Nos estaremos poniendo en contacto contigo en la brevedad del tiempo para confirmar los detalles.</p>
-          <p className="modal-consulta">¿Tienes alguna consulta? Escríbenos por WhatsApp:</p>
-          <p className="modal-consulta">La tarifa no incluye peajes, estacionamiento ni paradas adicionales.</p>
-          <p className="modal-consulta">El tiempo de cortesía es de 5 minutos, pasado el tiempo se genera un cargo adicional.</p>
-          <p className="modal-consulta">Cada pasajero, incluidos niños, ocupan un asiento y deben ser declarados al momento de la reserva.</p>
-          <button className="modal-whatsapp-btn" onClick={handleWhatsApp}>
-            <img src="/img/whatsapp-icon.png" alt="WhatsApp" className="modal-whatsapp-icon" />
-            Contactar por WhatsApp
-          </button>
+          <p className="modal-mensaje">
+            Nos estaremos poniendo en contacto contigo en la brevedad del tiempo para confirmar los detalles.
+          </p>
+          
+          <p className="modal-consulta">
+            Puedes revisar el estado de tu reserva en cualquier momento en tu historial.
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginTop: '1rem' }}>
+            <Link 
+              to="/mis-reservas" 
+              className="btn-historial"
+              onClick={onClose}
+            >
+              <History size={18} />
+              Ver historial de reservas
+            </Link>
+
+            <button 
+              className="modal-whatsapp-btn" 
+              onClick={handleWhatsApp}
+              style={{ marginTop: 0 }}
+            >
+              <MessageCircle size={18} />
+              Contactar por WhatsApp
+            </button>
+          </div>
         </div>
       </div>
     </div>

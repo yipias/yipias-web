@@ -12,15 +12,16 @@ import WhatsAppFloat from './components/WhatsApp/WhatsAppFloat';
 
 import Terminos from './pages/Terminos';
 import Privacidad from './pages/Privacidad';
+import MisReservas from './pages/MisReservas'; // ← NUEVA IMPORTACIÓN
 import ScrollToTop from './components/ScrollToTop';
 import AuthModal from './components/Auth/AuthModal';
-import SplashScreen from './components/SplashScreen/SplashScreen'; // ← AGREGADO
+import SplashScreen from './components/SplashScreen/SplashScreen';
 
 import './assets/global.css';
 
 function App() {
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [splashVisible, setSplashVisible] = useState(true); // ← AGREGADO
+  const [splashVisible, setSplashVisible] = useState(true);
 
   const handleSplashFinish = () => {
     setSplashVisible(false);
@@ -28,7 +29,7 @@ function App() {
 
   return (
     <>
-      {splashVisible && <SplashScreen onFinish={handleSplashFinish} />} {/* ← AGREGADO */}
+      {splashVisible && <SplashScreen onFinish={handleSplashFinish} />}
       
       <ScrollToTop />
       <Header onOpenAuth={() => setShowAuthModal(true)} />
@@ -51,6 +52,7 @@ function App() {
 
         <Route path="/terminos" element={<Terminos />} />
         <Route path="/privacidad" element={<Privacidad />} />
+        <Route path="/mis-reservas" element={<MisReservas />} /> {/* ← NUEVA RUTA */}
       </Routes>
 
       <Footer />

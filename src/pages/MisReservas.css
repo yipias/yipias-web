@@ -1,0 +1,116 @@
+/* src/pages/MisReservas.css */
+
+.mis-reservas-container {
+  max-width: 1000px;        /* Aumentado de 800px para mejor visualización */
+  margin: 0 auto;           /* Centrado */
+  padding: 3rem 1rem;       /* padding-top: 3rem (48px) - MÁS ESPACIO */
+  min-height: calc(100vh - 70px - 80px);
+}
+
+.mis-reservas-container h1 {
+  text-align: center;
+  margin-bottom: 2.5rem;    /* Más espacio después del título */
+  color: var(--text);
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+/* ===== ESTADOS (acceso denegado, cargando, sin reservas) ===== */
+.acceso-denegado,
+.cargando,
+.sin-reservas {
+  text-align: center;
+  padding: 4rem 2rem;       /* Más padding interno */
+  background: var(--bg-light);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.acceso-denegado h2 {
+  color: var(--text);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.acceso-denegado p,
+.cargando,
+.sin-reservas p {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+/* ===== BOTÓN DE RESERVAR (cuando no hay reservas) ===== */
+.btn-reservar {
+  display: inline-block;
+  padding: 0.8rem 2.5rem;
+  background: var(--primary);
+  color: white;
+  text-decoration: none;
+  border-radius: 40px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+}
+
+.btn-reservar:hover {
+  background: var(--primary-light);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(13, 110, 253, 0.3);
+}
+
+/* ===== LISTA DE RESERVAS ===== */
+.reservas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;              /* Más espacio entre tarjetas */
+  margin-top: 1rem;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .mis-reservas-container {
+    padding: 2rem 1rem;      /* Menos espacio en móvil */
+  }
+
+  .mis-reservas-container h1 {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+  }
+
+  .acceso-denegado,
+  .cargando,
+  .sin-reservas {
+    padding: 3rem 1.5rem;
+  }
+
+  .btn-reservar {
+    padding: 0.7rem 2rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .mis-reservas-container {
+    padding: 1.5rem 0.8rem;  /* Aún menos en móvil pequeño */
+  }
+
+  .mis-reservas-container h1 {
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .acceso-denegado,
+  .cargando,
+  .sin-reservas {
+    padding: 2rem 1rem;
+  }
+
+  .btn-reservar {
+    width: 100%;
+    padding: 0.8rem;
+  }
+}

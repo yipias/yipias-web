@@ -1,0 +1,305 @@
+/* src/components/Reservas/TarjetaReserva.css */
+
+.tarjeta-reserva {
+  background: var(--bg-light);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.2rem;
+  margin-bottom: 1.2rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+/* ===== HEADER ===== */
+.tarjeta-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* ===== ESTADO DE RESERVA (UNA SOLA LÍNEA) ===== */
+.estado-badge {
+  padding: 0.4rem 1rem;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  border: 1px solid;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.4rem;
+  width: fit-content;
+  white-space: nowrap;
+}
+
+.estado-texto {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.estado-desc {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  display: inline-block;
+}
+
+.estado-desc::before {
+  content: "•";
+  margin-right: 0.3rem;
+  display: inline-block;
+}
+
+.fecha-reserva {
+  font-size: 0.8rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ===== CONTENIDO ===== */
+.tarjeta-contenido {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-bottom: 1.2rem;
+}
+
+/* MAPA */
+.mapa-contenedor {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  order: 1;
+}
+
+.mapa {
+  width: 100%;
+  height: 100%;
+}
+
+.mapa-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  color: var(--muted);
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(13, 110, 253, 0.3);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* DATOS */
+.datos-contenedor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 0;
+  order: 2;
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  width: 100%;
+}
+
+.info-item .icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 0.2rem;
+  color: var(--primary);
+}
+
+.info-item .label {
+  font-weight: 600;
+  color: var(--text);
+  margin-right: 0.3rem;
+  font-size: 0.9rem;
+}
+
+.info-item .value {
+  color: var(--text-secondary);
+  word-break: break-word;
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+.info-item.precio {
+  margin-top: 0.3rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.info-item.precio .value {
+  color: var(--price-color);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* ===== FOOTER ===== */
+.tarjeta-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.btn-conductor,
+.btn-maps {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-conductor {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-conductor:hover {
+  background: var(--primary-light);
+  transform: translateY(-2px);
+}
+
+.btn-maps {
+  background: rgba(13, 110, 253, 0.1);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.btn-maps:hover {
+  background: rgba(13, 110, 253, 0.2);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* ===== RESPONSIVE PARA PANTALLAS GRANDES ===== */
+@media (min-width: 768px) {
+  .tarjeta-reserva {
+    padding: 1.5rem;
+  }
+
+  .tarjeta-contenido {
+    flex-direction: row;
+    gap: 1.5rem;
+  }
+
+  .mapa-contenedor {
+    width: 50%;
+    height: 250px;
+    order: 1;
+  }
+
+  .datos-contenedor {
+    width: 50%;
+    order: 2;
+    padding: 0;
+  }
+
+  .estado-badge {
+    padding: 0.4rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* ===== RESPONSIVE PARA PANTALLAS MUY PEQUEÑAS ===== */
+@media (max-width: 480px) {
+  .tarjeta-reserva {
+    padding: 1rem;
+  }
+
+  .mapa-contenedor {
+    height: 180px;
+  }
+
+  .info-item {
+    gap: 0.5rem;
+  }
+
+  .info-item .label {
+    font-size: 0.85rem;
+  }
+
+  .info-item .value {
+    font-size: 0.85rem;
+  }
+
+  .btn-conductor,
+  .btn-maps {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .tarjeta-footer {
+    flex-direction: column;
+  }
+
+  .estado-badge {
+    white-space: normal;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+/* ===== RESPONSIVE PARA 360px ===== */
+@media (max-width: 360px) {
+  .tarjeta-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .estado-badge {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .info-item {
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .info-item .icon {
+    display: none;
+  }
+}

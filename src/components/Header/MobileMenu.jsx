@@ -1,8 +1,11 @@
 // src/components/Header/MobileMenu.jsx
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 const MobileMenu = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
 
   const handleScroll = (id) => {
     const element = document.getElementById(id);
@@ -15,52 +18,75 @@ const MobileMenu = ({ isOpen, onClose }) => {
     onClose();
   };
 
+  const handleReservasClick = () => {
+    onClose();
+    if (!currentUser) {
+      window.dispatchEvent(new CustomEvent('openAuthModal'));
+    } else {
+      handleScroll('reservas');
+    }
+  };
+
   return (
     <div className={`mobile-menu ${isOpen ? 'open' : ''}`} id="mobileMenu">
       <ul className="mobile-nav-links">
 
-        {/* RUTAS REALES (HashRouter las maneja automáticamente) */}
+        {/* 1. RESERVAS (PRIMERO SIEMPRE) */}
         <li>
-          <Link to="/terminos" onClick={onClose}>
-            Términos y Condiciones
-          </Link>
+          <button onClick={handleReservasClick}>
+            Reservas
+          </button>
         </li>
 
-        <li>
-          <Link to="/privacidad" onClick={onClose}>
-            Políticas de Privacidad
-          </Link>
-        </li>
+        {/* 2. MIS RESERVAS (solo si está logueado) */}
+        {currentUser && (
+          <li>
+            <Link to="/mis-reservas" onClick={onClose}>
+              Mis Reservas
+            </Link>
+          </li>
+        )}
 
-        {/* SCROLL INTERNO EN MISMA PÁGINA */}
+        {/* 3. ALGUNOS DESTINOS */}
         <li>
           <button onClick={() => handleScroll('destinos')}>
             Algunos destinos
           </button>
         </li>
 
+        {/* 4. NUESTROS SERVICIOS */}
         <li>
           <button onClick={() => handleScroll('servicios')}>
             Nuestros servicios
           </button>
         </li>
 
-        <li>
-          <button onClick={() => handleScroll('reservas')}>
-            Reservas
-          </button>
-        </li>
-
+        {/* 5. SOBRE NOSOTROS */}
         <li>
           <button onClick={() => handleScroll('sobre-nosotros')}>
             Sobre nosotros
           </button>
         </li>
 
+        {/* 6. CONTACTO */}
         <li>
           <button onClick={() => handleScroll('contacto')}>
             Contacto
           </button>
+        </li>
+
+        {/* 7. TÉRMINOS Y CONDICIONES */}
+        <li className="separator-top">
+          <Link to="/terminos" onClick={onClose}>
+            Términos y Condiciones
+          </Link>
+        </li>
+
+        {/* 8. POLÍTICAS DE PRIVACIDAD */}
+        <li>
+          <Link to="/privacidad" onClick={onClose}>
+            Políticas de Privacidad
+          </Link>
         </li>
 
       </ul>

@@ -59,13 +59,25 @@ const AuthModal = ({ onClose, onSuccess }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // ===== FUNCIÓN PARA RESTABLECER CONTRASEÑA =====
+  // ===== FUNCIÓN PARA RESTABLECER CONTRASEÑA (CORREGIDA) =====
   const handleResetPassword = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
+      // Verificar si el correo existe en Firestore
+      const emailQuery = query(collection(db, 'usuarios'), where('email', '==', resetEmail));
+      const emailSnapshot = await getDocs(emailQuery);
+      
+      if (emailSnapshot.empty) {
+        // El correo NO está registrado
+        setError('Este correo no está asociado a ninguna cuenta');
+        setLoading(false);
+        return;
+      }
+
+      // El correo SÍ está registrado, enviar email de recuperación
       await sendPasswordResetEmail(auth, resetEmail);
       setResetSent(true);
       setSuccess('Correo de recuperación enviado. Revisa tu bandeja de entrada.');
@@ -80,11 +92,7 @@ const AuthModal = ({ onClose, onSuccess }) => {
       
     } catch (error) {
       console.error('Error:', error);
-      if (error.code === 'auth/user-not-found') {
-        setError('No existe una cuenta con este correo');
-      } else {
-        setError('Error al enviar correo de recuperación');
-      }
+      setError('Error al enviar correo de recuperación');
       setLoading(false);
     }
   };
@@ -298,7 +306,7 @@ const AuthModal = ({ onClose, onSuccess }) => {
               )}
 
               <button type="submit" className="auth-submit" disabled={loading}>
-                {loading ? 'Enviando...' : 'Enviar correo de recuperación'}
+                {loading ? 'Verificando...' : 'Enviar correo de recuperación'}
               </button>
 
               <button 

@@ -7,11 +7,11 @@ import { useUbicacionActual } from '../../hooks/useUbicacionActual';
 import { useModales } from '../../hooks/useModales';
 import { useFirebaseReservas } from '../../hooks/useFirebaseReservas';
 import { useFormatoHoraAMPM } from '../../hooks/useFormatoHoraAMPM';
-import { useAuth } from '../../context/AuthContext'; // ← IMPORTAR AUTH
+import { useAuth } from '../../context/AuthContext';
 import FormularioProgramada from './FormularioProgramada';
 import FormularioPorHoras from './FormularioPorHoras';
 import MapaOriginal from './MapaOriginal';
-import AuthModal from '../Auth/AuthModal'; // ← IMPORTAR MODAL DE AUTENTICACIÓN
+import AuthModal from '../Auth/AuthModal';
 // Modales
 import ExplicacionProgramada from '../Modals/ExplicacionProgramada';
 import ExplicacionPorHoras from '../Modals/ExplicacionPorHoras';
@@ -29,13 +29,13 @@ const ReservasTabs = () => {
   const { obtenerUbicacionActual } = useUbicacionActual();
   const modales = useModales();
   const { guardarReservaProgramada, guardarReservaHoras } = useFirebaseReservas();
-  const { currentUser } = useAuth(); // ← ESTADO DE AUTENTICACIÓN
+  const { currentUser } = useAuth();
   
   // Estados para pestañas y selección
   const [activeTab, setActiveTab] = useState('');
   const [selectedInput, setSelectedInput] = useState(null);
   const [activeMode, setActiveMode] = useState(null);
-  const [showAuthModal, setShowAuthModal] = useState(false); // ← CONTROL DEL MODAL DE LOGIN
+  const [showAuthModal, setShowAuthModal] = useState(false);
   
   // Estados para direcciones
   const [pickupAddress, setPickupAddress] = useState('');
@@ -572,8 +572,11 @@ const ReservasTabs = () => {
     
     const mapsLink = `https://www.google.com/maps/dir/${pickupLocation.lat},${pickupLocation.lng}/${dropoffLocation.lat},${dropoffLocation.lng}`;
     
+    // ===== AGREGAR EMAIL DEL USUARIO A LA RESERVA =====
     const datosReserva = {
       tipoReserva: 'programada',
+      email: currentUser?.email || '', // ← NUEVO
+      nombreCompleto: currentUser?.displayName || '', // ← NUEVO
       lugarRecojo: pickupAddress,
       destino: dropoffAddress,
       fechaViaje: fecha,
@@ -618,8 +621,11 @@ const ReservasTabs = () => {
     
     const mapsLink = `https://www.google.com/maps/search/?api=1&query=${horasLocation.lat},${horasLocation.lng}`;
     
+    // ===== AGREGAR EMAIL DEL USUARIO A LA RESERVA =====
     const datosReserva = {
       tipoReserva: 'horas',
+      email: currentUser?.email || '', // ← NUEVO
+      nombreCompleto: currentUser?.displayName || '', // ← NUEVO
       lugarRecojo: horasAddress,
       fechaServicio: fecha,
       horaInicio: horaFormateada,

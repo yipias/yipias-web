@@ -3,12 +3,18 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
+// LISTA DE CORREOS AUTORIZADOS
+const ADMIN_EMAILS = [
+  'enseguin@gmail.com',
+  'ensegcor@gmail.com',
+];
+
 const MobileMenu = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
 
-  // Verificar si es admin
-  const isAdmin = currentUser?.email === 'ensegcor@gmail.com';
+  // Verificar si es admin (ahora con lista)
+  const isAdmin = currentUser?.email ? ADMIN_EMAILS.includes(currentUser.email) : false;
 
   const handleScroll = (id) => {
     const element = document.getElementById(id);
@@ -34,7 +40,7 @@ const MobileMenu = ({ isOpen, onClose }) => {
     <div className={`mobile-menu ${isOpen ? 'open' : ''}`} id="mobileMenu">
       <ul className="mobile-nav-links">
 
-        {/* 0. PANEL ADMINISTRADOR (SOLO PARA ADMIN) - AGREGADO */}
+        {/* PANEL ADMINISTRADOR (SOLO PARA EMAILS AUTORIZADOS) */}
         {isAdmin && (
           <li>
             <Link to="/admin" onClick={onClose}>
@@ -43,7 +49,7 @@ const MobileMenu = ({ isOpen, onClose }) => {
           </li>
         )}
 
-        {/* 1. MIS RESERVAS (PRIMERO SIEMPRE QUE ESTÉ LOGEADO) */}
+        {/* 1. MIS RESERVAS */}
         {currentUser && (
           <li>
             <Link to="/mis-reservas" onClick={onClose}>

@@ -102,6 +102,7 @@ const Sidebar = () => {
 
         <div className="sidebar-footer">
           <div className="admin-info">
+            <span className="admin-email">enseguin@gmail.com</span>
             <span className="admin-email">ensegcor@gmail.com</span>
             <span className="admin-role">Administrador</span>
           </div>

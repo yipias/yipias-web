@@ -405,7 +405,7 @@ const ConductorDetalleModal = ({ conductor, onClose, tipo = 'pendiente' }) => {
                 )}
               </div>
               <div className="pregunta-item">
-                <div className="pregunta-label">Significado de premium</div>
+                <div className="pregunta-label">Significado de Premium</div>
                 {editMode && tipo === 'aprobado' ? (
                   <textarea
                     className="campo-input"

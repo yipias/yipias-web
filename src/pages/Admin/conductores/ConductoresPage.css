@@ -1,30 +1,37 @@
 /* src/pages/Admin/conductores/ConductoresPage.css */
 .conductores-page {
   width: 100%;
+  height: 100%; /* Ocupar toda la altura disponible */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Evitar scroll en la página completa */
 }
 
 .page-header {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+  flex-shrink: 0; /* No se encoge */
 }
 
 .page-header h1 {
   color: #fff;
   font-size: 1.8rem;
+  margin: 0;
 }
 
-/* ===== NUEVO ESTILO DE TABS ===== */
+/* TABS - Fijos arriba */
 .tabs-container {
   display: flex;
   gap: 0.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   background: #1a1a1a;
   padding: 0.5rem;
   border-radius: 60px;
   border: 1px solid rgba(255,255,255,0.05);
   width: fit-content;
+  flex-shrink: 0; /* No se encoge */
 }
 
 .tab-btn {
@@ -49,8 +56,8 @@
 }
 
 .tab-btn.active {
-  background: #ffc107;  /* AMARILLO */
-  color: #000;  /* Texto negro para contraste */
+  background: #ffc107;
+  color: #000;
 }
 
 .tab-count {
@@ -66,8 +73,39 @@
   color: #000;
 }
 
+/* CONTENIDO DE LAS TABS - AQUÍ VA EL SCROLL */
+.tab-content {
+  flex: 1; /* Ocupa todo el espacio restante */
+  overflow-y: auto; /* SOLO ESTO HACE SCROLL */
+  min-height: 0; /* Importante para flexbox */
+  padding-right: 0.5rem; /* Espacio para el scrollbar */
+}
+
+/* Ocultar scrollbar en Chrome/Safari pero mantener funcionalidad */
+.tab-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tab-content::-webkit-scrollbar-track {
+  background: #2a2a2a;
+  border-radius: 10px;
+}
+
+.tab-content::-webkit-scrollbar-thumb {
+  background: #dc3545;
+  border-radius: 10px;
+}
+
+.tab-content::-webkit-scrollbar-thumb:hover {
+  background: #bb2d3b;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
   .tabs-container {
     width: 100%;
     justify-content: center;
@@ -77,6 +115,10 @@
     flex: 1;
     justify-content: center;
     padding: 0.8rem 1rem;
+  }
+
+  .tab-content {
+    padding-right: 0.3rem;
   }
 }
 

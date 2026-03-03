@@ -1,5 +1,5 @@
 // src/components/Conductores/FormularioConductor.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   User, Phone, Car, Calendar, MapPin, 
   Upload, CheckCircle, X, Camera, Home, Wifi, Briefcase,
@@ -8,11 +8,9 @@ import {
 import './FormularioConductor.css';
 
 const STORAGE_KEY = 'yipias_conductor_form';
-const PREVIEWS_KEY = 'yipias_conductor_previews';
 
 const FormularioConductor = ({ onSubmit, loading }) => {
   const [formData, setFormData] = useState(() => {
-    // Cargar datos guardados al iniciar
     const saved = sessionStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
@@ -21,7 +19,6 @@ const FormularioConductor = ({ onSubmit, loading }) => {
         console.error('Error cargando datos guardados:', e);
       }
     }
-    // Estado inicial por defecto
     return {
       nombreCompleto: '',
       ciudadOperacion: '',
@@ -53,76 +50,100 @@ const FormularioConductor = ({ onSubmit, loading }) => {
     };
   });
 
-  const [fotoPreviews, setFotoPreviews] = useState(() => {
-    // Cargar previews guardados (solo las URLs de datos)
-    const saved = sessionStorage.getItem(PREVIEWS_KEY);
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error('Error cargando previews:', e);
-      }
-    }
-    return {
-      perfil: '',
-      vehiculoFrontal: '',
-      vehiculoLateral: '',
-      vehiculoInterior: '',
-      tarjetaPropiedadFrente: '',
-      tarjetaPropiedadTrasero: '',
-      breveteFrente: '',
-      breveteTrasero: '',
-      soat: '',
-      reciboLuz: ''
-    };
+  const [fotoPreviews, setFotoPreviews] = useState({
+    perfil: '',
+    vehiculoFrontal: '',
+    vehiculoLateral: '',
+    vehiculoInterior: '',
+    tarjetaPropiedadFrente: '',
+    tarjetaPropiedadTrasero: '',
+    breveteFrente: '',
+    breveteTrasero: '',
+    soat: '',
+    reciboLuz: ''
   });
 
   const [terminos, setTerminos] = useState(false);
+  const [comprimiendo, setComprimiendo] = useState(false);
 
   const ciudades = ['Lima', 'Tacna', 'Piura', 'Chachapoyas'];
   const opcionesAire = ['Sí', 'No', 'Otros'];
 
-  // Guardar automáticamente cuando cambian los datos
+  // Guardar solo datos de texto (sin fotos)
   useEffect(() => {
-    // No podemos guardar File objects en sessionStorage, así que guardamos solo los campos de texto
     const datosParaGuardar = {
-      ...formData,
-      fotos: {} // No guardamos los File objects
+      nombreCompleto: formData.nombreCompleto,
+      ciudadOperacion: formData.ciudadOperacion,
+      telefono: formData.telefono,
+      fechaNacimiento: formData.fechaNacimiento,
+      direccion: formData.direccion,
+      vehiculo: formData.vehiculo,
+      codigoVestimenta: formData.codigoVestimenta,
+      manejoClienteExigente: formData.manejoClienteExigente,
+      significadoPremium: formData.significadoPremium
     };
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(datosParaGuardar));
   }, [formData]);
 
-  // Guardar previews cuando cambian
-  useEffect(() => {
-    sessionStorage.setItem(PREVIEWS_KEY, JSON.stringify(fotoPreviews));
-  }, [fotoPreviews]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name.includes('.')) {
-      const [parent, child] = name.split('.');
-      setFormData(prev => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent],
-          [child]: value
-        }
-      }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
-    }
-  };
-
-  const handleFotoChange = (campo, file) => {
-    if (file) {
-      setFormData(prev => ({
-        ...prev,
-        fotos: {
-          ...prev.fotos,
-          [campo]: file
-        }
-      }));
+  // Función para comprimir imágenes
+  const comprimirImagen = useCallback((file, campo) => {
+    return new Promise((resolve) => {
+      setComprimiendo(true);
       
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = () => {
+          // Crear canvas
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          // Redimensionar si es muy grande (máximo 1200px)
+          const MAX_SIZE = 1200;
+          if (width > MAX_SIZE || height > MAX_SIZE) {
+            if (width > height) {
+              height = (height / width) * MAX_SIZE;
+              width = MAX_SIZE;
+            } else {
+              width = (width / height) * MAX_SIZE;
+              height = MAX_SIZE;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          // Dibujar imagen redimensionada
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Comprimir a JPEG calidad 0.8 (80%)
+          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+          
+          // Convertir base64 a File
+          fetch(compressedBase64)
+            .then(res => res.blob())
+            .then(blob => {
+              const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, '.jpg'), {
+                type: 'image/jpeg'
+              });
+              
+              setComprimiendo(false);
+              resolve(compressedFile);
+            });
+        };
+      };
+    });
+  }, []);
+
+  const handleFotoChange = async (campo, file) => {
+    if (!file) return;
+
+    try {
+      // Mostrar preview original mientras se comprime
       const reader = new FileReader();
       reader.onloadend = () => {
         setFotoPreviews(prev => ({
@@ -131,6 +152,21 @@ const FormularioConductor = ({ onSubmit, loading }) => {
         }));
       };
       reader.readAsDataURL(file);
+
+      // Comprimir imagen en segundo plano
+      const compressedFile = await comprimirImagen(file, campo);
+      
+      // Actualizar formData con la imagen comprimida
+      setFormData(prev => ({
+        ...prev,
+        fotos: {
+          ...prev.fotos,
+          [campo]: compressedFile
+        }
+      }));
+    } catch (error) {
+      console.error('Error al procesar imagen:', error);
+      alert('Error al procesar la imagen. Intenta con otra.');
     }
   };
 
@@ -148,6 +184,22 @@ const FormularioConductor = ({ onSubmit, loading }) => {
     }));
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name.includes('.')) {
+      const [parent, child] = name.split('.');
+      setFormData(prev => ({
+        ...prev,
+        [parent]: {
+          ...prev[parent],
+          [child]: value
+        }
+      }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!terminos) {
@@ -155,7 +207,6 @@ const FormularioConductor = ({ onSubmit, loading }) => {
       return;
     }
     
-    // Verificar que todas las fotos requeridas estén presentes
     const fotosRequeridas = [
       'perfil', 'vehiculoFrontal', 'vehiculoLateral', 'vehiculoInterior',
       'tarjetaPropiedadFrente', 'tarjetaPropiedadTrasero', 'breveteFrente',
@@ -169,11 +220,8 @@ const FormularioConductor = ({ onSubmit, loading }) => {
       return;
     }
     
-    // Limpiar sessionStorage al enviar
     sessionStorage.removeItem(STORAGE_KEY);
-    sessionStorage.removeItem(PREVIEWS_KEY);
     
-    // Enviar datos al hook
     onSubmit(formData, formData.fotos);
   };
 
@@ -181,7 +229,6 @@ const FormularioConductor = ({ onSubmit, loading }) => {
     const inputRef = React.useRef(null);
 
     const handleClick = () => {
-      // Abrir selector de archivos al hacer clic en la imagen o en el placeholder
       inputRef.current?.click();
     };
 
@@ -196,7 +243,7 @@ const FormularioConductor = ({ onSubmit, loading }) => {
                 type="button" 
                 className="remove-foto"
                 onClick={(e) => {
-                  e.stopPropagation(); // Evitar que se abra el selector
+                  e.stopPropagation();
                   removeFoto(campo);
                 }}
               >
@@ -216,7 +263,7 @@ const FormularioConductor = ({ onSubmit, loading }) => {
             ref={inputRef}
             type="file"
             id={`foto-${campo}`}
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp"
             onChange={(e) => handleFotoChange(campo, e.target.files[0])}
             style={{ display: 'none' }}
           />
@@ -229,6 +276,12 @@ const FormularioConductor = ({ onSubmit, loading }) => {
     <form className="conductor-form" onSubmit={handleSubmit}>
       <h2>Únete a YipiAs como conductor</h2>
       <p className="form-subtitle">Completa todos los datos para ser parte de nuestra flota Premium</p>
+
+      {/* Mensaje de compresión */}
+      <div className="compression-info">
+        <p>📸 Las imágenes se comprimirán automáticamente para optimizar el envío</p>
+        {comprimiendo && <p className="comprimiendo">Comprimiendo imagen...</p>}
+      </div>
 
       {/* ===== FOTO DE PERFIL ===== */}
       <div className="foto-perfil-section">
@@ -442,8 +495,8 @@ const FormularioConductor = ({ onSubmit, loading }) => {
       </label>
 
       {/* Botón */}
-      <button type="submit" className="submit-btn" disabled={loading}>
-        {loading ? 'Enviando...' : 'Enviar solicitud'}
+      <button type="submit" className="submit-btn" disabled={loading || comprimiendo}>
+        {loading || comprimiendo ? 'Procesando...' : 'Enviar solicitud'}
       </button>
     </form>
   );

@@ -1,0 +1,47 @@
+/* src/pages/Admin/conductores/ConductorCardAprobado.css */
+.conductor-card.aprobado {
+  background: #1a2a1a;
+  border-left: 4px solid #28a745;
+  position: relative;
+}
+
+.card-badge.aprobado {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #28a745;
+  color: white;
+  padding: 0.2rem 0.8rem;
+  border-radius: 30px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  z-index: 2;
+}
+
+.detalle-item.vehiculo {
+  margin-top: 0.3rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.detalle-item .placa {
+  background: #2a2a2a;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-weight: 600;
+  color: #28a745;
+}
+
+.action-btn.revocar {
+  background: #ffc107;
+  color: #000;
+}
+
+.action-btn.revocar:hover {
+  background: #e0a800;
+  color: #000;
+}

@@ -1,16 +1,63 @@
 // src/pages/Admin/conductores/ConductorDetalleModal.jsx
-import React, { useState } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import { 
   X, Phone, CheckCircle, XCircle, User, Car, 
   Calendar, MapPin, Home, Wifi, Briefcase,
-  CalendarDays, Hash, Palette, Camera
+  CalendarDays, Hash, Palette, Camera, RotateCcw, Edit2, Save
 } from 'lucide-react';
 import { useAdminConductores } from '../../../hooks/useAdminConductores';
 import './ConductorDetalleModal.css';
 
-const ConductorDetalleModal = ({ conductor, onClose }) => {
-  const { aprobarConductor, rechazarConductor } = useAdminConductores();
+// Componente CampoInfo memoizado para evitar re-renders innecesarios
+const CampoInfo = memo(({ icon: Icon, label, field, value, editMode, tipo, onUpdate }) => {
+  const handleChange = useCallback((e) => {
+    onUpdate(field, e.target.value);
+  }, [field, onUpdate]);
+
+  return (
+    <div className="campo-info">
+      <div className="campo-label">
+        <Icon size={16} />
+        <span>{label}</span>
+      </div>
+      {editMode && tipo === 'aprobado' ? (
+        <input
+          type="text"
+          className="campo-input"
+          value={value || ''}
+          onChange={handleChange}
+          placeholder={label}
+          autoComplete="off"
+        />
+      ) : (
+        <div className="campo-valor">{value || 'No especificado'}</div>
+      )}
+    </div>
+  );
+});
+
+// Componente FotoVisualizador memoizado
+const FotoVisualizador = memo(({ src, label, onClick }) => (
+  <div className="foto-visualizador">
+    <label>{label}</label>
+    <div className="foto-contenedor" onClick={() => src && onClick(src)}>
+      {src ? (
+        <img src={src} alt={label} />
+      ) : (
+        <div className="foto-placeholder">
+          <Camera size={24} />
+          <span>Sin imagen</span>
+        </div>
+      )}
+    </div>
+  </div>
+));
+
+const ConductorDetalleModal = ({ conductor, onClose, tipo = 'pendiente' }) => {
+  const { aprobarConductor, rechazarConductor, revocarConductor, actualizarConductor } = useAdminConductores();
   const [selectedFoto, setSelectedFoto] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editedData, setEditedData] = useState({ ...conductor });
 
   const handleAprobar = async () => {
     const result = await aprobarConductor(conductor.id);
@@ -22,53 +69,91 @@ const ConductorDetalleModal = ({ conductor, onClose }) => {
     if (result.success) onClose();
   };
 
+  const handleRevocar = async () => {
+    const result = await revocarConductor(conductor.id);
+    if (result.success) onClose();
+  };
+
+  const handleGuardarCambios = async () => {
+    const result = await actualizarConductor(conductor.id, editedData);
+    if (result.success) {
+      setEditMode(false);
+    }
+  };
+
   const handleWhatsApp = () => {
     if (conductor.telefono) {
       window.open(`https://wa.me/${conductor.telefono.replace(/\D/g, '')}`, '_blank');
     }
   };
 
+  // Función estable para actualizar campos
+  const handleFieldUpdate = useCallback((field, value) => {
+    setEditedData(prev => {
+      const newData = { ...prev };
+      const keys = field.split('.');
+      let current = newData;
+      
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) current[keys[i]] = {};
+        current = current[keys[i]];
+      }
+      
+      current[keys[keys.length - 1]] = value;
+      
+      return newData;
+    });
+  }, []);
+
   const formatFecha = (fecha) => {
     if (!fecha) return 'No disponible';
-    return fecha.toLocaleDateString('es-PE', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    
+    try {
+      if (fecha?.seconds) {
+        const date = new Date(fecha.seconds * 1000);
+        return date.toLocaleDateString('es-PE', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+      if (fecha instanceof Date) {
+        return fecha.toLocaleDateString('es-PE', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+      const date = new Date(fecha);
+      if (!isNaN(date.getTime())) {
+        return date.toLocaleDateString('es-PE', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+      return 'Fecha no disponible';
+    } catch (error) {
+      return 'Fecha no disponible';
+    }
   };
 
-  // Componente para mostrar fotos con label visible
-  const FotoVisualizador = ({ src, label }) => (
-    <div className="foto-visualizador">
-      <label>{label}</label>
-      <div 
-        className="foto-contenedor"
-        onClick={() => src && setSelectedFoto(src)}
-      >
-        {src ? (
-          <img src={src} alt={label} />
-        ) : (
-          <div className="foto-placeholder">
-            <Camera size={24} />
-            <span>Sin imagen</span>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-
-  // Componente para campo con label visible
-  const CampoInfo = ({ icon: Icon, label, value }) => (
-    <div className="campo-info">
-      <div className="campo-label">
-        <Icon size={16} />
-        <span>{label}</span>
-      </div>
-      <div className="campo-valor">{value || 'No especificado'}</div>
-    </div>
-  );
+  // Función para obtener valor anidado
+  const getNestedValue = useCallback((obj, path) => {
+    const keys = path.split('.');
+    let value = obj;
+    for (const key of keys) {
+      if (value === undefined || value === null) return '';
+      value = value[key];
+    }
+    return value || '';
+  }, []);
 
   return (
     <>
@@ -78,18 +163,34 @@ const ConductorDetalleModal = ({ conductor, onClose }) => {
           {/* HEADER */}
           <div className="modal-header">
             <h2>Detalles del Conductor</h2>
-            <button className="close-btn" onClick={onClose}>
-              <X size={24} />
-            </button>
+            <div className="header-actions">
+              {tipo === 'aprobado' && (
+                <button 
+                  className={`edit-mode-btn ${editMode ? 'active' : ''}`}
+                  onClick={() => editMode ? handleGuardarCambios() : setEditMode(true)}
+                >
+                  {editMode ? <Save size={18} /> : <Edit2 size={18} />}
+                  {editMode ? 'Guardar' : 'Editar'}
+                </button>
+              )}
+              <button className="close-btn" onClick={onClose}>
+                <X size={24} />
+              </button>
+            </div>
           </div>
 
           {/* BODY */}
           <div className="modal-body">
             
-            {/* FECHA DE POSTULACIÓN DESTACADA */}
+            {/* FECHA DE POSTULACIÓN */}
             <div className="fecha-postulacion-destacada">
               <Calendar size={18} />
               <span>Postuló: {formatFecha(conductor.fechaRegistro)}</span>
+              {tipo === 'aprobado' && conductor.fechaActualizacion && (
+                <span className="fecha-aprobado">
+                  <CheckCircle size={14} /> Aprobado: {formatFecha(conductor.fechaActualizacion)}
+                </span>
+              )}
             </div>
 
             {/* FOTO DE PERFIL */}
@@ -97,6 +198,7 @@ const ConductorDetalleModal = ({ conductor, onClose }) => {
               <FotoVisualizador 
                 src={conductor.fotos?.perfil} 
                 label="Foto de perfil"
+                onClick={setSelectedFoto}
               />
             </div>
 
@@ -106,28 +208,47 @@ const ConductorDetalleModal = ({ conductor, onClose }) => {
               <CampoInfo 
                 icon={User} 
                 label="Nombre completo" 
-                value={conductor.nombreCompleto} 
+                field="nombreCompleto"
+                value={getNestedValue(editMode ? editedData : conductor, 'nombreCompleto')}
+                editMode={editMode}
+                tipo={tipo}
+                onUpdate={handleFieldUpdate}
               />
               <CampoInfo 
                 icon={MapPin} 
                 label="Ciudad de operación" 
-                value={conductor.ciudadOperacion} 
+                field="ciudadOperacion"
+                value={getNestedValue(editMode ? editedData : conductor, 'ciudadOperacion')}
+                editMode={editMode}
+                tipo={tipo}
+                onUpdate={handleFieldUpdate}
               />
               <CampoInfo 
                 icon={Phone} 
                 label="Teléfono" 
-                value={conductor.telefono} 
+                field="telefono"
+                value={getNestedValue(editMode ? editedData : conductor, 'telefono')}
+                editMode={editMode}
+                tipo={tipo}
+                onUpdate={handleFieldUpdate}
               />
               <CampoInfo 
                 icon={CalendarDays} 
                 label="Fecha de nacimiento" 
-                value={conductor.fechaNacimiento} 
+                field="fechaNacimiento"
+                value={getNestedValue(editMode ? editedData : conductor, 'fechaNacimiento')}
+                editMode={editMode}
+                tipo={tipo}
+                onUpdate={handleFieldUpdate}
               />
               <CampoInfo 
                 icon={Home} 
                 label="Dirección" 
-                value={conductor.direccion} 
-                className="full-width"
+                field="direccion"
+                value={getNestedValue(editMode ? editedData : conductor, 'direccion')}
+                editMode={editMode}
+                tipo={tipo}
+                onUpdate={handleFieldUpdate}
               />
             </div>
 
@@ -137,71 +258,38 @@ const ConductorDetalleModal = ({ conductor, onClose }) => {
               <CampoInfo 
                 icon={Hash} 
                 label="Año" 
-                value={conductor.vehiculo?.año} 
+                field="vehiculo.año"
+                value={getNestedValue(editMode ? editedData : conductor, 'vehiculo.año')}
+                editMode={editMode}
+                tipo={tipo}
+                onUpdate={handleFieldUpdate}
               />
               <CampoInfo 
                 icon={Palette} 
                 label="Color" 
-                value={conductor.vehiculo?.color} 
+                field="vehiculo.color"
+                value={getNestedValue(editMode ? editedData : conductor, 'vehiculo.color')}
+                editMode={editMode}
+                tipo={tipo}
+                onUpdate={handleFieldUpdate}
               />
               <CampoInfo 
                 icon={Hash} 
                 label="Placa" 
-                value={conductor.vehiculo?.placa} 
+                field="vehiculo.placa"
+                value={getNestedValue(editMode ? editedData : conductor, 'vehiculo.placa')}
+                editMode={editMode}
+                tipo={tipo}
+                onUpdate={handleFieldUpdate}
               />
               <CampoInfo 
                 icon={Wifi} 
                 label="Aire acondicionado" 
-                value={conductor.vehiculo?.aireAcondicionado === 'Otros' 
-                  ? `${conductor.vehiculo.aireAcondicionado} (${conductor.vehiculo.aireAcondicionadoOtro})`
-                  : conductor.vehiculo?.aireAcondicionado
-                } 
-              />
-            </div>
-
-            {/* FOTOS DEL VEHÍCULO */}
-            <h3>Fotos del vehículo</h3>
-            <div className="fotos-grid">
-              <FotoVisualizador 
-                src={conductor.fotos?.vehiculoFrontal} 
-                label="Frontal (placa visible)"
-              />
-              <FotoVisualizador 
-                src={conductor.fotos?.vehiculoLateral} 
-                label="Lateral"
-              />
-              <FotoVisualizador 
-                src={conductor.fotos?.vehiculoInterior} 
-                label="Interior (desde atrás)"
-              />
-            </div>
-
-            {/* DOCUMENTOS */}
-            <h3>Documentos</h3>
-            <div className="fotos-grid">
-              <FotoVisualizador 
-                src={conductor.fotos?.tarjetaPropiedadFrente} 
-                label="Tarjeta propiedad (Frente)"
-              />
-              <FotoVisualizador 
-                src={conductor.fotos?.tarjetaPropiedadTrasero} 
-                label="Tarjeta propiedad (Trasero)"
-              />
-              <FotoVisualizador 
-                src={conductor.fotos?.breveteFrente} 
-                label="Brevete (Frente)"
-              />
-              <FotoVisualizador 
-                src={conductor.fotos?.breveteTrasero} 
-                label="Brevete (Trasero)"
-              />
-              <FotoVisualizador 
-                src={conductor.fotos?.soat} 
-                label="SOAT (Vigente)"
-              />
-              <FotoVisualizador 
-                src={conductor.fotos?.reciboLuz} 
-                label="Recibo de luz/agua"
+                field="vehiculo.aireAcondicionado"
+                value={getNestedValue(editMode ? editedData : conductor, 'vehiculo.aireAcondicionado')}
+                editMode={editMode}
+                tipo={tipo}
+                onUpdate={handleFieldUpdate}
               />
             </div>
 
@@ -210,27 +298,73 @@ const ConductorDetalleModal = ({ conductor, onClose }) => {
             <div className="preguntas-grid">
               <div className="pregunta-item">
                 <div className="pregunta-label">Código de vestimenta</div>
-                <div className="pregunta-valor">{conductor.codigoVestimenta || 'No respondió'}</div>
+                {editMode && tipo === 'aprobado' ? (
+                  <select
+                    className="campo-input"
+                    value={editedData.codigoVestimenta || ''}
+                    onChange={(e) => handleFieldUpdate('codigoVestimenta', e.target.value)}
+                  >
+                    <option value="">Seleccionar</option>
+                    <option value="si">Sí, estoy de acuerdo</option>
+                    <option value="no">No, prefiero informal</option>
+                    <option value="duda">Tengo dudas</option>
+                  </select>
+                ) : (
+                  <div className="pregunta-valor">{conductor.codigoVestimenta || 'No respondió'}</div>
+                )}
               </div>
               <div className="pregunta-item">
                 <div className="pregunta-label">Manejo de cliente exigente</div>
-                <div className="pregunta-valor">{conductor.manejoClienteExigente || 'No respondió'}</div>
+                {editMode && tipo === 'aprobado' ? (
+                  <textarea
+                    className="campo-input"
+                    value={editedData.manejoClienteExigente || ''}
+                    onChange={(e) => handleFieldUpdate('manejoClienteExigente', e.target.value)}
+                    rows="3"
+                  />
+                ) : (
+                  <div className="pregunta-valor">{conductor.manejoClienteExigente || 'No respondió'}</div>
+                )}
               </div>
               <div className="pregunta-item">
                 <div className="pregunta-label">Significado de premium</div>
-                <div className="pregunta-valor">{conductor.significadoPremium || 'No respondió'}</div>
+                {editMode && tipo === 'aprobado' ? (
+                  <textarea
+                    className="campo-input"
+                    value={editedData.significadoPremium || ''}
+                    onChange={(e) => handleFieldUpdate('significadoPremium', e.target.value)}
+                    rows="3"
+                  />
+                ) : (
+                  <div className="pregunta-valor">{conductor.significadoPremium || 'No respondió'}</div>
+                )}
               </div>
             </div>
           </div>
 
-          {/* FOOTER CON BOTONES */}
+          {/* FOOTER */}
           <div className="modal-footer">
-            <button className="btn-rechazar" onClick={handleRechazar}>
-              <XCircle size={18} /> Rechazar
-            </button>
-            <button className="btn-aprobar" onClick={handleAprobar}>
-              <CheckCircle size={18} /> Aprobar
-            </button>
+            {tipo === 'aprobado' ? (
+              <>
+                {!editMode && (
+                  <button className="btn-revocar" onClick={handleRevocar}>
+                    <RotateCcw size={18} /> Revocar
+                  </button>
+                )}
+                <button className="btn-whatsapp-footer" onClick={handleWhatsApp}>
+                  <Phone size={18} /> WhatsApp
+                </button>
+              </>
+            ) : tipo === 'pendiente' && (
+              <>
+                <button className="btn-rechazar" onClick={handleRechazar}>
+                  <XCircle size={18} /> Rechazar
+                </button>
+                <button className="btn-aprobar" onClick={handleAprobar}>
+                  <CheckCircle size={18} /> Aprobar
+                </button>
+              </>
+            )}
           </div>
 
         </div>

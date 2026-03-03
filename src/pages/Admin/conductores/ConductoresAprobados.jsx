@@ -1,11 +1,11 @@
-// src/pages/Admin/conductores/ConductoresPendientes.jsx
+// src/pages/Admin/conductores/ConductoresAprobados.jsx
 import React, { useState } from 'react';
-import { Inbox } from 'lucide-react'; // ← IMPORTAR ÍCONO
-import ConductorCard from './ConductorCard';
+import { CheckCircle } from 'lucide-react'; // ← IMPORTAR ÍCONO
+import ConductorCardAprobado from './ConductorCardAprobado';
 import ConductorDetalleModal from './ConductorDetalleModal';
-import './ConductoresPendientes.css';
+import './ConductoresAprobados.css';
 
-const ConductoresPendientes = ({ conductores }) => {
+const ConductoresAprobados = ({ conductores }) => {
   const [selectedConductor, setSelectedConductor] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -23,10 +23,10 @@ const ConductoresPendientes = ({ conductores }) => {
     return (
       <div className="empty-state">
         <div className="empty-icon">
-          <Inbox size={48} /> {/* ← ÍCONO DE LUCIDE */}
+          <CheckCircle size={48} /> {/* ← ÍCONO DE LUCIDE */}
         </div>
-        <h3>No hay solicitudes pendientes</h3>
-        <p>Los nuevos conductores aparecerán aquí cuando se registren.</p>
+        <h3>No hay conductores aprobados</h3>
+        <p>Los conductores que apruebes aparecerán aquí.</p>
       </div>
     );
   }
@@ -35,7 +35,7 @@ const ConductoresPendientes = ({ conductores }) => {
     <>
       <div className="conductores-grid">
         {conductores.map(conductor => (
-          <ConductorCard 
+          <ConductorCardAprobado 
             key={conductor.id} 
             conductor={conductor} 
             onVerDetalle={handleVerDetalle}
@@ -47,10 +47,11 @@ const ConductoresPendientes = ({ conductores }) => {
         <ConductorDetalleModal 
           conductor={selectedConductor} 
           onClose={handleCloseModal}
+          tipo="aprobado"
         />
       )}
     </>
   );
 };
 
-export default ConductoresPendientes;
+export default ConductoresAprobados;

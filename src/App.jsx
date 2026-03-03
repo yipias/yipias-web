@@ -1,6 +1,6 @@
 // src/App.jsx
 import React, { useState } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'; // ← IMPORTAR Navigate
 
 import Header from './components/Header/Header';
 import Hero from './components/Hero/Hero';
@@ -19,7 +19,7 @@ import ConductorRegistro from './pages/ConductorRegistro';
 // IMPORTACIONES PARA ADMIN
 import AdminLayout from './pages/Admin/AdminLayout';
 import AdminDashboard from './pages/Admin/AdminDashboard';
-import ConductoresPage from './pages/Admin/conductores/ConductoresPage'; // ← NUEVO
+import ConductoresPage from './pages/Admin/conductores/ConductoresPage';
 
 import ScrollToTop from './components/ScrollToTop';
 import AuthModal from './components/Auth/AuthModal';
@@ -66,8 +66,9 @@ function App() {
 
         {/* RUTAS DE ADMIN */}
         <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="conductores" element={<ConductoresPage />} /> {/* ← ACTUALIZADO */}
+          {/* AL ENTRAR A /admin, REDIRIGE A /admin/reservas */}
+          <Route index element={<Navigate to="/admin/reservas" replace />} />
+          <Route path="conductores" element={<ConductoresPage />} />
           <Route path="clientes" element={<div>Panel de Clientes</div>} />
           <Route path="reservas" element={<div>Panel de Reservas</div>} />
           <Route path="tarifario" element={<div>Panel de Tarifario</div>} />

@@ -38,17 +38,19 @@ export const useRegistroConductor = () => {
       // 3. Separar datos del vehículo del resto
       const { vehiculo, ...restoDatos } = datos;
 
-      // 4. Preparar datos para Firestore (SIN objetos File)
+      // 4. Preparar datos para Firestore (CON MARCA Y MODELO)
       const conductorData = {
         ...restoDatos,
         vehiculo: {
+          marca: vehiculo.marca || '',           // ← AGREGADO
+          modelo: vehiculo.modelo || '',         // ← AGREGADO
           año: vehiculo.año || '',
           color: vehiculo.color || '',
           placa: vehiculo.placa || '',
           aireAcondicionado: vehiculo.aireAcondicionado || '',
           aireAcondicionadoOtro: vehiculo.aireAcondicionadoOtro || ''
         },
-        fotos: fotosUrls, // ← SOLO URLs, NO los archivos
+        fotos: fotosUrls,
         fechaRegistro: serverTimestamp(),
         estado: 'pendiente',
         disponible: false

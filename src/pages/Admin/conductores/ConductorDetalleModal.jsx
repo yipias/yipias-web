@@ -36,22 +36,45 @@ const CampoInfo = memo(({ icon: Icon, label, field, value, editMode, tipo, onUpd
   );
 });
 
-// Componente FotoVisualizador memoizado
-const FotoVisualizador = memo(({ src, label, onClick }) => (
-  <div className="foto-visualizador">
-    <label>{label}</label>
-    <div className="foto-contenedor" onClick={() => src && onClick(src)}>
-      {src ? (
-        <img src={src} alt={label} />
-      ) : (
-        <div className="foto-placeholder">
-          <Camera size={24} />
-          <span>Sin imagen</span>
+// Componente FotoVisualizador MEJORADO con manejo de errores
+const FotoVisualizador = memo(({ src, label, onClick }) => {
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // Si no hay src o hubo error, mostrar placeholder
+  if (!src || error) {
+    return (
+      <div className="foto-visualizador">
+        <label>{label}</label>
+        <div className="foto-contenedor">
+          <div className="foto-placeholder">
+            <Camera size={24} />
+            <span>{error ? 'Error al cargar' : 'Sin imagen'}</span>
+          </div>
         </div>
-      )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="foto-visualizador">
+      <label>{label}</label>
+      <div className="foto-contenedor" onClick={() => onClick(src)}>
+        {loading && <div className="foto-loading">Cargando...</div>}
+        <img 
+          src={src} 
+          alt={label}
+          onLoad={() => setLoading(false)}
+          onError={() => {
+            setError(true);
+            setLoading(false);
+          }}
+          style={{ display: loading ? 'none' : 'block' }}
+        />
+      </div>
     </div>
-  </div>
-));
+  );
+});
 
 const ConductorDetalleModal = ({ conductor, onClose, tipo = 'pendiente' }) => {
   const { aprobarConductor, rechazarConductor, revocarConductor, actualizarConductor } = useAdminConductores();
@@ -290,6 +313,61 @@ const ConductorDetalleModal = ({ conductor, onClose, tipo = 'pendiente' }) => {
                 editMode={editMode}
                 tipo={tipo}
                 onUpdate={handleFieldUpdate}
+              />
+            </div>
+
+            {/* FOTOS DEL VEHÍCULO */}
+            <h3>Fotos del vehículo</h3>
+            <div className="fotos-grid">
+              <FotoVisualizador 
+                src={conductor.fotos?.vehiculoFrontal} 
+                label="Frontal (placa visible)"
+                onClick={setSelectedFoto}
+              />
+              <FotoVisualizador 
+                src={conductor.fotos?.vehiculoLateral} 
+                label="Lateral"
+                onClick={setSelectedFoto}
+              />
+              <FotoVisualizador 
+                src={conductor.fotos?.vehiculoInterior} 
+                label="Interior (desde atrás)"
+                onClick={setSelectedFoto}
+              />
+            </div>
+
+            {/* DOCUMENTOS */}
+            <h3>Documentos</h3>
+            <div className="fotos-grid">
+              <FotoVisualizador 
+                src={conductor.fotos?.tarjetaPropiedadFrente} 
+                label="Tarjeta propiedad (Frente)"
+                onClick={setSelectedFoto}
+              />
+              <FotoVisualizador 
+                src={conductor.fotos?.tarjetaPropiedadTrasero} 
+                label="Tarjeta propiedad (Trasero)"
+                onClick={setSelectedFoto}
+              />
+              <FotoVisualizador 
+                src={conductor.fotos?.breveteFrente} 
+                label="Brevete (Frente)"
+                onClick={setSelectedFoto}
+              />
+              <FotoVisualizador 
+                src={conductor.fotos?.breveteTrasero} 
+                label="Brevete (Trasero)"
+                onClick={setSelectedFoto}
+              />
+              <FotoVisualizador 
+                src={conductor.fotos?.soat} 
+                label="SOAT (Vigente)"
+                onClick={setSelectedFoto}
+              />
+              <FotoVisualizador 
+                src={conductor.fotos?.reciboLuz} 
+                label="Recibo de luz/agua"
+                onClick={setSelectedFoto}
               />
             </div>
 

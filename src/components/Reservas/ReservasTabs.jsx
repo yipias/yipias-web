@@ -17,6 +17,9 @@ import ExplicacionProgramada from '../Modals/ExplicacionProgramada';
 import ExplicacionPorHoras from '../Modals/ExplicacionPorHoras';
 import ConfirmacionProgramada from '../Modals/ConfirmacionProgramada';
 import ConfirmacionPorHoras from '../Modals/ConfirmacionPorHoras';
+// Firebase
+import { db } from '../../firebase/config';
+import { doc, onSnapshot } from 'firebase/firestore';
 import './Reservas.css';
 
 // Importar funciones de cálculo
@@ -31,7 +34,7 @@ const ReservasTabs = () => {
   const { guardarReservaProgramada, guardarReservaHoras } = useFirebaseReservas();
   const { currentUser } = useAuth();
   
-  // ✅ NUEVO: Estado para saber si Maps está listo
+  // Estado para Maps
   const [mapsLoaded, setMapsLoaded] = useState(false);
   
   // Estados para pestañas y selección
@@ -63,6 +66,9 @@ const ReservasTabs = () => {
   const [progHora, setProgHora] = useState('');
   const [horasHora, setHorasHora] = useState('');
   
+  // Estados para controlar ubicación actual
+  const [ubicacionError, setUbicacionError] = useState(null);
+  
   // Refs
   const mapRef = useRef(null);
   const directionsRendererRef = useRef(null);
@@ -72,9 +78,8 @@ const ReservasTabs = () => {
     horas: null
   });
 
-  // ✅ NUEVO: Efecto para verificar carga de Maps
+  // ===== EFECTO PARA VERIFICAR CARGA DE MAPS =====
   useEffect(() => {
-    // Función para verificar si Maps ya está cargado
     const checkMapsLoaded = () => {
       if (window.google && window.google.maps) {
         console.log('✅ Google Maps listo');
@@ -85,48 +90,144 @@ const ReservasTabs = () => {
       }
     };
 
-    // Si ya está cargado, activar inmediatamente
     if (window.google?.maps) {
       setMapsLoaded(true);
     } else {
       checkMapsLoaded();
     }
 
-    // Escuchar el callback de Maps
     window.initMap = function() {
       setMapsLoaded(true);
     };
   }, []);
 
+  // ===== EFECTO PARA ESCUCHAR CAMBIOS EN TARIFAS =====
+  useEffect(() => {
+    console.log('🎯 Iniciando listener de tarifas');
+    
+    const tarifasRef = doc(db, 'config', 'tarifas');
+    
+    const unsubscribe = onSnapshot(tarifasRef, (docSnap) => {
+      console.log('🔄 Tarifas actualizadas en Firebase');
+      
+      // Si estamos en pestaña programada y ya hay puntos seleccionados
+      if (activeTab === 'programada' && pickupLocation && dropoffLocation) {
+        console.log('📍 Recalculando ruta por cambio en tarifas');
+        limpiarRuta();
+        calcularRutaYDistancia(pickupLocation, dropoffLocation);
+      }
+      
+      // Si estamos en pestaña por horas y ya hay punto seleccionado
+      if (activeTab === 'porhoras' && horasLocation) {
+        console.log('⏰ Recalculando precio horas por cambio en tarifas');
+        const paxInput = document.getElementById('horasPax');
+        const horasSelect = document.getElementById('horasCantidad');
+        const priceSpan = document.getElementById('horasPrice');
+        
+        if (paxInput && horasSelect && priceSpan) {
+          const horas = parseInt(horasSelect.value);
+          let pax = parseInt(paxInput.value) || 1;
+          
+          if (pax > 6) pax = 6;
+          if (pax < 1) pax = 1;
+          
+          try {
+            const tarifa = obtenerTarifaHoras(horas, pax);
+            if (tarifa) {
+              priceSpan.textContent = `S/ ${tarifa}.00`;
+            }
+          } catch (error) {
+            console.log('Error actualizando precio horas:', error);
+          }
+        }
+      }
+    }, (error) => {
+      console.error('❌ Error en listener de tarifas:', error);
+    });
+
+    return () => {
+      console.log('🔇 Limpiando listener de tarifas');
+      unsubscribe();
+    };
+  }, [activeTab, pickupLocation, dropoffLocation, horasLocation]);
+
   // ===== LIMPIAR RUTA =====
-  const limpiarRuta = () => {
-    if (directionsRendererRef.current) {
-      directionsRendererRef.current.setMap(null);
-      directionsRendererRef.current = null;
+  console.log("LIMPIANDO RENDERER");
+const limpiarRuta = () => {
+  if (directionsRendererRef.current) {
+    directionsRendererRef.current.setDirections({ routes: [] });
+    directionsRendererRef.current.setMap(null);
+    directionsRendererRef.current = null;
+  }
+};
+
+    // ===== 🔧 FIX: LIMPIAR RUTA SI SE BORRA INPUT MANUALMENTE =====
+useEffect(() => {
+  const pickupInput = document.getElementById('pickup');
+  const dropoffInput = document.getElementById('dropoff');
+
+  const handlePickupClear = () => {
+    if (pickupInput && pickupInput.value.trim() === '') {
+      setPickupLocation(null);
+
+      if (markers.pickup) {
+        markers.pickup.setMap(null);
+      }
+
+      limpiarRuta();
+
+      const distanceSpan = document.getElementById('progDistance');
+      const priceSpan = document.getElementById('progPrice');
+
+      if (distanceSpan) distanceSpan.textContent = '—';
+      if (priceSpan) priceSpan.textContent = 'S/ 0.00';
     }
   };
+
+  const handleDropoffClear = () => {
+    if (dropoffInput && dropoffInput.value.trim() === '') {
+      setDropoffLocation(null);
+
+      if (markers.dropoff) {
+        markers.dropoff.setMap(null);
+      }
+
+      limpiarRuta();
+
+      const distanceSpan = document.getElementById('progDistance');
+      const priceSpan = document.getElementById('progPrice');
+
+      if (distanceSpan) distanceSpan.textContent = '—';
+      if (priceSpan) priceSpan.textContent = 'S/ 0.00';
+    }
+  };
+
+  pickupInput?.addEventListener('input', handlePickupClear);
+  dropoffInput?.addEventListener('input', handleDropoffClear);
+
+  return () => {
+    pickupInput?.removeEventListener('input', handlePickupClear);
+    dropoffInput?.removeEventListener('input', handleDropoffClear);
+  };
+}, []);
 
   // ===== LIMPIAR TODO AL CAMBIAR DE PESTAÑA =====
   const limpiarTodo = () => {
     console.log('🧹 Limpiando todo al cambiar de pestaña');
     
-    // Limpiar estados de direcciones
     setPickupAddress('');
     setDropoffAddress('');
     setHorasAddress('');
     
-    // Limpiar ubicaciones
     setPickupLocation(null);
     setDropoffLocation(null);
     setHorasLocation(null);
     
-    // Limpiar horas
     setProgHora('');
     setHorasHora('');
     setProgAmpm('AM');
     setHorasAmpm('AM');
     
-    // Limpiar marcadores del mapa
     Object.values(markers).forEach(marker => {
       if (marker) marker.setMap(null);
     });
@@ -137,17 +238,14 @@ const ReservasTabs = () => {
       horas: null
     });
     
-    // Limpiar ruta
     limpiarRuta();
     
-    // Limpiar inputs del DOM
     const inputs = ['pickup', 'dropoff', 'horasRecojo', 'progHoraInput', 'horasHoraInput'];
     inputs.forEach(id => {
       const input = document.getElementById(id);
       if (input) input.value = '';
     });
     
-    // Limpiar distancia y precio
     const progDistance = document.getElementById('progDistance');
     const progPrice = document.getElementById('progPrice');
     const horasPrice = document.getElementById('horasPrice');
@@ -155,18 +253,18 @@ const ReservasTabs = () => {
     if (progDistance) progDistance.textContent = '—';
     if (progPrice) progPrice.textContent = 'S/ 0.00';
     if (horasPrice) horasPrice.textContent = 'S/ 38.00';
+    
+    setUbicacionError(null);
   };
 
   // ===== MANEJAR CAMBIO DE PESTAÑA =====
   const handleTabClick = (tab) => {
-    // Si NO hay usuario logueado, mostrar modal de autenticación
     if (!currentUser) {
       setShowAuthModal(true);
       document.body.style.overflow = 'hidden';
       return;
     }
     
-    // Si HAY usuario logueado, proceder normalmente
     limpiarTodo();
     setActiveTab(tab);
     if (tab === 'programada') {
@@ -176,11 +274,16 @@ const ReservasTabs = () => {
     }
   };
 
-  // ===== AGREGAR MARCADOR (SIEMPRE LIMPIA EL ANTERIOR) =====
+  // ===== AGREGAR MARCADOR (LIMPIA EL ANTERIOR Y LA RUTA) =====
   const addMarker = (type, location, address, placeName = null) => {
     if (!mapRef.current || !window.google) return;
     
     console.log(`📍 Agregando marcador tipo: ${type}`, location);
+    
+    // Si es pickup o dropoff, limpiar la ruta existente
+    if (type === 'pickup' || type === 'dropoff') {
+      limpiarRuta();
+    }
     
     // Si ya existe un marcador del mismo tipo, eliminarlo
     if (markers[type]) {
@@ -193,7 +296,6 @@ const ReservasTabs = () => {
     
     const markerTitle = placeName || title;
     
-    // Configurar icono según tipo
     const iconConfig = {
       url: type === 'pickup' ? 'https://maps.google.com/mapfiles/ms/icons/green-dot.png' :
            type === 'dropoff' ? 'https://maps.google.com/mapfiles/ms/icons/red-dot.png' :
@@ -201,7 +303,6 @@ const ReservasTabs = () => {
       scaledSize: new window.google.maps.Size(40, 40)
     };
     
-    // Configurar label según tipo
     const labelConfig = {
       text: type === 'pickup' ? 'A' : type === 'dropoff' ? 'B' : 'H',
       color: 'white',
@@ -219,19 +320,20 @@ const ReservasTabs = () => {
     
     const newMarker = new window.google.maps.Marker(markerConfig);
     
-    // Actualizar estado
     setMarkers(prev => {
       const newMarkers = { ...prev, [type]: newMarker };
       return newMarkers;
     });
     
-    // Centrar mapa
     mapRef.current.panTo(location);
     mapRef.current.setZoom(15);
   };
 
-  // ===== CALCULAR RUTA Y PRECIO (RUTA MÁS CORTA) =====
+  // ===== CALCULAR RUTA Y PRECIO =====
+
+  
   const calcularRutaYDistancia = (origin, destination) => {
+    console.log("CREANDO NUEVO RENDERER");
     if (!mapRef.current || !window.google || !origin || !destination) return;
 
     const directionsService = new window.google.maps.DirectionsService();
@@ -245,11 +347,9 @@ const ReservasTabs = () => {
       },
       (result, status) => {
         if (status === 'OK') {
-          // Buscar la ruta con menor distancia
           let shortestRoute = result.routes[0];
           let shortestDistance = result.routes[0].legs[0].distance.value;
           
-          // Recorrer todas las rutas alternativas
           result.routes.forEach(route => {
             const distance = route.legs[0].distance.value;
             if (distance < shortestDistance) {
@@ -258,7 +358,8 @@ const ReservasTabs = () => {
             }
           });
           
-          // Crear nuevo renderizador con la ruta más corta
+          limpiarRuta();
+
           directionsRendererRef.current = new window.google.maps.DirectionsRenderer({
             map: mapRef.current,
             suppressMarkers: true,
@@ -269,13 +370,11 @@ const ReservasTabs = () => {
             }
           });
           
-          // Mostrar solo la ruta más corta
           directionsRendererRef.current.setDirections({
             ...result,
             routes: [shortestRoute]
           });
           
-          // Calcular distancia y precio
           const distance = shortestDistance / 1000;
           const paxInput = document.getElementById('progPax');
           let pax = paxInput ? parseInt(paxInput.value) || 1 : 1;
@@ -305,17 +404,30 @@ const ReservasTabs = () => {
     );
   };
 
-  // ===== EFECTO PARA TRAZAR RUTA CUANDO AMBOS PUNTOS CAMBIAN =====
-  useEffect(() => {
-    if (activeTab !== 'programada') return;
-    if (pickupLocation && dropoffLocation) {
-      console.log('🔄 Trazando ruta por cambio en ubicaciones');
-      limpiarRuta();
-      calcularRutaYDistancia(pickupLocation, dropoffLocation);
-    }
-  }, [pickupLocation, dropoffLocation, activeTab]);
+  // ===== EFECTO PARA TRAZAR RUTA =====
+useEffect(() => {
+  if (activeTab !== 'programada') return;
 
-  // ===== EFECTO PARA ACTUALIZAR PRECIO EN TIEMPO REAL (PROGRAMADA) =====
+  // 🔥 Si falta uno, limpiar todo
+  if (!pickupLocation || !dropoffLocation) {
+    limpiarRuta();
+
+    const distanceSpan = document.getElementById('progDistance');
+    const priceSpan = document.getElementById('progPrice');
+
+    if (distanceSpan) distanceSpan.textContent = '—';
+    if (priceSpan) priceSpan.textContent = 'S/ 0.00';
+
+    return;
+  }
+
+  console.log('🔄 Trazando ruta por cambio en ubicaciones');
+  limpiarRuta();
+  calcularRutaYDistancia(pickupLocation, dropoffLocation);
+
+}, [pickupLocation, dropoffLocation, activeTab]);
+
+  // ===== EFECTO PARA ACTUALIZAR PRECIO PROGRAMADA =====
   useEffect(() => {
     if (activeTab !== 'programada') return;
     
@@ -352,13 +464,17 @@ const ReservasTabs = () => {
     paxInput.addEventListener('change', handlePaxChange);
     paxInput.addEventListener('input', handlePaxChange);
     
+    if (distanceSpan.textContent !== '—') {
+      handlePaxChange();
+    }
+    
     return () => {
       paxInput.removeEventListener('change', handlePaxChange);
       paxInput.removeEventListener('input', handlePaxChange);
     };
-  }, [activeTab]);
+  }, [activeTab, pickupLocation, dropoffLocation]);
 
-  // ===== EFECTO PARA ACTUALIZAR PRECIO EN TIEMPO REAL (POR HORAS) =====
+  // ===== EFECTO PARA ACTUALIZAR PRECIO POR HORAS =====
   useEffect(() => {
     if (activeTab !== 'porhoras') return;
     
@@ -397,9 +513,9 @@ const ReservasTabs = () => {
       paxInput.removeEventListener('input', handleChange);
       horasSelect.removeEventListener('change', handleChange);
     };
-  }, [activeTab]);
+  }, [activeTab, horasLocation]);
 
-  // Configurar autocompletados
+  // ===== CONFIGURAR AUTOCOMPLETADOS =====
   useEffect(() => {
     if (!mapRef.current || !window.google || !mapsLoaded) return;
 
@@ -542,8 +658,21 @@ const ReservasTabs = () => {
     setActiveMode(inputType);
   };
 
+  // ===== FUNCIÓN MEJORADA PARA UBICACIÓN ACTUAL =====
   const handleUbicacionActualPickup = async (buttonElement) => {
     const inputElement = document.getElementById('pickup');
+    setUbicacionError(null);
+
+    // 🔧 FIX: Verificar estado de permiso
+if (navigator.permissions) {
+  const permission = await navigator.permissions.query({ name: 'geolocation' });
+
+  if (permission.state === 'denied') {
+    alert('Debes habilitar la ubicación manualmente en el navegador (candado del sitio → Permitir ubicación).');
+    return;
+  }
+}
+    
     try {
       const result = await obtenerUbicacionActual(
         inputElement, 
@@ -558,11 +687,27 @@ const ReservasTabs = () => {
       }
     } catch (error) {
       console.log('Error en ubicación actual:', error);
+      setUbicacionError('No se pudo obtener la ubicación. Asegúrate de tener permisos de ubicación activados.');
+      
+      // Mostrar mensaje amigable al usuario
+      alert('No se pudo acceder a tu ubicación. Por favor, verifica que los permisos de ubicación estén activados en tu navegador y vuelve a intentarlo.');
     }
   };
 
   const handleUbicacionActualHoras = async (buttonElement) => {
     const inputElement = document.getElementById('horasRecojo');
+    setUbicacionError(null);
+    
+// 🔧 FIX: Verificar estado de permiso
+if (navigator.permissions) {
+  const permission = await navigator.permissions.query({ name: 'geolocation' });
+
+  if (permission.state === 'denied') {
+    alert('Debes habilitar la ubicación manualmente en el navegador (candado del sitio → Permitir ubicación).');
+    return;
+  }
+}
+
     try {
       const result = await obtenerUbicacionActual(
         inputElement, 
@@ -577,6 +722,10 @@ const ReservasTabs = () => {
       }
     } catch (error) {
       console.log('Error en ubicación actual:', error);
+      setUbicacionError('No se pudo obtener la ubicación. Asegúrate de tener permisos de ubicación activados.');
+      
+      // Mostrar mensaje amigable al usuario
+      alert('No se pudo acceder a tu ubicación. Por favor, verifica que los permisos de ubicación estén activados en tu navegador y vuelve a intentarlo.');
     }
   };
 
@@ -593,6 +742,12 @@ const ReservasTabs = () => {
       alert('Por favor selecciona punto de recojo y destino final');
       return;
     }
+
+    // ✅ VALIDACIÓN DE HORA - AHORA FUNCIONA
+    if (!progHora || progHora.trim() === '') {
+      alert('Por favor selecciona una hora');
+      return;
+    }
     
     const horaFormateada = formatearHoraParaFirebase(progHora, progAmpm);
     
@@ -601,11 +756,10 @@ const ReservasTabs = () => {
     
     const mapsLink = `https://www.google.com/maps/dir/${pickupLocation.lat},${pickupLocation.lng}/${dropoffLocation.lat},${dropoffLocation.lng}`;
     
-    // ===== AGREGAR EMAIL DEL USUARIO A LA RESERVA =====
     const datosReserva = {
       tipoReserva: 'programada',
-      email: currentUser?.email || '', // ← NUEVO
-      nombreCompleto: currentUser?.displayName || '', // ← NUEVO
+      email: currentUser?.email || '',
+      nombreCompleto: currentUser?.displayName || '',
       lugarRecojo: pickupAddress,
       destino: dropoffAddress,
       fechaViaje: fecha,
@@ -643,6 +797,12 @@ const ReservasTabs = () => {
       alert('Por favor selecciona punto de recojo');
       return;
     }
+
+    // ✅ VALIDACIÓN DE HORA - AHORA FUNCIONA
+    if (!horasHora || horasHora.trim() === '') {
+      alert('Por favor selecciona una hora');
+      return;
+    }
     
     const horaFormateada = formatearHoraParaFirebase(horasHora, horasAmpm);
     
@@ -650,11 +810,10 @@ const ReservasTabs = () => {
     
     const mapsLink = `https://www.google.com/maps/search/?api=1&query=${horasLocation.lat},${horasLocation.lng}`;
     
-    // ===== AGREGAR EMAIL DEL USUARIO A LA RESERVA =====
     const datosReserva = {
       tipoReserva: 'horas',
-      email: currentUser?.email || '', // ← NUEVO
-      nombreCompleto: currentUser?.displayName || '', // ← NUEVO
+      email: currentUser?.email || '',
+      nombreCompleto: currentUser?.displayName || '',
       lugarRecojo: horasAddress,
       fechaServicio: fecha,
       horaInicio: horaFormateada,
@@ -758,7 +917,6 @@ const ReservasTabs = () => {
         </div>
       </div>
 
-      {/* MODAL DE AUTENTICACIÓN */}
       {showAuthModal && (
         <AuthModal 
           onClose={() => {

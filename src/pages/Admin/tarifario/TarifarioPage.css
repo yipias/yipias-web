@@ -1,0 +1,926 @@
+/* src/pages/Admin/tarifario/TarifarioPage.css */
+.tarifario-page {
+  background: #0a0a0f;
+  min-height: 100vh;
+  padding: 28px 32px;
+  color: #e2e8f0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Header */
+.tarifario-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.header-left h2 {
+  margin: 0 0 4px;
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #fff 0%, #dc2626 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+}
+
+.header-subtitle {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.last-update {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #1a1a24;
+  padding: 8px 16px;
+  border-radius: 30px;
+  border: 1px solid #2a2a35;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.last-update svg {
+  color: #6b7280;
+}
+
+/* Tabs */
+.tarifario-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 28px;
+  background: #1a1a24;
+  padding: 4px;
+  border-radius: 12px;
+  width: fit-content;
+  border: 1px solid #2a2a35;
+}
+
+.tarifario-tabs .tab-btn {
+  background: transparent;
+  border: none;
+  padding: 10px 20px;
+  color: #9ca3af;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tarifario-tabs .tab-btn:hover {
+  color: #e2e8f0;
+  background: #2a2a35;
+}
+
+.tarifario-tabs .tab-btn.active {
+  background: #2a2a35;
+  color: #dc2626;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
+}
+
+/* Actions bar */
+.actions-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.search-container {
+  position: relative;
+  flex: 1;
+  max-width: 320px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  background: #1a1a24;
+  border: 1px solid #2a2a35;
+  border-radius: 10px;
+  padding: 12px 16px 12px 40px;
+  color: #e2e8f0;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.search-input:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.search-clear {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+}
+
+.search-clear:hover {
+  color: #e2e8f0;
+  background: #2a2a35;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-increment,
+.btn-reset {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.btn-increment {
+  background: #1a1a24;
+  border-color: #2a2a35;
+  color: #e2e8f0;
+}
+
+.btn-increment:hover {
+  border-color: #22c55e;
+  background: #1e2a24;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+}
+
+.btn-reset {
+  background: #1a1a24;
+  border-color: #2a2a35;
+  color: #e2e8f0;
+}
+
+.btn-reset:hover {
+  border-color: #3b82f6;
+  background: #1e2430;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+/* Table card */
+.table-card {
+  background: #1a1a24;
+  border: 1px solid #2a2a35;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  border-bottom: 1px solid #2a2a35;
+}
+
+.table-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.table-count {
+  background: #2a2a35;
+  padding: 4px 12px;
+  border-radius: 30px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.table-container {
+  overflow-x: auto;
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.table-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #1a1a24;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #2a2a35;
+  border-radius: 3px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: #3a3a45;
+}
+
+/* Table */
+.tarifario-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+.tarifario-table th {
+  background: #0f0f15;
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 16px 20px;
+  text-align: left;
+  border-bottom: 1px solid #2a2a35;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tarifario-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #2a2a35;
+  color: #e2e8f0;
+  font-size: 14px;
+}
+
+.tarifario-table tr:hover td {
+  background: #22222e;
+}
+
+.tarifario-table tr.editing td {
+  background: rgba(220, 38, 38, 0.08);
+}
+
+.km-cell {
+  font-weight: 600;
+}
+
+.price {
+  font-weight: 600;
+  color: #22c55e;
+}
+
+.unit-badge {
+  background: #0f0f15;
+  padding: 4px 12px;
+  border-radius: 30px;
+  font-size: 12px;
+  color: #9ca3af;
+  border: 1px solid #2a2a35;
+}
+
+.edit-input {
+  background: #0f0f15;
+  border: 1px solid #2a2a35;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #e2e8f0;
+  font-size: 14px;
+  width: 90px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.edit-input:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
+}
+
+.actions-cell {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #2a2a35;
+  color: #9ca3af;
+}
+
+.btn-icon:hover {
+  transform: scale(1.05);
+}
+
+.btn-icon.edit:hover {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-icon.save:hover {
+  background: #22c55e;
+  color: white;
+}
+
+.btn-icon.cancel:hover {
+  background: #ef4444;
+  color: white;
+}
+
+/* Historial */
+.historial-card {
+  background: #1a1a24;
+  border: 1px solid #2a2a35;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.historial-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.historial-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.historial-close {
+  background: #2a2a35;
+  border: none;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #9ca3af;
+  transition: all 0.2s;
+}
+
+.historial-close:hover {
+  background: #ef4444;
+  color: white;
+}
+
+.historial-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #6b7280;
+  gap: 16px;
+}
+
+.historial-empty svg {
+  opacity: 0.5;
+}
+
+.historial-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.historial-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.historial-list::-webkit-scrollbar-track {
+  background: #1a1a24;
+}
+
+.historial-list::-webkit-scrollbar-thumb {
+  background: #2a2a35;
+  border-radius: 2px;
+}
+
+.historial-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background: #0f0f15;
+  border-radius: 12px;
+  border: 1px solid #2a2a35;
+  transition: all 0.2s;
+}
+
+.historial-item:hover {
+  border-color: #3a3a45;
+  transform: translateX(2px);
+}
+
+.historial-item-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.historial-item-content {
+  flex: 1;
+}
+
+.historial-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.historial-accion {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.historial-fecha {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.historial-descripcion {
+  margin: 0;
+  font-size: 13px;
+  color: #9ca3af;
+  line-height: 1.5;
+}
+
+.historial-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #2a2a35;
+}
+
+.pagination-btn {
+  background: #2a2a35;
+  border: none;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #e2e8f0;
+  transition: all 0.2s;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: #3a3a45;
+  transform: scale(1.05);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+/* Footer */
+.tarifario-footer {
+  margin-top: 32px;
+  padding: 20px 24px;
+  background: #1a1a24;
+  border: 1px solid #2a2a35;
+  border-radius: 12px;
+}
+
+.footer-stats {
+  display: flex;
+  gap: 48px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.footer-note {
+  margin: 0;
+  padding-top: 16px;
+  border-top: 1px solid #2a2a35;
+  color: #9ca3af;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Loading */
+.tarifario-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 500px;
+  color: #6b7280;
+  gap: 20px;
+}
+
+.spinner {
+  width: 44px;
+  height: 44px;
+  border: 3px solid #2a2a35;
+  border-top-color: #dc2626;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .tarifario-page { padding: 20px; }
+  .footer-stats { gap: 24px; }
+}
+
+@media (max-width: 768px) {
+  .tarifario-page { padding: 16px; }
+  .tarifario-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .actions-bar { flex-direction: column; align-items: stretch; }
+  .search-container { max-width: 100%; }
+  .action-buttons { justify-content: stretch; }
+  .btn-increment, .btn-reset { flex: 1; justify-content: center; }
+  .footer-stats { gap: 16px; }
+  .stat-value { font-size: 16px; }
+}
+
+@media (max-width: 480px) {
+  .footer-stats { flex-direction: column; gap: 12px; }
+  .historial-item { flex-direction: column; }
+  .historial-item-icon { width: 32px; height: 32px; }
+}
+
+/* ===== RESPONSIVE MEJORADO ===== */
+
+/* Tablets (768px - 1024px) */
+@media (max-width: 1024px) {
+  .tarifario-page {
+    padding: 20px;
+  }
+
+  .footer-stats {
+    gap: 30px;
+  }
+
+  .stat-value {
+    font-size: 18px;
+  }
+
+  .tarifario-tabs {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .tarifario-tabs .tab-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+}
+
+/* Móviles grandes (480px - 768px) */
+@media (max-width: 768px) {
+  .tarifario-page {
+    padding: 16px;
+  }
+
+  .tarifario-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .header-left h2 {
+    font-size: 24px;
+  }
+
+  .header-subtitle {
+    font-size: 13px;
+  }
+
+  .last-update {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .actions-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .search-container {
+    max-width: 100%;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .btn-increment,
+  .btn-reset {
+    width: 100%;
+    justify-content: center;
+    padding: 12px;
+  }
+
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 16px;
+  }
+
+  .table-header h3 {
+    font-size: 15px;
+  }
+
+  .table-count {
+    align-self: flex-start;
+  }
+
+  .tarifario-table th {
+    padding: 12px 10px;
+    font-size: 11px;
+  }
+
+  .tarifario-table td {
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+
+  .edit-input {
+    width: 70px;
+    padding: 6px 8px;
+    font-size: 13px;
+  }
+
+  .btn-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .unit-badge {
+    padding: 3px 8px;
+    font-size: 11px;
+  }
+
+  .historial-card {
+    padding: 16px;
+  }
+
+  .historial-header h3 {
+    font-size: 16px;
+  }
+
+  .historial-item {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .historial-item-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .historial-item-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .historial-accion {
+    font-size: 12px;
+  }
+
+  .historial-fecha {
+    font-size: 10px;
+  }
+
+  .historial-descripcion {
+    font-size: 12px;
+  }
+
+  .footer-stats {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .stat {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .stat-label {
+    font-size: 13px;
+  }
+
+  .stat-value {
+    font-size: 16px;
+  }
+
+  .footer-note {
+    font-size: 12px;
+    text-align: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+/* Móviles pequeños (hasta 480px) */
+@media (max-width: 480px) {
+  .tarifario-page {
+    padding: 12px;
+  }
+
+  .tarifario-tabs .tab-btn {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  .tarifario-tabs .tab-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .table-container {
+    margin: 0 -12px;
+    width: calc(100% + 24px);
+    border-radius: 0;
+  }
+
+  .tarifario-table th {
+    padding: 10px 8px;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .tarifario-table td {
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+
+  .km-cell strong {
+    font-size: 12px;
+  }
+
+  .price {
+    font-size: 12px;
+  }
+
+  .edit-input {
+    width: 60px;
+    padding: 5px 6px;
+    font-size: 12px;
+  }
+
+  .actions-cell {
+    gap: 4px;
+  }
+
+  .btn-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .btn-icon svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .historial-pagination {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .pagination-info {
+    order: -1;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .pagination-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .footer-stats {
+    gap: 12px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+  }
+
+  .stat-value {
+    font-size: 14px;
+  }
+
+  .footer-note {
+    font-size: 11px;
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+/* Ajustes para el modal en móvil */
+@media (max-width: 520px) {
+  .swal2-popup {
+    width: 90% !important;
+    margin: 10px !important;
+    padding: 15px !important;
+  }
+
+  .swal2-html-container {
+    padding: 10px !important;
+  }
+
+  .swal2-html-container div[style*="display: flex; gap: 10px;"] {
+    flex-direction: column !important;
+  }
+
+  .swal2-html-container label[style*="flex: 1"] {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+}

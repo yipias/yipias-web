@@ -1,6 +1,13 @@
 // src/components/Reservas/Mapa.jsx
-import React, { useEffect, useCallback, forwardRef, useImperativeHandle } from 'react';
-import { GoogleMap, Marker } from '@react-google-maps/api';
+import React, { 
+  useEffect, 
+  useCallback, 
+  forwardRef, 
+  useImperativeHandle,
+  useRef,
+  useState 
+} from 'react';
+import { GoogleMap } from '@react-google-maps/api';
 import { DEFAULT_CENTER } from '../../utils/constants';
 import './Mapa.css';
 
@@ -19,27 +26,42 @@ const Mapa = forwardRef(({
   horasLocation,
   onMapClick 
 }, ref) => {
-  const [map, setMap] = React.useState(null);
-  const [markers, setMarkers] = React.useState({
+
+  const [map, setMap] = useState(null);
+
+  const [markers, setMarkers] = useState({
     pickup: null,
     dropoff: null,
     horas: null
   });
 
-  // Exponer funciones al padre mediante ref
+  // 🔥 Renderer controlado correctamente
+  const directionsRendererRef = useRef(null);
+
+  // ===============================
+  // EXPONER FUNCIONES AL PADRE
+  // ===============================
   useImperativeHandle(ref, () => ({
-    addMarker: (type, location, address) => {
+
+    addMarker: (type, location) => {
       if (!map) return;
-      
+
       const markerConfig = {
         position: location,
         map: map,
-        title: type === 'pickup' ? 'Punto de recojo' : 
-               type === 'dropoff' ? 'Destino final' : 'Punto de recojo (horas)',
+        title:
+          type === 'pickup'
+            ? 'Punto de recojo'
+            : type === 'dropoff'
+            ? 'Destino final'
+            : 'Punto de recojo (horas)',
         icon: {
-          url: type === 'pickup' ? 'https://maps.google.com/mapfiles/ms/icons/green-dot.png' :
-               type === 'dropoff' ? 'https://maps.google.com/mapfiles/ms/icons/red-dot.png' :
-               'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+          url:
+            type === 'pickup'
+              ? 'https://maps.google.com/mapfiles/ms/icons/green-dot.png'
+              : type === 'dropoff'
+              ? 'https://maps.google.com/mapfiles/ms/icons/red-dot.png'
+              : 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
           scaledSize: new window.google.maps.Size(40, 40)
         },
         label: {
@@ -50,45 +72,58 @@ const Mapa = forwardRef(({
         }
       };
 
-      // Eliminar marcador anterior del mismo tipo
+      // Eliminar marcador anterior
       if (markers[type]) {
         markers[type].setMap(null);
       }
 
-      // Crear nuevo marcador
       const newMarker = new window.google.maps.Marker(markerConfig);
-      
+
       setMarkers(prev => ({
         ...prev,
         [type]: newMarker
       }));
 
-      // Centrar mapa en la nueva ubicación
       map.panTo(location);
       map.setZoom(15);
     },
-    
+
     clearMarkers: () => {
       Object.values(markers).forEach(marker => {
         if (marker) marker.setMap(null);
       });
-      setMarkers({ pickup: null, dropoff: null, horas: null });
+
+      setMarkers({
+        pickup: null,
+        dropoff: null,
+        horas: null
+      });
     },
-    
+
+    // 🔥 DRAW ROUTE CORREGIDO
     drawRoute: (origin, destination) => {
       if (!map || !origin || !destination) return;
-      
+
+      // 🧹 Limpiar ruta anterior si existe
+      if (directionsRendererRef.current) {
+        directionsRendererRef.current.setDirections({ routes: [] });
+        directionsRendererRef.current.setMap(null);
+        directionsRendererRef.current = null;
+      }
+
       const directionsService = new window.google.maps.DirectionsService();
-      const directionsRenderer = new window.google.maps.DirectionsRenderer({
-        map: map,
-        suppressMarkers: true,
-        polylineOptions: {
-          strokeColor: '#0d6efd',
-          strokeWeight: 6,
-          strokeOpacity: 1
-        }
-      });
-      
+
+      directionsRendererRef.current =
+        new window.google.maps.DirectionsRenderer({
+          map: map,
+          suppressMarkers: true,
+          polylineOptions: {
+            strokeColor: '#0d6efd',
+            strokeWeight: 6,
+            strokeOpacity: 1
+          }
+        });
+
       directionsService.route(
         {
           origin,
@@ -97,26 +132,37 @@ const Mapa = forwardRef(({
         },
         (result, status) => {
           if (status === 'OK') {
-            directionsRenderer.setDirections(result);
-            
-            // Guardar referencia para limpiar después
-            setMarkers(prev => ({
-              ...prev,
-              directionsRenderer
-            }));
+            directionsRendererRef.current.setDirections(result);
           }
         }
       );
     }
+
   }));
 
+  // ===============================
+  // LIMPIAR AL DESMONTAR
+  // ===============================
+  useEffect(() => {
+    return () => {
+      if (directionsRendererRef.current) {
+        directionsRendererRef.current.setDirections({ routes: [] });
+        directionsRendererRef.current.setMap(null);
+        directionsRendererRef.current = null;
+      }
+    };
+  }, []);
+
+  // ===============================
+  // MAP CLICK
+  // ===============================
   const handleMapClick = useCallback((event) => {
     if (!selectedInput) return;
 
     const lat = event.latLng.lat();
     const lng = event.latLng.lng();
     const location = { lat, lng };
-    
+
     const geocoder = new window.google.maps.Geocoder();
     geocoder.geocode({ location }, (results, status) => {
       if (status === 'OK' && results[0]) {

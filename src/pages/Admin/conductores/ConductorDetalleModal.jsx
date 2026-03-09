@@ -1,5 +1,5 @@
 // src/pages/Admin/conductores/ConductorDetalleModal.jsx
-import React, { useState, useCallback, memo } from 'react';
+import React, { useState, useCallback, memo, useRef, useEffect } from 'react';
 import { 
   X, Phone, CheckCircle, XCircle, User, Car, 
   Calendar, MapPin, Home, Wifi, Briefcase,
@@ -8,7 +8,6 @@ import {
 import { useAdminConductores } from '../../../hooks/useAdminConductores';
 import './ConductorDetalleModal.css';
 
-// Componente CampoInfo memoizado para evitar re-renders innecesarios
 const CampoInfo = memo(({ icon: Icon, label, field, value, editMode, tipo, onUpdate }) => {
   const handleChange = useCallback((e) => {
     onUpdate(field, e.target.value);
@@ -36,12 +35,10 @@ const CampoInfo = memo(({ icon: Icon, label, field, value, editMode, tipo, onUpd
   );
 });
 
-// Componente FotoVisualizador MEJORADO con manejo de errores
 const FotoVisualizador = memo(({ src, label, onClick }) => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Si no hay src o hubo error, mostrar placeholder
   if (!src || error) {
     return (
       <div className="foto-visualizador">
@@ -76,6 +73,109 @@ const FotoVisualizador = memo(({ src, label, onClick }) => {
   );
 });
 
+// src/pages/Admin/conductores/ConductorDetalleModal.jsx
+// Solo reemplaza el componente FotoReemplazable con esta versión
+
+const FotoReemplazable = ({ src, label, campo, conductorId, onFotoActualizada }) => {
+  const [editando, setEditando] = useState(false);
+  const [subiendo, setSubiendo] = useState(false);
+  const [comprimiendo, setComprimiendo] = useState(false);
+  const { actualizarConductor } = useAdminConductores();
+  const fileInputRef = useRef(null);
+  const [preview, setPreview] = useState(src);
+
+  // Actualizar preview cuando cambia src externo
+  useEffect(() => {
+    setPreview(src);
+  }, [src]);
+
+  const handleClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setSubiendo(true);
+    setComprimiendo(true);
+    
+    // MOSTRAR PREVIEW INMEDIATA
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreview(reader.result);
+      setComprimiendo(false);
+    };
+    reader.readAsDataURL(file);
+
+    // Subir en segundo plano
+    const fotosNuevas = { [campo]: file };
+const result = await actualizarConductor(conductorId, {}, fotosNuevas);
+
+if (result.success && result.url) {
+  setPreview(result.url);
+  onFotoActualizada?.(campo, result.url);
+  setEditando(false);
+}
+    
+    setSubiendo(false);
+  };
+
+  return (
+    <div className="foto-reemplazable">
+      <div className="foto-visualizador">
+        <label>{label}</label>
+        <div className="foto-contenedor">
+          {preview ? (
+            <img src={preview} alt={label} />
+          ) : (
+            <div className="foto-placeholder">
+              <Camera size={24} />
+              <span>Sin imagen</span>
+            </div>
+          )}
+        </div>
+      </div>
+      
+      {editando ? (
+        <div className="foto-edit-actions">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={handleFileChange}
+            style={{ display: 'none' }}
+          />
+          <button 
+            className="btn-subir"
+            onClick={handleClick}
+            disabled={subiendo || comprimiendo}
+          >
+            {comprimiendo ? 'Comprimiendo...' : subiendo ? 'Subiendo...' : 'Seleccionar archivo'}
+          </button>
+          <button 
+            className="btn-cancelar"
+            onClick={() => {
+              setEditando(false);
+              setPreview(src);
+            }}
+            disabled={subiendo || comprimiendo}
+          >
+            Cancelar
+          </button>
+        </div>
+      ) : (
+        <button 
+          className="btn-reemplazar"
+          onClick={() => setEditando(true)}
+        >
+          <Camera size={14} /> Reemplazar
+        </button>
+      )}
+    </div>
+  );
+};
+
 const ConductorDetalleModal = ({ conductor, onClose, tipo = 'pendiente' }) => {
   const { aprobarConductor, rechazarConductor, revocarConductor, actualizarConductor } = useAdminConductores();
   const [selectedFoto, setSelectedFoto] = useState(null);
@@ -97,12 +197,14 @@ const ConductorDetalleModal = ({ conductor, onClose, tipo = 'pendiente' }) => {
     if (result.success) onClose();
   };
 
-  const handleGuardarCambios = async () => {
-    const result = await actualizarConductor(conductor.id, editedData);
-    if (result.success) {
-      setEditMode(false);
-    }
-  };
+const handleGuardarCambios = async () => {
+  const result = await actualizarConductor(conductor.id, editedData);
+
+  if (result.success) {
+    Object.assign(conductor, editedData); // 🔹 sincroniza localmente
+    setEditMode(false);
+  }
+};
 
   const handleWhatsApp = () => {
     if (conductor.telefono) {
@@ -110,7 +212,6 @@ const ConductorDetalleModal = ({ conductor, onClose, tipo = 'pendiente' }) => {
     }
   };
 
-  // Función estable para actualizar campos
   const handleFieldUpdate = useCallback((field, value) => {
     setEditedData(prev => {
       const newData = { ...prev };
@@ -167,7 +268,6 @@ const ConductorDetalleModal = ({ conductor, onClose, tipo = 'pendiente' }) => {
     }
   };
 
-  // Función para obtener valor anidado
   const getNestedValue = useCallback((obj, path) => {
     const keys = path.split('.');
     let value = obj;
@@ -183,7 +283,6 @@ const ConductorDetalleModal = ({ conductor, onClose, tipo = 'pendiente' }) => {
       <div className="modal-overlay" onClick={onClose}>
         <div className="modal-content conductor-modal" onClick={(e) => e.stopPropagation()}>
           
-          {/* HEADER */}
           <div className="modal-header">
             <h2>Detalles del Conductor</h2>
             <div className="header-actions">
@@ -202,10 +301,8 @@ const ConductorDetalleModal = ({ conductor, onClose, tipo = 'pendiente' }) => {
             </div>
           </div>
 
-          {/* BODY */}
           <div className="modal-body">
             
-            {/* FECHA DE POSTULACIÓN */}
             <div className="fecha-postulacion-destacada">
               <Calendar size={18} />
               <span>Postuló: {formatFecha(conductor.fechaRegistro)}</span>
@@ -216,16 +313,32 @@ const ConductorDetalleModal = ({ conductor, onClose, tipo = 'pendiente' }) => {
               )}
             </div>
 
-            {/* FOTO DE PERFIL */}
             <div className="foto-perfil-section">
-              <FotoVisualizador 
-                src={conductor.fotos?.perfil} 
-                label="Foto de perfil"
-                onClick={setSelectedFoto}
-              />
+              {editMode && tipo === 'aprobado' ? (
+<FotoReemplazable 
+  src={conductor.fotos?.perfil}
+  label="Foto de perfil"
+  campo="perfil"
+  conductorId={conductor.id}
+  onFotoActualizada={(campo, url) => {
+    setEditedData(prev => ({
+      ...prev,
+      fotos: {
+        ...(prev.fotos || {}),
+        [campo]: url
+      }
+    }));
+  }}
+/>
+              ) : (
+<FotoVisualizador 
+  src={(editMode ? editedData : conductor).fotos?.perfil}
+  label="Foto de perfil"
+  onClick={setSelectedFoto}
+/>
+              )}
             </div>
 
-            {/* DATOS PERSONALES */}
             <h3>Datos personales</h3>
             <div className="campos-grid">
               <CampoInfo 
@@ -275,10 +388,8 @@ const ConductorDetalleModal = ({ conductor, onClose, tipo = 'pendiente' }) => {
               />
             </div>
 
-            {/* DATOS DEL VEHÍCULO */}
             <h3>Datos del vehículo</h3>
             <div className="campos-grid">
-              {/* ✅ MARCA - NUEVO */}
               <CampoInfo 
                 icon={Car} 
                 label="Marca" 
@@ -288,8 +399,6 @@ const ConductorDetalleModal = ({ conductor, onClose, tipo = 'pendiente' }) => {
                 tipo={tipo}
                 onUpdate={handleFieldUpdate}
               />
-              
-              {/* ✅ MODELO - NUEVO */}
               <CampoInfo 
                 icon={Car} 
                 label="Modelo" 
@@ -299,7 +408,6 @@ const ConductorDetalleModal = ({ conductor, onClose, tipo = 'pendiente' }) => {
                 tipo={tipo}
                 onUpdate={handleFieldUpdate}
               />
-              
               <CampoInfo 
                 icon={Hash} 
                 label="Año" 
@@ -338,62 +446,70 @@ const ConductorDetalleModal = ({ conductor, onClose, tipo = 'pendiente' }) => {
               />
             </div>
 
-            {/* FOTOS DEL VEHÍCULO */}
             <h3>Fotos del vehículo</h3>
             <div className="fotos-grid">
-              <FotoVisualizador 
-                src={conductor.fotos?.vehiculoFrontal} 
-                label="Frontal (placa visible)"
-                onClick={setSelectedFoto}
-              />
-              <FotoVisualizador 
-                src={conductor.fotos?.vehiculoLateral} 
-                label="Lateral"
-                onClick={setSelectedFoto}
-              />
-              <FotoVisualizador 
-                src={conductor.fotos?.vehiculoInterior} 
-                label="Interior (desde atrás)"
-                onClick={setSelectedFoto}
-              />
+              {['vehiculoFrontal', 'vehiculoLateral', 'vehiculoInterior'].map(campo => (
+                <div key={campo}>
+                  {editMode && tipo === 'aprobado' ? (
+<FotoReemplazable 
+  src={conductor.fotos?.[campo]}
+  label={campo === 'vehiculoFrontal' ? 'Frontal (placa visible)' : 
+         campo === 'vehiculoLateral' ? 'Lateral' : 'Interior (desde atrás)'}
+  campo={campo}
+  conductorId={conductor.id}
+  onFotoActualizada={(campo, url) => {
+    setEditedData(prev => ({
+      ...prev,
+      fotos: {
+        ...(prev.fotos || {}),
+        [campo]: url
+      }
+    }));
+  }}
+/>
+                  ) : (
+                    <FotoVisualizador 
+                      src={conductor.fotos?.[campo]} 
+                      label={campo === 'vehiculoFrontal' ? 'Frontal (placa visible)' : 
+                             campo === 'vehiculoLateral' ? 'Lateral' : 'Interior (desde atrás)'}
+                      onClick={setSelectedFoto}
+                    />
+                  )}
+                </div>
+              ))}
             </div>
 
-            {/* DOCUMENTOS */}
             <h3>Documentos</h3>
             <div className="fotos-grid">
-              <FotoVisualizador 
-                src={conductor.fotos?.tarjetaPropiedadFrente} 
-                label="Tarjeta propiedad (Frente)"
-                onClick={setSelectedFoto}
-              />
-              <FotoVisualizador 
-                src={conductor.fotos?.tarjetaPropiedadTrasero} 
-                label="Tarjeta propiedad (Trasero)"
-                onClick={setSelectedFoto}
-              />
-              <FotoVisualizador 
-                src={conductor.fotos?.breveteFrente} 
-                label="Brevete (Frente)"
-                onClick={setSelectedFoto}
-              />
-              <FotoVisualizador 
-                src={conductor.fotos?.breveteTrasero} 
-                label="Brevete (Trasero)"
-                onClick={setSelectedFoto}
-              />
-              <FotoVisualizador 
-                src={conductor.fotos?.soat} 
-                label="SOAT (Vigente)"
-                onClick={setSelectedFoto}
-              />
-              <FotoVisualizador 
-                src={conductor.fotos?.reciboLuz} 
-                label="Recibo de luz/agua"
-                onClick={setSelectedFoto}
-              />
+              {['tarjetaPropiedadFrente', 'tarjetaPropiedadTrasero', 'breveteFrente', 'breveteTrasero', 'soat', 'reciboLuz'].map(campo => (
+                <div key={campo}>
+                  {editMode && tipo === 'aprobado' ? (
+<FotoReemplazable 
+  src={conductor.fotos?.[campo]}
+  label={campo.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+  campo={campo}
+  conductorId={conductor.id}
+  onFotoActualizada={(campo, url) => {
+    setEditedData(prev => ({
+      ...prev,
+      fotos: {
+        ...(prev.fotos || {}),
+        [campo]: url
+      }
+    }));
+  }}
+/>
+                  ) : (
+                    <FotoVisualizador 
+                      src={conductor.fotos?.[campo]} 
+                      label={campo.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                      onClick={setSelectedFoto}
+                    />
+                  )}
+                </div>
+              ))}
             </div>
 
-            {/* PREGUNTAS */}
             <h3>Evaluación</h3>
             <div className="preguntas-grid">
               <div className="pregunta-item">
@@ -442,7 +558,6 @@ const ConductorDetalleModal = ({ conductor, onClose, tipo = 'pendiente' }) => {
             </div>
           </div>
 
-          {/* FOOTER */}
           <div className="modal-footer">
             {tipo === 'aprobado' ? (
               <>
@@ -470,7 +585,6 @@ const ConductorDetalleModal = ({ conductor, onClose, tipo = 'pendiente' }) => {
         </div>
       </div>
 
-      {/* Modal para ver foto en grande */}
       {selectedFoto && (
         <div className="foto-modal" onClick={() => setSelectedFoto(null)}>
           <div className="foto-modal-content">

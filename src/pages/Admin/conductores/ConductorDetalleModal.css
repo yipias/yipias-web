@@ -636,3 +636,86 @@ textarea.campo-input {
   position: relative;
   overflow: hidden;
 }
+
+/* Agregar al final de ConductorDetalleModal.css */
+
+.foto-reemplazable {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.foto-edit-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+  justify-content: center;
+}
+
+.btn-reemplazar {
+  background: #2a2a35;
+  border: 1px solid #3a3a45;
+  border-radius: 6px;
+  padding: 6px 12px;
+  color: #e2e8f0;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  margin-top: 4px;
+  width: fit-content;
+  align-self: center;
+}
+
+.btn-reemplazar:hover {
+  background: #3a3a45;
+  border-color: #dc2626;
+}
+
+.btn-subir {
+  background: #15803d;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-subir:hover:not(:disabled) {
+  background: #166534;
+}
+
+.btn-subir:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-cancelar {
+  background: #4b5563;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancelar:hover {
+  background: #374151;
+}
+
+.foto-contenedor img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}

@@ -69,6 +69,9 @@ const ReservasTabs = () => {
   // Estados para controlar ubicación actual
   const [ubicacionError, setUbicacionError] = useState(null);
   
+  // 🔥 NUEVO: Estado para forzar recálculo cuando cambien tarifas
+  const [tarifasVersion, setTarifasVersion] = useState(0);
+  
   // Refs
   const mapRef = useRef(null);
   const directionsRendererRef = useRef(null);
@@ -101,56 +104,65 @@ const ReservasTabs = () => {
     };
   }, []);
 
-  // ===== EFECTO PARA ESCUCHAR CAMBIOS EN TARIFAS =====
+ // src/components/Reservas/ReservasTabs.jsx
+// SOLO REEMPLAZA EL useEffect DEL LISTENER DE TARIFAS (línea ~118)
+
+  // ===== 🔥 EFECTO CORREGIDO - ESCUCHA LAS TARIFAS ACTIVAS (NO LAS ORIGINALES) =====
   useEffect(() => {
-    console.log('🎯 Iniciando listener de tarifas');
+    console.log('🎯 Iniciando listener de tarifas activas');
     
     const tarifasRef = doc(db, 'config', 'tarifas');
     
     const unsubscribe = onSnapshot(tarifasRef, (docSnap) => {
-      console.log('🔄 Tarifas actualizadas en Firebase');
-      
-      // Si estamos en pestaña programada y ya hay puntos seleccionados
-      if (activeTab === 'programada' && pickupLocation && dropoffLocation) {
-        console.log('📍 Recalculando ruta por cambio en tarifas');
-        limpiarRuta();
-        calcularRutaYDistancia(pickupLocation, dropoffLocation);
-      }
-      
-      // Si estamos en pestaña por horas y ya hay punto seleccionado
-      if (activeTab === 'porhoras' && horasLocation) {
-        console.log('⏰ Recalculando precio horas por cambio en tarifas');
-        const paxInput = document.getElementById('horasPax');
-        const horasSelect = document.getElementById('horasCantidad');
-        const priceSpan = document.getElementById('horasPrice');
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        console.log('🔄 Tarifas activas actualizadas en Firebase');
         
-        if (paxInput && horasSelect && priceSpan) {
-          const horas = parseInt(horasSelect.value);
-          let pax = parseInt(paxInput.value) || 1;
+        // Incrementar versión para forzar recálculo
+        setTarifasVersion(v => v + 1);
+        
+        // Las tarifas activas están en data.tarifasKm y data.tarifasHoras
+        // (NO en data.baseOriginal)
+        
+        // Si estamos en programada y hay puntos, recalcular
+        if (activeTab === 'programada' && pickupLocation && dropoffLocation) {
+          console.log('📍 Recalculando ruta por cambio en tarifas activas');
+          limpiarRuta();
+          calcularRutaYDistancia(pickupLocation, dropoffLocation);
+        }
+        
+        // Si estamos en por horas y hay punto, recalcular
+        if (activeTab === 'porhoras' && horasLocation) {
+          console.log('⏰ Recalculando precio horas por cambio en tarifas activas');
+          const paxInput = document.getElementById('horasPax');
+          const horasSelect = document.getElementById('horasCantidad');
+          const priceSpan = document.getElementById('horasPrice');
           
-          if (pax > 6) pax = 6;
-          if (pax < 1) pax = 1;
-          
-          try {
-            const tarifa = obtenerTarifaHoras(horas, pax);
-            if (tarifa) {
-              priceSpan.textContent = `S/ ${tarifa}.00`;
+          if (paxInput && horasSelect && priceSpan) {
+            const horas = parseInt(horasSelect.value);
+            let pax = parseInt(paxInput.value) || 1;
+            
+            if (pax > 6) pax = 6;
+            if (pax < 1) pax = 1;
+            
+            try {
+              const tarifa = obtenerTarifaHoras(horas, pax);
+              if (tarifa) {
+                priceSpan.textContent = `S/ ${tarifa}.00`;
+              }
+            } catch (error) {
+              console.log('Error actualizando precio horas:', error);
             }
-          } catch (error) {
-            console.log('Error actualizando precio horas:', error);
           }
         }
       }
-    }, (error) => {
-      console.error('❌ Error en listener de tarifas:', error);
     });
 
     return () => {
-      console.log('🔇 Limpiando listener de tarifas');
+      console.log('🔇 Limpiando listener de tarifas activas');
       unsubscribe();
     };
   }, [activeTab, pickupLocation, dropoffLocation, horasLocation]);
-
   // ===== LIMPIAR RUTA =====
   console.log("LIMPIANDO RENDERER");
 const limpiarRuta = () => {
@@ -404,11 +416,11 @@ useEffect(() => {
     );
   };
 
-  // ===== EFECTO PARA TRAZAR RUTA =====
+  // ===== 🔥 EFECTO PARA TRAZAR RUTA (AHORA DEPENDE DE tarifasVersion) =====
 useEffect(() => {
   if (activeTab !== 'programada') return;
 
-  // 🔥 Si falta uno, limpiar todo
+  // Si falta uno, limpiar todo
   if (!pickupLocation || !dropoffLocation) {
     limpiarRuta();
 
@@ -421,11 +433,11 @@ useEffect(() => {
     return;
   }
 
-  console.log('🔄 Trazando ruta por cambio en ubicaciones');
+  console.log('🔄 Trazando ruta (versión tarifas:', tarifasVersion, ')');
   limpiarRuta();
   calcularRutaYDistancia(pickupLocation, dropoffLocation);
 
-}, [pickupLocation, dropoffLocation, activeTab]);
+}, [pickupLocation, dropoffLocation, activeTab, tarifasVersion]);
 
   // ===== EFECTO PARA ACTUALIZAR PRECIO PROGRAMADA =====
   useEffect(() => {
@@ -472,7 +484,7 @@ useEffect(() => {
       paxInput.removeEventListener('change', handlePaxChange);
       paxInput.removeEventListener('input', handlePaxChange);
     };
-  }, [activeTab, pickupLocation, dropoffLocation]);
+  }, [activeTab, pickupLocation, dropoffLocation, tarifasVersion]);
 
   // ===== EFECTO PARA ACTUALIZAR PRECIO POR HORAS =====
   useEffect(() => {
@@ -513,7 +525,7 @@ useEffect(() => {
       paxInput.removeEventListener('input', handleChange);
       horasSelect.removeEventListener('change', handleChange);
     };
-  }, [activeTab, horasLocation]);
+  }, [activeTab, horasLocation, tarifasVersion]);
 
   // ===== CONFIGURAR AUTOCOMPLETADOS =====
   useEffect(() => {
@@ -663,15 +675,13 @@ useEffect(() => {
     const inputElement = document.getElementById('pickup');
     setUbicacionError(null);
 
-    // 🔧 FIX: Verificar estado de permiso
-if (navigator.permissions) {
-  const permission = await navigator.permissions.query({ name: 'geolocation' });
-
-  if (permission.state === 'denied') {
-    alert('Debes habilitar la ubicación manualmente en el navegador (candado del sitio → Permitir ubicación).');
-    return;
-  }
-}
+    if (navigator.permissions) {
+      const permission = await navigator.permissions.query({ name: 'geolocation' });
+      if (permission.state === 'denied') {
+        alert('Debes habilitar la ubicación manualmente en el navegador (candado del sitio → Permitir ubicación).');
+        return;
+      }
+    }
     
     try {
       const result = await obtenerUbicacionActual(
@@ -688,8 +698,6 @@ if (navigator.permissions) {
     } catch (error) {
       console.log('Error en ubicación actual:', error);
       setUbicacionError('No se pudo obtener la ubicación. Asegúrate de tener permisos de ubicación activados.');
-      
-      // Mostrar mensaje amigable al usuario
       alert('No se pudo acceder a tu ubicación. Por favor, verifica que los permisos de ubicación estén activados en tu navegador y vuelve a intentarlo.');
     }
   };
@@ -698,15 +706,13 @@ if (navigator.permissions) {
     const inputElement = document.getElementById('horasRecojo');
     setUbicacionError(null);
     
-// 🔧 FIX: Verificar estado de permiso
-if (navigator.permissions) {
-  const permission = await navigator.permissions.query({ name: 'geolocation' });
-
-  if (permission.state === 'denied') {
-    alert('Debes habilitar la ubicación manualmente en el navegador (candado del sitio → Permitir ubicación).');
-    return;
-  }
-}
+    if (navigator.permissions) {
+      const permission = await navigator.permissions.query({ name: 'geolocation' });
+      if (permission.state === 'denied') {
+        alert('Debes habilitar la ubicación manualmente en el navegador (candado del sitio → Permitir ubicación).');
+        return;
+      }
+    }
 
     try {
       const result = await obtenerUbicacionActual(
@@ -723,8 +729,6 @@ if (navigator.permissions) {
     } catch (error) {
       console.log('Error en ubicación actual:', error);
       setUbicacionError('No se pudo obtener la ubicación. Asegúrate de tener permisos de ubicación activados.');
-      
-      // Mostrar mensaje amigable al usuario
       alert('No se pudo acceder a tu ubicación. Por favor, verifica que los permisos de ubicación estén activados en tu navegador y vuelve a intentarlo.');
     }
   };
@@ -743,7 +747,6 @@ if (navigator.permissions) {
       return;
     }
 
-    // ✅ VALIDACIÓN DE HORA - AHORA FUNCIONA
     if (!progHora || progHora.trim() === '') {
       alert('Por favor selecciona una hora');
       return;
@@ -798,7 +801,6 @@ if (navigator.permissions) {
       return;
     }
 
-    // ✅ VALIDACIÓN DE HORA - AHORA FUNCIONA
     if (!horasHora || horasHora.trim() === '') {
       alert('Por favor selecciona una hora');
       return;

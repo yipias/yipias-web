@@ -1,0 +1,230 @@
+/* src/pages/Admin/clientes/ClientesPage.css - ACTUALIZADO (solo stats) */
+.clientes-page {
+  padding: 24px;
+  background: #0f172a;
+  min-height: 100vh;
+  color: #f1f5f9;
+  font-family: 'Inter', sans-serif;
+}
+
+.clientes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-left h2 {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.header-subtitle {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 4px 0 0 0;
+}
+
+.btn-exportar {
+  background: #15803d;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-exportar:hover {
+  background: #166534;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(21, 128, 61, 0.3);
+}
+
+.filtros-section {
+  background: #1e1e2e;
+  border: 1px solid #374151;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.search-box {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+}
+
+.search-box input {
+  width: 100%;
+  background: #0f172a;
+  border: 1px solid #374151;
+  border-radius: 10px;
+  padding: 14px 16px 14px 44px;
+  color: #f1f5f9;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.search-box input:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.clear-search {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+}
+
+.clear-search:hover {
+  color: #f1f5f9;
+  background: #374151;
+}
+
+.clientes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.clientes-empty {
+  text-align: center;
+  padding: 60px 20px;
+  background: #1e1e2e;
+  border: 1px solid #374151;
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+
+.clientes-empty svg {
+  color: #6b7280;
+  margin-bottom: 16px;
+}
+
+.clientes-empty p {
+  color: #9ca3af;
+  font-size: 16px;
+}
+
+.clientes-loading,
+.clientes-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 500px;
+  color: #6b7280;
+  gap: 20px;
+}
+
+.spinner {
+  width: 44px;
+  height: 44px;
+  border: 3px solid #374151;
+  border-top-color: #dc2626;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.clientes-error button {
+  background: #dc2626;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.clientes-error button:hover {
+  background: #b91c1c;
+}
+
+.paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 20px 0;
+}
+
+.pag-btn {
+  background: #374151;
+  border: none;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #f1f5f9;
+  transition: all 0.2s;
+}
+
+.pag-btn:hover:not(:disabled) {
+  background: #4b5563;
+  transform: scale(1.05);
+}
+
+.pag-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.pag-info {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+@media (max-width: 768px) {
+  .clientes-page { padding: 16px; }
+  .clientes-header { flex-direction: column; align-items: flex-start; }
+  .btn-exportar { width: 100%; justify-content: center; }
+  .clientes-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .clientes-page { padding: 12px; }
+  .header-left h2 { font-size: 20px; }
+}

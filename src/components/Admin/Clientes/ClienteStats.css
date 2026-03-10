@@ -1,0 +1,58 @@
+/* src/components/Admin/Clientes/ClienteStats.css - ACTUALIZADO */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: #1e1e2e;
+  border: 1px solid #374151;
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: transform 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-blue .stat-icon { background: #2563eb22; color: #2563eb; }
+.stat-orange .stat-icon { background: #f9731622; color: #f97316; }
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.stat-blue .stat-value { color: #2563eb; }
+.stat-orange .stat-value { color: #f97316; }
+
+@media (max-width: 640px) {
+  .stats-grid { grid-template-columns: 1fr; }
+}

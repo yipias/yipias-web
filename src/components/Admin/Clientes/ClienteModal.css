@@ -1,0 +1,177 @@
+/* src/components/Admin/Clientes/ClienteModal.css */
+.cliente-modal {
+  max-width: 700px;
+  width: 90%;
+}
+
+.cliente-avatar-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #2a2a3e;
+}
+
+.cliente-avatar-grande {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+.cliente-titulo h3 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  color: #f1f5f9;
+}
+
+.badges-container {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.badge-modal {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-modal.verificada {
+  background: #22c55e22;
+  color: #22c55e;
+  border: 1px solid #22c55e44;
+}
+
+.badge-modal.no-verificada {
+  background: #f9731622;
+  color: #f97316;
+  border: 1px solid #f9731644;
+}
+
+.badge-modal.estado.activo {
+  background: #15803d22;
+  color: #22c55e;
+  border: 1px solid #22c55e44;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.info-section {
+  background: #0f172a;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.info-section h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #dc2626;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-field {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.info-field svg {
+  color: #6b7280;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.info-field div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.info-field label {
+  font-size: 11px;
+  color: #6b7280;
+  text-transform: uppercase;
+}
+
+.info-field span {
+  font-size: 14px;
+  color: #f1f5f9;
+  word-break: break-word;
+}
+
+.firebase-info {
+  background: #0f172a;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.firebase-info .info-field {
+  align-items: center;
+}
+
+.firebase-info .info-field label {
+  min-width: 120px;
+  font-size: 13px;
+  color: #9ca3af;
+  text-transform: none;
+}
+
+.mono {
+  font-family: monospace;
+  background: #1e1e2e;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.btn-whatsapp {
+  background: #25d366;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s;
+}
+
+.btn-whatsapp:hover {
+  background: #20ba5a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+}
+
+@media (max-width: 768px) {
+  .info-grid { grid-template-columns: 1fr; }
+  .cliente-avatar-section { flex-direction: column; text-align: center; }
+}

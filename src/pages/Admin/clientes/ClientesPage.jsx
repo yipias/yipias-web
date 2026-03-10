@@ -3,7 +3,7 @@ import React, { useState, useMemo } from 'react';
 import { useClientes } from '../../../hooks/admin/useClientes';
 import { 
   Users, Search, X, ChevronLeft, ChevronRight,
-  Download, MessageCircle
+  Download
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
@@ -12,7 +12,7 @@ import ClienteStats from '../../../components/Admin/Clientes/ClienteStats';
 import './ClientesPage.css';
 
 const ClientesPage = () => {
-  const { clientes, loading, error, getEstadisticas } = useClientes();
+  const { clientes, loading, error, getEstadisticas, eliminarCliente } = useClientes();
   const [busqueda, setBusqueda] = useState('');
   const [paginaActual, setPaginaActual] = useState(1);
   
@@ -63,6 +63,7 @@ const ClientesPage = () => {
       title: 'Exportado',
       text: `${datos.length} clientes exportados a Excel`,
       timer: 2000,
+      showConfirmButton: false,
       background: '#1e1e2e',
       color: '#f1f5f9'
     });
@@ -120,7 +121,11 @@ const ClientesPage = () => {
 
       <div className="clientes-grid">
         {clientesPagina.map(cliente => (
-          <ClienteCard key={cliente.id} cliente={cliente} />
+          <ClienteCard 
+            key={cliente.id} 
+            cliente={cliente} 
+            onDelete={eliminarCliente}
+          />
         ))}
       </div>
 

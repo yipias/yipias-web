@@ -1,9 +1,11 @@
-// src/components/Admin/Clientes/ClienteCard.jsx - ACTUALIZADO
+// src/components/Admin/Clientes/ClienteCard.jsx
 import React from 'react';
-import { Mail, Phone, Calendar, MessageCircle, User } from 'lucide-react';
+import { Mail, Phone, Calendar, MessageCircle, User, Trash2 } from 'lucide-react';
+import Swal from 'sweetalert2';
 import './ClienteCard.css';
 
-const ClienteCard = ({ cliente }) => {
+const ClienteCard = ({ cliente, onDelete }) => {  // ← RECIBIR onDelete
+
   const getInitials = (nombre) => {
     if (!nombre) return '?';
     return nombre.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
@@ -37,6 +39,39 @@ const ClienteCard = ({ cliente }) => {
     }
   };
 
+  const handleDelete = async (e) => {
+    e.stopPropagation();
+    
+    const result = await Swal.fire({
+      title: '¿Eliminar cliente?',
+      text: `Esta acción eliminará permanentemente a ${cliente.nombreCompleto || 'este cliente'}.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      background: '#1e1e2e',
+      color: '#f1f5f9',
+      iconColor: '#ef4444'
+    });
+
+    if (result.isConfirmed && onDelete) {
+      const res = await onDelete(cliente.id);  // ← USAR onDelete
+      if (res?.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Cliente eliminado',
+          text: 'El cliente ha sido eliminado correctamente',
+          timer: 2000,
+          showConfirmButton: false,
+          background: '#1e1e2e',
+          color: '#f1f5f9'
+        });
+      }
+    }
+  };
+
   return (
     <div className="cliente-card">
       <div className="card-header">
@@ -44,6 +79,9 @@ const ClienteCard = ({ cliente }) => {
           {getInitials(cliente.nombreCompleto)}
         </div>
         <h3 className="cliente-nombre">{cliente.nombreCompleto || '—'}</h3>
+        <button className="btn-delete-card" onClick={handleDelete} title="Eliminar cliente">
+          <Trash2 size={16} />
+        </button>
       </div>
       
       <div className="cliente-info">
@@ -59,6 +97,7 @@ const ClienteCard = ({ cliente }) => {
         
         <div className="info-item">
           <User size={14} />
+          <span className="dni-label">DNI:</span>
           <span className="dni-value">{cliente.dni || '—'}</span>
         </div>
         

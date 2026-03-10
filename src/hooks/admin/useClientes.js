@@ -1,6 +1,7 @@
+// src/hooks/admin/useClientes.js
 import { useState, useEffect } from 'react';
 import { db } from '../../firebase/config';
-import { collection, query, where, orderBy, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, orderBy, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 
 export const useClientes = () => {
   const [clientes, setClientes] = useState([]);
@@ -31,22 +32,35 @@ export const useClientes = () => {
     return () => unsubscribe();
   }, []);
 
+  // ✅ NUEVA FUNCIÓN PARA ELIMINAR CLIENTES
+  const eliminarCliente = async (clienteId) => {
+    try {
+      const clienteRef = doc(db, 'usuarios', clienteId);
+      await deleteDoc(clienteRef);
+      return { success: true };
+    } catch (error) {
+      console.error('Error eliminando cliente:', error);
+      return { success: false, error };
+    }
+  };
+
   const getEstadisticas = () => {
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
     
     const nuevosHoy = clientes.filter(c => new Date(c.fechaRegistro) >= hoy).length;
-    const verificados = clientes.filter(c => c.emailVerified).length;
-    const activos = clientes.filter(c => c.estado === 'activo').length;
 
     return {
       total: clientes.length,
-      nuevosHoy,
-      verificados,
-      activos,
-      pendientes: clientes.length - verificados
+      nuevosHoy
     };
   };
 
-  return { clientes, loading, error, getEstadisticas };
+  return { 
+    clientes, 
+    loading, 
+    error, 
+    getEstadisticas,
+    eliminarCliente  // ← EXPORTADA
+  };
 };

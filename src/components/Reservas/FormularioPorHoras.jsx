@@ -146,7 +146,7 @@ const FormularioPorHoras = ({
       </div>
 
       <div className="meta">
-        <div><strong>Precio estimado:</strong> <span className="price" id="horasPrice">S/ 38.00</span></div>
+        <div><strong>Precio:</strong> <span className="price" id="horasPrice">S/ 38.00</span></div>
       </div>
 
       <div className="actions">

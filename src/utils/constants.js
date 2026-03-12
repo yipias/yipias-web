@@ -1,7 +1,7 @@
 // src/utils/constants.js
 
 // Número de WhatsApp (formato internacional sin +)
-export const WHATSAPP_PHONE = '51904635462';
+export const WHATSAPP_PHONE = '51935893062';
 
 // API Key de Google Maps
 export const GOOGLE_MAPS_KEY = 'AIzaSyCP3jgrVjb4nKEoiJM9-yPaM30hPgKmWls';

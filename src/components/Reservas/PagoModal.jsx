@@ -31,7 +31,7 @@ const PagoModal = ({ onClose, monto }) => {
   };
 
   const handleWhatsApp = () => {
-    window.open('https://wa.me/51904635462?text=Hola,%20adjunto%20el%20comprobante%20de%20mi%20pago', '_blank');
+    window.open('https://wa.me/51935893062?text=Hola,%20adjunto%20el%20comprobante%20de%20mi%20pago', '_blank');
   };
 
   const formatMonto = (monto) => {
@@ -74,7 +74,7 @@ const PagoModal = ({ onClose, monto }) => {
             onClick={() => setMetodo('interbancario')}
           >
             <CreditCard size={16} />
-            Interb.
+            CCI
           </button>
         </div>
 
@@ -151,7 +151,7 @@ const PagoModal = ({ onClose, monto }) => {
             <p>Enviar comprobante al siguiente número</p>
             <button className="btn-whatsapp" onClick={handleWhatsApp}>
               <Phone size={16} />
-              +51 904 635 462
+              +51 935 893 062
             </button>
           </div>
           <button className="btn-cerrar" onClick={onClose}>

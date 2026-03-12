@@ -1,6 +1,6 @@
 // src/components/Admin/Reservas/ReservasTabla.jsx
 import React, { useState, useEffect } from 'react';
-import { Eye, Car, Phone } from 'lucide-react';
+import { Eye, Car } from 'lucide-react'; // 👈 Eliminamos Phone de aquí
 import AsignarConductorDropdown from './AsignarConductorDropdown';
 import EstadoDropdown from './EstadoDropdown';
 import ModalCliente from './ModalCliente';
@@ -79,14 +79,25 @@ const reservasOrdenadas = [...reservas].sort((a, b) => {
     return reserva.horaOriginal || reserva.horaInicio || '—';
   };
 
-  const getClienteData = (reserva) => {
-    const usuario = usuariosMap[reserva.email];
+// DESPUÉS - Corregido
+const getClienteData = (reserva) => {
+  // Si la reserva ya tiene los datos del cliente guardados, úsalos directamente
+  if (reserva.nombreCompleto || reserva.telefono || reserva.dni) {
     return {
-      nombre: usuario?.nombreCompleto || reserva.nombreCompleto || reserva.email || '—',
-      telefono: usuario?.telefono || reserva.telefono || '—',
-      dni: usuario?.dni || '—'
+      nombre: reserva.nombreCompleto || reserva.email || '—',
+      telefono: reserva.telefono || '—',
+      dni: reserva.dni || '—'
     };
+  }
+  
+  // Si no, intenta obtenerlos del mapa de usuarios
+  const usuario = usuariosMap[reserva.email];
+  return {
+    nombre: usuario?.nombreCompleto || reserva.email || '—',
+    telefono: usuario?.telefono || '—',
+    dni: usuario?.dni || '—'
   };
+};
 
   const handleWhatsApp = (telefono) => {
     if (telefono && telefono !== '—') {
@@ -143,7 +154,7 @@ const reservasOrdenadas = [...reservas].sort((a, b) => {
                           onClick={() => handleWhatsApp(cliente.telefono)}
                           title="WhatsApp cliente"
                         >
-                          <Phone size={14} />
+                          <span style={{ color: '#25d366', fontSize: '16px' }}>📱</span>
                         </button>
                       )}
                     </div>
@@ -179,7 +190,7 @@ const reservasOrdenadas = [...reservas].sort((a, b) => {
                             onClick={() => handleWhatsApp(reserva.conductorAsignado.telefono)}
                             title="WhatsApp conductor"
                           >
-                            <Phone size={14} />
+                            <span style={{ color: '#25d366', fontSize: '16px' }}>📱</span>
                           </button>
                         )}
                       </>

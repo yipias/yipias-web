@@ -360,7 +360,7 @@ const TarjetaReserva = ({ reserva }) => {
             rel="noopener noreferrer"
             className="btn-maps"
           >
-            Ver en Google Maps
+            Ver ruta en Google Maps
           </a>
         )}
       </div>

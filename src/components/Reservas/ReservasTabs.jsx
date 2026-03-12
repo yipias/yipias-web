@@ -79,6 +79,23 @@ const ReservasTabs = () => {
     horas: null
   });
 
+  // ===== FUNCIÓN PARA HACER SCROLL AL MAPA EN MÓVIL ===== 🔥 NUEVO
+  const scrollToMap = () => {
+    // Solo en móvil (menor a 768px)
+    if (window.innerWidth <= 768) {
+      const mapElement = document.querySelector('.map-col');
+      if (mapElement) {
+        setTimeout(() => {
+          mapElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center',
+            inline: 'nearest'
+          });
+        }, 100); // Pequeño delay para que se active el modo selección
+      }
+    }
+  };
+
   // ===== EFECTO PARA VERIFICAR CARGA DE MAPS =====
   useEffect(() => {
     const checkMapsLoaded = () => {
@@ -624,11 +641,23 @@ const ReservasTabs = () => {
     }
     setSelectedInput(null);
     setActiveMode(null);
+    
+    // 👇 NUEVO: En móvil, hacer scroll al formulario después de seleccionar
+    if (window.innerWidth <= 768) {
+      setTimeout(() => {
+        const formElement = document.querySelector('.form-col');
+        if (formElement) {
+          formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 300);
+    }
   };
 
+  // ===== MANEJAR SELECCIÓN EN MAPA ===== 🔥 MODIFICADO
   const handleSelectInMap = (inputType) => {
     setSelectedInput(inputType);
     setActiveMode(inputType);
+    scrollToMap(); // 👈 NUEVO: Hace scroll al mapa en móvil
   };
 
   const handleUbicacionActualPickup = async (buttonElement) => {
@@ -743,7 +772,7 @@ const ReservasTabs = () => {
     destinoLat: dropoffLocation.lat,
     destinoLng: dropoffLocation.lng,
     mapsLink: mapsLink,
-    observaciones: observaciones || ''  // ✅ ESTO ES LO QUE FALTA
+    observaciones: observaciones || ''
   };
   
   const resultado = await guardarReservaProgramada(datosReserva);
@@ -801,7 +830,7 @@ const ReservasTabs = () => {
     recojoLat: horasLocation.lat,
     recojoLng: horasLocation.lng,
     mapsLink: mapsLink,
-    observaciones: observaciones || ''  // ✅ ESTO ES LO QUE FALTA
+    observaciones: observaciones || ''
   };
   
   const resultado = await guardarReservaHoras(datosReserva);

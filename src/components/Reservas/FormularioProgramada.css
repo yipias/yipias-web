@@ -132,7 +132,7 @@
 .price {
   color: var(--price-color);
   font-weight: 800;
-  font-size: 1.05rem;
+  font-size: 1.30rem;
 }
 
 /* Botón X para limpiar inputs */

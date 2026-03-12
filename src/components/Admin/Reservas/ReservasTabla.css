@@ -1,4 +1,4 @@
-/* src/components/Admin/Reservas/ReservasTabla.css - VERSIÓN LIMPIA */
+/* src/components/Admin/Reservas/ReservasTabla.css - VERSIÓN CORREGIDA */
 .reservas-tabla-container {
   background: #12121a;
   border: 1px solid rgba(220, 38, 38, 0.2);
@@ -156,25 +156,60 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #94a3b8;
   transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
   flex-shrink: 0;
 }
 
-.btn-icon:hover {
-  border-color: #dc2626;
-  color: #ef4444;
-  transform: scale(1.08);
+.btn-icon svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+/* ===== BOTÓN WHATSAPP CLIENTE ===== */
+.btn-icon.btn-whatsapp {
+  border: 1px solid #25d366 !important;
+  background: transparent !important;
+}
+
+.btn-icon.btn-whatsapp svg {
+  color: #25d366 !important;
+  stroke: #25d366 !important;
+  fill: none !important;
 }
 
 .btn-icon.btn-whatsapp:hover {
+  background: rgba(37, 211, 102, 0.15) !important;
   border-color: #25d366 !important;
-  color: #25d366 !important;
+  transform: scale(1.08);
 }
 
-.conductor-btn:hover {
-  border-color: #3b82f6 !important;
+.btn-icon.btn-whatsapp:hover svg {
+  color: #25d366 !important;
+  stroke: #25d366 !important;
+}
+
+/* ===== BOTÓN WHATSAPP CONDUCTOR ===== */
+.btn-icon.conductor-btn {
+  border: 1px solid #3b82f6 !important;
+  background: transparent !important;
+}
+
+.btn-icon.conductor-btn svg {
   color: #3b82f6 !important;
+  stroke: #3b82f6 !important;
+  fill: none !important;
+}
+
+.btn-icon.conductor-btn:hover {
+  background: rgba(59, 130, 246, 0.15) !important;
+  border-color: #3b82f6 !important;
+  transform: scale(1.08);
+}
+
+.btn-icon.conductor-btn:hover svg {
+  color: #3b82f6 !important;
+  stroke: #3b82f6 !important;
 }
 
 /* ── Price cell ── */

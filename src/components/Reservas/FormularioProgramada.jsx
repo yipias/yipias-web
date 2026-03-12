@@ -178,7 +178,7 @@ const FormularioProgramada = ({
 
       <div className="meta">
         <div><strong>Distancia estimada:</strong> <span id="progDistance">—</span></div>
-        <div><strong>Precio estimado:</strong> <span className="price" id="progPrice">S/ 0.00</span></div>
+        <div><strong>Precio:</strong> <span className="price" id="progPrice">S/ 0.00</span></div>
       </div>
 
       <div className="actions">

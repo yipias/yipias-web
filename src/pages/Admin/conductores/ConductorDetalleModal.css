@@ -1,6 +1,7 @@
 /* src/pages/Admin/conductores/ConductorDetalleModal.css */
 
-.modal-overlay {
+/* ===== OVERLAY EXCLUSIVO ===== */
+.conductor-detalle-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -13,15 +14,16 @@
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  animation: fadeIn 0.2s ease;
+  animation: conductorDetalleFadeIn 0.2s ease;
 }
 
-@keyframes fadeIn {
+@keyframes conductorDetalleFadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-.modal-content.conductor-modal {
+/* ===== CONTENIDO PRINCIPAL ===== */
+.conductor-detalle-content {
   max-width: 1000px;
   width: 100%;
   max-height: 90vh;
@@ -31,7 +33,8 @@
   overflow-y: auto;
 }
 
-.modal-header {
+/* ===== HEADER ===== */
+.conductor-detalle-header {
   padding: 1.5rem 2rem;
   border-bottom: 1px solid rgba(255,255,255,0.1);
   display: flex;
@@ -43,13 +46,19 @@
   z-index: 10;
 }
 
-.modal-header h2 {
+.conductor-detalle-header h2 {
   color: #dc3545;
   font-size: 1.5rem;
   margin: 0;
 }
 
-.close-btn {
+.conductor-detalle-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.conductor-detalle-close {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -63,399 +72,12 @@
   justify-content: center;
 }
 
-.close-btn:hover {
+.conductor-detalle-close:hover {
   background: #dc3545;
   transform: rotate(90deg);
 }
 
-.modal-body {
-  padding: 2rem;
-}
-
-/* Fecha postulacion destacada */
-.fecha-postulacion-destacada {
-  background: #2a2a2a;
-  padding: 0.8rem 1rem;
-  border-radius: 30px;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #dc3545;
-  font-size: 0.9rem;
-  margin-bottom: 2rem;
-  border: 1px solid rgba(220,53,69,0.3);
-}
-
-/* Títulos de sección */
-.conductor-modal h3 {
-  color: #dc3545;
-  font-size: 1.2rem;
-  margin: 2rem 0 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(220,53,69,0.3);
-}
-
-.conductor-modal h3:first-of-type {
-  margin-top: 0;
-}
-
-/* Grid de campos */
-.campos-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.campo-info {
-  background: #2a2a2a;
-  border-radius: 12px;
-  padding: 1rem;
-  border-left: 3px solid #dc3545;
-}
-
-.campo-info.full-width {
-  grid-column: 1 / -1;
-}
-
-.campo-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #dc3545;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 0.5rem;
-}
-
-.campo-valor {
-  color: white;
-  font-size: 1rem;
-  word-break: break-word;
-  padding-left: 1.5rem;
-}
-
-/* Botón WhatsApp */
-.whatsapp-btn {
-  background: #25d366;
-  color: white;
-  border: none;
-  padding: 0.8rem 1rem;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  grid-column: span 1;
-}
-
-.whatsapp-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
-}
-
-/* Fotos - estilo formulario */
-.foto-perfil-section {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 2rem;
-}
-
-.foto-perfil-section .foto-visualizador {
-  align-items: center;
-}
-
-.foto-perfil-section .foto-contenedor {
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  margin: 0 auto;
-}
-
-.fotos-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.foto-visualizador {
-  margin-bottom: 0;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.foto-visualizador label {
-  display: block;
-  margin-bottom: 0.4rem;
-  color: #888;
-  font-size: 0.85rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.foto-contenedor {
-  width: 100%;
-  height: 140px;
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.1);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.foto-contenedor:hover {
-  border-color: #dc3545;
-  transform: scale(1.02);
-}
-
-.foto-contenedor img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.foto-placeholder {
-  width: 100%;
-  height: 100%;
-  background: #2a2a2a;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #666;
-  gap: 0.5rem;
-}
-
-/* Preguntas */
-.preguntas-grid {
-  display: grid;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.pregunta-item {
-  background: #2a2a2a;
-  border-radius: 12px;
-  padding: 1rem;
-}
-
-.pregunta-label {
-  color: #dc3545;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 0.5rem;
-}
-
-.pregunta-valor {
-  color: white;
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-/* Modal footer */
-.modal-footer {
-  padding: 1.5rem 2rem;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-  position: sticky;
-  bottom: 0;
-  background: #1a1a1a;
-}
-
-.btn-rechazar,
-.btn-aprobar {
-  padding: 0.8rem 2rem;
-  border-radius: 30px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.btn-rechazar {
-  background: #2a2a2a;
-  color: #dc3545;
-  border: 1px solid #dc3545;
-}
-
-.btn-rechazar:hover {
-  background: #dc3545;
-  color: white;
-}
-
-.btn-aprobar {
-  background: #28a745;
-  color: white;
-}
-
-.btn-aprobar:hover {
-  background: #218838;
-}
-
-/* Modal para foto ampliada */
-.foto-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0,0,0,0.98);
-  z-index: 2100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-}
-
-.foto-modal-content {
-  position: relative;
-  max-width: 90vw;
-  max-height: 90vh;
-}
-
-.foto-modal-content img {
-  max-width: 100%;
-  max-height: 90vh;
-  object-fit: contain;
-  border-radius: 8px;
-}
-
-.close-foto {
-  position: absolute;
-  top: -40px;
-  right: -40px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #dc3545;
-  color: white;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .modal-content.conductor-modal {
-    max-height: 100vh;
-    border-radius: 0;
-  }
-
-  .modal-header,
-  .modal-body,
-  .modal-footer {
-    padding: 1rem;
-  }
-
-  .campos-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .fotos-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .modal-footer {
-    flex-direction: column;
-  }
-
-  .btn-rechazar,
-  .btn-aprobar {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .close-foto {
-    top: 10px;
-    right: 10px;
-  }
-
-  .fecha-postulacion-destacada {
-    width: 100%;
-    justify-content: center;
-  }
-}
-
-/* Agregar al final de ConductorDetalleModal.css */
-
-.fecha-aprobado {
-  color: #28a745;
-  margin-left: 1rem;
-  padding-left: 1rem;
-  border-left: 1px solid #28a745;
-}
-
-.fecha-rechazado {
-  color: #dc3545;
-  margin-left: 1rem;
-  padding-left: 1rem;
-  border-left: 1px solid #dc3545;
-}
-
-.btn-revocar {
-  padding: 0.8rem 2rem;
-  border-radius: 30px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: #ffc107;
-  color: #000;
-  border: 1px solid #ffc107;
-}
-
-.btn-revocar:hover {
-  background: #e0a800;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
-}
-
-.btn-whatsapp-footer {
-  padding: 0.8rem 2rem;
-  border-radius: 30px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: #25d366;
-  color: white;
-}
-
-.btn-whatsapp-footer:hover {
-  background: #128c7e;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
-}
-
-/* Agregar a ConductorDetalleModal.css */
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.edit-mode-btn {
+.conductor-detalle-edit-btn {
   padding: 0.5rem 1rem;
   border-radius: 30px;
   border: 1px solid #ffc107;
@@ -469,22 +91,124 @@
   gap: 0.5rem;
 }
 
-.edit-mode-btn:hover {
+.conductor-detalle-edit-btn:hover {
   background: #ffc107;
   color: #000;
 }
 
-.edit-mode-btn.active {
+.conductor-detalle-edit-btn.active {
   background: #28a745;
   color: white;
   border-color: #28a745;
 }
 
-.edit-mode-btn.active:hover {
+.conductor-detalle-edit-btn.active:hover {
   background: #218838;
 }
 
-.campo-input {
+/* ===== BODY ===== */
+.conductor-detalle-body {
+  padding: 2rem;
+}
+
+/* ===== FECHA DESTACADA ===== */
+.conductor-detalle-fecha {
+  background: #2a2a2a;
+  padding: 0.8rem 1rem;
+  border-radius: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(220,53,69,0.3);
+}
+
+.conductor-detalle-fecha-aprobado {
+  color: #28a745;
+  margin-left: 1rem;
+  padding-left: 1rem;
+  border-left: 1px solid #28a745;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ===== FOTO DE PERFIL ===== */
+.conductor-detalle-foto-perfil {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.conductor-detalle-foto-perfil .conductor-detalle-foto-visualizador {
+  align-items: center;
+}
+
+.conductor-detalle-foto-perfil .conductor-detalle-foto-contenedor {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+/* ===== TÍTULOS DE SECCIÓN ===== */
+.conductor-detalle-body h3 {
+  color: #dc3545;
+  font-size: 1.2rem;
+  margin: 2rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(220,53,69,0.3);
+}
+
+.conductor-detalle-body h3:first-of-type {
+  margin-top: 0;
+}
+
+/* ===== GRID DE CAMPOS ===== */
+.conductor-detalle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.conductor-detalle-campo {
+  background: #2a2a2a;
+  border-radius: 12px;
+  padding: 1rem;
+  border-left: 3px solid #dc3545;
+}
+
+.conductor-detalle-campo.full-width {
+  grid-column: 1 / -1;
+}
+
+.conductor-detalle-campo-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #dc3545;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.conductor-detalle-campo-label svg {
+  width: 16px;
+  height: 16px;
+}
+
+.conductor-detalle-campo-valor {
+  color: white;
+  font-size: 1rem;
+  word-break: break-word;
+  padding-left: 1.5rem;
+}
+
+.conductor-detalle-input {
   width: 100%;
   padding: 0.5rem;
   border-radius: 8px;
@@ -495,130 +219,81 @@
   margin-top: 0.3rem;
 }
 
-.campo-input:focus {
+.conductor-detalle-input:focus {
   outline: none;
   border-color: #ffc107;
 }
 
-select.campo-input {
+select.conductor-detalle-input {
   cursor: pointer;
 }
 
-textarea.campo-input {
+textarea.conductor-detalle-input {
   resize: vertical;
   min-height: 60px;
 }
 
-.edit-field-btn {
-  background: transparent;
-  border: none;
-  color: #ffc107;
+/* ===== FOTOS GRID ===== */
+.conductor-detalle-fotos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.conductor-detalle-foto-visualizador {
+  margin-bottom: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.conductor-detalle-foto-visualizador label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: #888;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.conductor-detalle-foto-contenedor {
+  width: 100%;
+  height: 140px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.1);
   cursor: pointer;
-  margin-left: auto;
-  padding: 0.2rem;
-  border-radius: 4px;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-.edit-field-btn:hover {
-  background: rgba(255, 193, 7, 0.2);
+.conductor-detalle-foto-contenedor:hover {
+  border-color: #dc3545;
+  transform: scale(1.02);
 }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-  .modal-content.conductor-modal {
-    max-height: 100vh;
-    border-radius: 0;
-    width: 100%;
-    height: 100vh;
-  }
-
-  .modal-header {
-    padding: 1rem;
-  }
-
-  .modal-body {
-    padding: 1rem;
-  }
-
-  .campos-grid {
-    grid-template-columns: 1fr;
-    gap: 0.8rem;
-  }
-
-  .fotos-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.8rem;
-  }
-
-  .foto-contenedor {
-    height: 120px;
-  }
-
-  .foto-perfil-section .foto-contenedor {
-    width: 100px;
-    height: 100px;
-  }
-
-  .fecha-postulacion-destacada {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .fecha-aprobado {
-    margin-left: 0;
-    padding-left: 0;
-    border-left: none;
-    border-top: 1px solid #28a745;
-    padding-top: 0.5rem;
-    width: 100%;
-  }
-
-  .modal-footer {
-    padding: 1rem;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .modal-footer button {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .header-actions {
-    gap: 0.5rem;
-  }
-
-  .edit-mode-btn {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.9rem;
-  }
+.conductor-detalle-foto-contenedor img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-@media (max-width: 480px) {
-  .fotos-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .foto-contenedor {
-    height: 140px;
-  }
-
-  .modal-header h2 {
-    font-size: 1.2rem;
-  }
-
-  .campo-label {
-    font-size: 0.75rem;
-  }
-
-  .campo-valor {
-    font-size: 0.9rem;
-  }
+.conductor-detalle-foto-placeholder {
+  width: 100%;
+  height: 100%;
+  background: #2a2a2a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  gap: 0.5rem;
 }
 
-/* Agregar a ConductorDetalleModal.css */
-.foto-loading {
+.conductor-detalle-foto-loading {
   position: absolute;
   top: 0;
   left: 0;
@@ -630,30 +305,25 @@ textarea.campo-input {
   background: #2a2a2a;
   color: #888;
   font-size: 0.8rem;
+  z-index: 1;
 }
 
-.foto-contenedor {
-  position: relative;
-  overflow: hidden;
-}
-
-/* Agregar al final de ConductorDetalleModal.css */
-
-.foto-reemplazable {
+/* ===== FOTO REEMPLAZABLE ===== */
+.conductor-detalle-foto-reemplazable {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.foto-edit-actions {
+.conductor-detalle-foto-edit-actions {
   display: flex;
   gap: 8px;
   margin-top: 4px;
   justify-content: center;
 }
 
-.btn-reemplazar {
+.conductor-detalle-btn-reemplazar {
   background: #2a2a35;
   border: 1px solid #3a3a45;
   border-radius: 6px;
@@ -671,12 +341,12 @@ textarea.campo-input {
   align-self: center;
 }
 
-.btn-reemplazar:hover {
+.conductor-detalle-btn-reemplazar:hover {
   background: #3a3a45;
   border-color: #dc2626;
 }
 
-.btn-subir {
+.conductor-detalle-btn-subir {
   background: #15803d;
   border: none;
   border-radius: 6px;
@@ -688,16 +358,16 @@ textarea.campo-input {
   transition: all 0.2s;
 }
 
-.btn-subir:hover:not(:disabled) {
+.conductor-detalle-btn-subir:hover:not(:disabled) {
   background: #166534;
 }
 
-.btn-subir:disabled {
+.conductor-detalle-btn-subir:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.btn-cancelar {
+.conductor-detalle-btn-cancelar {
   background: #4b5563;
   border: none;
   border-radius: 6px;
@@ -709,13 +379,249 @@ textarea.campo-input {
   transition: all 0.2s;
 }
 
-.btn-cancelar:hover {
+.conductor-detalle-btn-cancelar:hover {
   background: #374151;
 }
 
-.foto-contenedor img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+/* ===== PREGUNTAS GRID ===== */
+.conductor-detalle-preguntas-grid {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.conductor-detalle-pregunta-item {
+  background: #2a2a2a;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.conductor-detalle-pregunta-label {
+  color: #dc3545;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.conductor-detalle-pregunta-valor {
+  color: white;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* ===== FOOTER ===== */
+.conductor-detalle-footer {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  position: sticky;
+  bottom: 0;
+  background: #1a1a1a;
+}
+
+.conductor-detalle-btn {
+  padding: 0.8rem 2rem;
+  border-radius: 30px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.conductor-detalle-btn-rechazar {
+  background: #2a2a2a;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+}
+
+.conductor-detalle-btn-rechazar:hover {
+  background: #dc3545;
+  color: white;
+}
+
+.conductor-detalle-btn-aprobar {
+  background: #28a745;
+  color: white;
+}
+
+.conductor-detalle-btn-aprobar:hover {
+  background: #218838;
+}
+
+.conductor-detalle-btn-revocar {
+  background: #ffc107;
+  color: #000;
+  border: 1px solid #ffc107;
+}
+
+.conductor-detalle-btn-revocar:hover {
+  background: #e0a800;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+}
+
+.conductor-detalle-btn-whatsapp {
+  background: #25d366;
+  color: white;
+}
+
+.conductor-detalle-btn-whatsapp:hover {
+  background: #128c7e;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+}
+
+/* ===== FOTO MODAL (AMPLIADA) ===== */
+.conductor-detalle-foto-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.98);
+  z-index: 2100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.conductor-detalle-foto-modal-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.conductor-detalle-foto-modal-content img {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.conductor-detalle-foto-modal-close {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #dc3545;
+  color: white;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.conductor-detalle-foto-modal-close:hover {
+  background: #b91c1c;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .conductor-detalle-content {
+    max-height: 100vh;
+    border-radius: 0;
+    width: 100%;
+    height: 100vh;
+  }
+
+  .conductor-detalle-header {
+    padding: 1rem;
+  }
+
+  .conductor-detalle-body {
+    padding: 1rem;
+  }
+
+  .conductor-detalle-grid {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .conductor-detalle-fotos-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+  }
+
+  .conductor-detalle-foto-contenedor {
+    height: 120px;
+  }
+
+  .conductor-detalle-foto-perfil .conductor-detalle-foto-contenedor {
+    width: 100px;
+    height: 100px;
+  }
+
+  .conductor-detalle-fecha {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .conductor-detalle-fecha-aprobado {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid #28a745;
+    padding-top: 0.5rem;
+    width: 100%;
+  }
+
+  .conductor-detalle-footer {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .conductor-detalle-footer button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .conductor-detalle-header-actions {
+    gap: 0.5rem;
+  }
+
+  .conductor-detalle-edit-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+  
+  .conductor-detalle-foto-modal-close {
+    top: 10px;
+    right: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .conductor-detalle-fotos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .conductor-detalle-foto-contenedor {
+    height: 140px;
+  }
+
+  .conductor-detalle-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .conductor-detalle-campo-label {
+    font-size: 0.75rem;
+  }
+
+  .conductor-detalle-campo-valor {
+    font-size: 0.9rem;
+  }
 }

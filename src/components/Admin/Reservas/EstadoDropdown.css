@@ -1,0 +1,104 @@
+/* src/components/Admin/Reservas/EstadoDropdown.css */
+.estado-container {
+  position: relative;
+  min-width: 130px;
+}
+
+.estado-actual {
+  background: #1a1a24;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px;
+  padding: 7px 12px;
+  color: #f1f5f9;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.1px;
+  text-transform: capitalize;
+}
+
+.estado-actual:hover {
+  border-color: rgba(255,255,255,0.14);
+  background: #1e1e2c;
+}
+
+/* State color tokens */
+.estado-pendiente    { background: rgba(180, 83, 9, 0.2);   border-color: rgba(180, 83, 9, 0.35);   color: #fbbf24; }
+.estado-confirmada   { background: rgba(29, 78, 216, 0.2);  border-color: rgba(29, 78, 216, 0.35);  color: #60a5fa; }
+.estado-en-camino    { background: rgba(109, 40, 217, 0.2); border-color: rgba(109, 40, 217, 0.35); color: #c084fc; }
+.estado-llego        { background: rgba(13, 148, 136, 0.2); border-color: rgba(13, 148, 136, 0.35); color: #2dd4bf; }
+.estado-en-transcurso{ background: rgba(126, 34, 206, 0.2); border-color: rgba(126, 34, 206, 0.35); color: #e879f9; }
+.estado-finalizada   { background: rgba(21, 128, 61, 0.2);  border-color: rgba(21, 128, 61, 0.35);  color: #4ade80; }
+.estado-cancelada    { background: rgba(153, 27, 27, 0.25); border-color: rgba(220, 38, 38, 0.35);  color: #f87171; }
+
+/* Dropdown */
+.dropdown-estados {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background: #16161f;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0,0,0,0.3);
+  animation: dropIn 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.dropdown-estado {
+  width: 100%;
+  background: none;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  padding: 10px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: capitalize;
+  color: #94a3b8;
+}
+
+.dropdown-estado::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: currentColor;
+}
+
+.dropdown-estado:last-child { border-bottom: none; }
+
+.dropdown-estado:hover { background: rgba(255,255,255,0.04); }
+
+.dropdown-estado.estado-pendiente     { color: #fbbf24; }
+.dropdown-estado.estado-confirmada    { color: #60a5fa; }
+.dropdown-estado.estado-en-camino     { color: #c084fc; }
+.dropdown-estado.estado-llego         { color: #2dd4bf; }
+.dropdown-estado.estado-en-transcurso { color: #e879f9; }
+.dropdown-estado.estado-finalizada    { color: #4ade80; }
+.dropdown-estado.estado-cancelada     { color: #f87171; }
+
+@media (max-width: 768px) {
+  .estado-container { min-width: 110px; }
+  .estado-actual { padding: 6px 10px; font-size: 12px; }
+}

@@ -6,7 +6,7 @@ export const useFirebaseReservas = () => {
   
   const guardarReservaProgramada = async (datos) => {
     try {
-      // Preparar datos - AGREGADOS email, nombreCompleto y estado
+      // Preparar datos - AGREGADOS email, nombreCompleto, estado y observaciones
       const reservaData = {
         tipoReserva: 'programada',
         fechaReserva: serverTimestamp(),
@@ -25,6 +25,7 @@ export const useFirebaseReservas = () => {
         destinoLat: datos.destinoLat || null,
         destinoLng: datos.destinoLng || null,
         mapsLink: datos.mapsLink || null,
+        observaciones: datos.observaciones || '',    // ← AGREGADO
         estado: 'pendiente'                           // ← NUEVO
       };
 
@@ -57,6 +58,7 @@ export const useFirebaseReservas = () => {
         recojoLat: datos.recojoLat || null,
         recojoLng: datos.recojoLng || null,
         mapsLink: datos.mapsLink || null,
+        observaciones: datos.observaciones || '',    // ← AGREGADO
         estado: 'pendiente'                           // ← NUEVO
       };
 

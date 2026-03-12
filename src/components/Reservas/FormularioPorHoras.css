@@ -208,3 +208,19 @@
     justify-content: center;
   }
 }
+
+/* Agregar al final de FormularioProgramada.css y FormularioPorHoras.css */
+
+.optional {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+.observaciones-input {
+  resize: vertical;
+  min-height: 60px;
+  font-family: inherit;
+  line-height: 1.5;
+}

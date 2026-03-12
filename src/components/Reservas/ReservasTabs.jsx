@@ -102,19 +102,7 @@ const ReservasTabs = () => {
     };
   }, []);
 
-
-// ===== FORZAR PESTAÑA PROGRAMADA AL INICIAR =====
-useEffect(() => {
-  if (mapsLoaded) {
-    setActiveTab('programada');
-  }
-}, [mapsLoaded]);
-
-
- // src/components/Reservas/ReservasTabs.jsx
-// SOLO REEMPLAZA EL useEffect DEL LISTENER DE TARIFAS (línea ~118)
-
-  // ===== 🔥 EFECTO CORREGIDO - ESCUCHA LAS TARIFAS ACTIVAS (NO LAS ORIGINALES) =====
+  // ===== EFECTO PARA ESCUCHAR CAMBIOS EN TARIFAS =====
   useEffect(() => {
     console.log('🎯 Iniciando listener de tarifas activas');
     
@@ -122,14 +110,10 @@ useEffect(() => {
     
     const unsubscribe = onSnapshot(tarifasRef, (docSnap) => {
       if (docSnap.exists()) {
-        const data = docSnap.data();
         console.log('🔄 Tarifas activas actualizadas en Firebase');
         
         // Incrementar versión para forzar recálculo
         setTarifasVersion(v => v + 1);
-        
-        // Las tarifas activas están en data.tarifasKm y data.tarifasHoras
-        // (NO en data.baseOriginal)
         
         // Si estamos en programada y hay puntos, recalcular
         if (activeTab === 'programada' && pickupLocation && dropoffLocation) {
@@ -170,65 +154,65 @@ useEffect(() => {
       unsubscribe();
     };
   }, [activeTab, pickupLocation, dropoffLocation, horasLocation]);
+
   // ===== LIMPIAR RUTA =====
-  console.log("LIMPIANDO RENDERER");
-const limpiarRuta = () => {
-  if (directionsRendererRef.current) {
-    directionsRendererRef.current.setDirections({ routes: [] });
-    directionsRendererRef.current.setMap(null);
-    directionsRendererRef.current = null;
-  }
-};
-
-    // ===== 🔧 FIX: LIMPIAR RUTA SI SE BORRA INPUT MANUALMENTE =====
-useEffect(() => {
-  const pickupInput = document.getElementById('pickup');
-  const dropoffInput = document.getElementById('dropoff');
-
-  const handlePickupClear = () => {
-    if (pickupInput && pickupInput.value.trim() === '') {
-      setPickupLocation(null);
-
-      if (markers.pickup) {
-        markers.pickup.setMap(null);
-      }
-
-      limpiarRuta();
-
-      const distanceSpan = document.getElementById('progDistance');
-      const priceSpan = document.getElementById('progPrice');
-
-      if (distanceSpan) distanceSpan.textContent = '—';
-      if (priceSpan) priceSpan.textContent = 'S/ 0.00';
+  const limpiarRuta = () => {
+    if (directionsRendererRef.current) {
+      directionsRendererRef.current.setDirections({ routes: [] });
+      directionsRendererRef.current.setMap(null);
+      directionsRendererRef.current = null;
     }
   };
 
-  const handleDropoffClear = () => {
-    if (dropoffInput && dropoffInput.value.trim() === '') {
-      setDropoffLocation(null);
+  // ===== LIMPIAR RUTA SI SE BORRA INPUT MANUALMENTE =====
+  useEffect(() => {
+    const pickupInput = document.getElementById('pickup');
+    const dropoffInput = document.getElementById('dropoff');
 
-      if (markers.dropoff) {
-        markers.dropoff.setMap(null);
+    const handlePickupClear = () => {
+      if (pickupInput && pickupInput.value.trim() === '') {
+        setPickupLocation(null);
+
+        if (markers.pickup) {
+          markers.pickup.setMap(null);
+        }
+
+        limpiarRuta();
+
+        const distanceSpan = document.getElementById('progDistance');
+        const priceSpan = document.getElementById('progPrice');
+
+        if (distanceSpan) distanceSpan.textContent = '—';
+        if (priceSpan) priceSpan.textContent = 'S/ 0.00';
       }
+    };
 
-      limpiarRuta();
+    const handleDropoffClear = () => {
+      if (dropoffInput && dropoffInput.value.trim() === '') {
+        setDropoffLocation(null);
 
-      const distanceSpan = document.getElementById('progDistance');
-      const priceSpan = document.getElementById('progPrice');
+        if (markers.dropoff) {
+          markers.dropoff.setMap(null);
+        }
 
-      if (distanceSpan) distanceSpan.textContent = '—';
-      if (priceSpan) priceSpan.textContent = 'S/ 0.00';
-    }
-  };
+        limpiarRuta();
 
-  pickupInput?.addEventListener('input', handlePickupClear);
-  dropoffInput?.addEventListener('input', handleDropoffClear);
+        const distanceSpan = document.getElementById('progDistance');
+        const priceSpan = document.getElementById('progPrice');
 
-  return () => {
-    pickupInput?.removeEventListener('input', handlePickupClear);
-    dropoffInput?.removeEventListener('input', handleDropoffClear);
-  };
-}, []);
+        if (distanceSpan) distanceSpan.textContent = '—';
+        if (priceSpan) priceSpan.textContent = 'S/ 0.00';
+      }
+    };
+
+    pickupInput?.addEventListener('input', handlePickupClear);
+    dropoffInput?.addEventListener('input', handleDropoffClear);
+
+    return () => {
+      pickupInput?.removeEventListener('input', handlePickupClear);
+      dropoffInput?.removeEventListener('input', handleDropoffClear);
+    };
+  }, []);
 
   // ===== LIMPIAR TODO AL CAMBIAR DE PESTAÑA =====
   const limpiarTodo = () => {
@@ -278,30 +262,22 @@ useEffect(() => {
 
   // ===== MANEJAR CAMBIO DE PESTAÑA =====
   const handleTabClick = (tab) => {
-    if (!currentUser) {
-      setShowAuthModal(true);
-      document.body.style.overflow = 'hidden';
-      return;
-    }
-    
+    // Ya no se verifica usuario aquí
     limpiarTodo();
     setActiveTab(tab);
   };
 
-  // ===== AGREGAR MARCADOR (LIMPIA EL ANTERIOR Y LA RUTA) =====
+  // ===== AGREGAR MARCADOR =====
   const addMarker = (type, location, address, placeName = null) => {
     if (!mapRef.current || !window.google) return;
     
     console.log(`📍 Agregando marcador tipo: ${type}`, location);
     
-    // Si es pickup o dropoff, limpiar la ruta existente
     if (type === 'pickup' || type === 'dropoff') {
       limpiarRuta();
     }
     
-    // Si ya existe un marcador del mismo tipo, eliminarlo
     if (markers[type]) {
-      console.log(`🗑️ Eliminando marcador anterior tipo: ${type}`);
       markers[type].setMap(null);
     }
     
@@ -334,20 +310,14 @@ useEffect(() => {
     
     const newMarker = new window.google.maps.Marker(markerConfig);
     
-    setMarkers(prev => {
-      const newMarkers = { ...prev, [type]: newMarker };
-      return newMarkers;
-    });
+    setMarkers(prev => ({ ...prev, [type]: newMarker }));
     
     mapRef.current.panTo(location);
     mapRef.current.setZoom(15);
   };
 
   // ===== CALCULAR RUTA Y PRECIO =====
-
-  
   const calcularRutaYDistancia = (origin, destination) => {
-    console.log("CREANDO NUEVO RENDERER");
     if (!mapRef.current || !window.google || !origin || !destination) return;
 
     const directionsService = new window.google.maps.DirectionsService();
@@ -418,28 +388,27 @@ useEffect(() => {
     );
   };
 
-  // ===== 🔥 EFECTO PARA TRAZAR RUTA (AHORA DEPENDE DE tarifasVersion) =====
-useEffect(() => {
-  if (activeTab !== 'programada') return;
+  // ===== EFECTO PARA TRAZAR RUTA =====
+  useEffect(() => {
+    if (activeTab !== 'programada') return;
 
-  // Si falta uno, limpiar todo
-  if (!pickupLocation || !dropoffLocation) {
+    if (!pickupLocation || !dropoffLocation) {
+      limpiarRuta();
+
+      const distanceSpan = document.getElementById('progDistance');
+      const priceSpan = document.getElementById('progPrice');
+
+      if (distanceSpan) distanceSpan.textContent = '—';
+      if (priceSpan) priceSpan.textContent = 'S/ 0.00';
+
+      return;
+    }
+
+    console.log('🔄 Trazando ruta (versión tarifas:', tarifasVersion, ')');
     limpiarRuta();
+    calcularRutaYDistancia(pickupLocation, dropoffLocation);
 
-    const distanceSpan = document.getElementById('progDistance');
-    const priceSpan = document.getElementById('progPrice');
-
-    if (distanceSpan) distanceSpan.textContent = '—';
-    if (priceSpan) priceSpan.textContent = 'S/ 0.00';
-
-    return;
-  }
-
-  console.log('🔄 Trazando ruta (versión tarifas:', tarifasVersion, ')');
-  limpiarRuta();
-  calcularRutaYDistancia(pickupLocation, dropoffLocation);
-
-}, [pickupLocation, dropoffLocation, activeTab, tarifasVersion]);
+  }, [pickupLocation, dropoffLocation, activeTab, tarifasVersion]);
 
   // ===== EFECTO PARA ACTUALIZAR PRECIO PROGRAMADA =====
   useEffect(() => {
@@ -548,12 +517,7 @@ useEffect(() => {
       const pickupAutocomplete = new window.google.maps.places.Autocomplete(pickupInput, {
         fields: ['place_id', 'geometry', 'formatted_address', 'name'],
         componentRestrictions: { country: 'pe' },
-        types: ['geocode', 'establishment'],
-        bounds: new window.google.maps.LatLngBounds(
-          new window.google.maps.LatLng(-5.5, -81.5),
-          new window.google.maps.LatLng(-4.5, -80.0)
-        ),
-        strictBounds: true
+        types: ['geocode', 'establishment']
       });
       
       pickupAutocomplete.addListener('place_changed', () => {
@@ -603,12 +567,7 @@ useEffect(() => {
       const horasAutocomplete = new window.google.maps.places.Autocomplete(horasInput, {
         fields: ['place_id', 'geometry', 'formatted_address', 'name'],
         componentRestrictions: { country: 'pe' },
-        types: ['geocode', 'establishment'],
-        bounds: new window.google.maps.LatLngBounds(
-          new window.google.maps.LatLng(-5.5, -81.5),
-          new window.google.maps.LatLng(-4.5, -80.0)
-        ),
-        strictBounds: true
+        types: ['geocode', 'establishment']
       });
       
       horasAutocomplete.addListener('place_changed', () => {
@@ -672,7 +631,6 @@ useEffect(() => {
     setActiveMode(inputType);
   };
 
-  // ===== FUNCIÓN MEJORADA PARA UBICACIÓN ACTUAL =====
   const handleUbicacionActualPickup = async (buttonElement) => {
     const inputElement = document.getElementById('pickup');
     setUbicacionError(null);
@@ -735,108 +693,124 @@ useEffect(() => {
     }
   };
 
-  const handleReservaProgramada = async () => {
-    const fecha = document.getElementById('progFecha')?.value;
-    const pax = parseInt(document.getElementById('progPax')?.value) || 1;
-    
-    if (pax < 1 || pax > 6) {
-      alert('El número de pasajeros debe ser entre 1 y 6');
-      return;
-    }
-    
-    if (!pickupLocation || !dropoffLocation) {
-      alert('Por favor selecciona punto de recojo y destino final');
-      return;
-    }
+ const handleReservaProgramada = async (observaciones = '') => {
+  // ✅ Verificar usuario
+  if (!currentUser) {
+    setShowAuthModal(true);
+    document.body.style.overflow = 'hidden';
+    return;
+  }
+  
+  const fecha = document.getElementById('progFecha')?.value;
+  const pax = parseInt(document.getElementById('progPax')?.value) || 1;
+  
+  if (pax < 1 || pax > 6) {
+    alert('El número de pasajeros debe ser entre 1 y 6');
+    return;
+  }
+  
+  if (!pickupLocation || !dropoffLocation) {
+    alert('Por favor selecciona punto de recojo y destino final');
+    return;
+  }
 
-    if (!progHora || progHora.trim() === '') {
-      alert('Por favor selecciona una hora');
-      return;
-    }
-    
-    const horaFormateada = formatearHoraParaFirebase(progHora, progAmpm);
-    
-    const distancia = document.getElementById('progDistance')?.textContent || '—';
-    const precio = document.getElementById('progPrice')?.textContent || 'S/ 0.00';
-    
-    const mapsLink = `https://www.google.com/maps/dir/${pickupLocation.lat},${pickupLocation.lng}/${dropoffLocation.lat},${dropoffLocation.lng}`;
-    
-    const datosReserva = {
-      tipoReserva: 'programada',
-      email: currentUser?.email || '',
-      nombreCompleto: currentUser?.displayName || '',
-      lugarRecojo: pickupAddress,
-      destino: dropoffAddress,
-      fechaViaje: fecha,
-      horaInicio: horaFormateada,
-      horaOriginal: `${progHora} ${progAmpm}`,
-      pasajeros: pax,
-      distancia: distancia,
-      precio: precio,
-      recojoLat: pickupLocation.lat,
-      recojoLng: pickupLocation.lng,
-      destinoLat: dropoffLocation.lat,
-      destinoLng: dropoffLocation.lng,
-      mapsLink: mapsLink
-    };
-    
-    const resultado = await guardarReservaProgramada(datosReserva);
-    
-    if (resultado.success) {
-      modales.mostrarConfirmacionProgramada();
-      limpiarTodo();
-    }
+  if (!progHora || progHora.trim() === '') {
+    alert('Por favor selecciona una hora');
+    return;
+  }
+  
+  const horaFormateada = formatearHoraParaFirebase(progHora, progAmpm);
+  
+  const distancia = document.getElementById('progDistance')?.textContent || '—';
+  const precio = document.getElementById('progPrice')?.textContent || 'S/ 0.00';
+  
+  const mapsLink = `https://www.google.com/maps/dir/${pickupLocation.lat},${pickupLocation.lng}/${dropoffLocation.lat},${dropoffLocation.lng}`;
+  
+  const datosReserva = {
+    tipoReserva: 'programada',
+    email: currentUser?.email || '',
+    nombreCompleto: currentUser?.displayName || '',
+    lugarRecojo: pickupAddress,
+    destino: dropoffAddress,
+    fechaViaje: fecha,
+    horaInicio: horaFormateada,
+    horaOriginal: `${progHora} ${progAmpm}`,
+    pasajeros: pax,
+    distancia: distancia,
+    precio: precio,
+    recojoLat: pickupLocation.lat,
+    recojoLng: pickupLocation.lng,
+    destinoLat: dropoffLocation.lat,
+    destinoLng: dropoffLocation.lng,
+    mapsLink: mapsLink,
+    observaciones: observaciones || ''  // ✅ ESTO ES LO QUE FALTA
   };
+  
+  const resultado = await guardarReservaProgramada(datosReserva);
+  
+  if (resultado.success) {
+    modales.mostrarConfirmacionProgramada();
+    limpiarTodo();
+  }
+};
 
-  const handleReservaHoras = async () => {
-    const fecha = document.getElementById('horasFecha')?.value;
-    const pax = parseInt(document.getElementById('horasPax')?.value) || 1;
-    const horas = parseInt(document.getElementById('horasCantidad')?.value) || 1;
-    
-    if (pax < 1 || pax > 6) {
-      alert('El número de pasajeros debe ser entre 1 y 6');
-      return;
-    }
-    
-    if (!horasLocation) {
-      alert('Por favor selecciona punto de recojo');
-      return;
-    }
+  const handleReservaHoras = async (observaciones = '') => {
+  // ✅ Verificar usuario
+  if (!currentUser) {
+    setShowAuthModal(true);
+    document.body.style.overflow = 'hidden';
+    return;
+  }
+  
+  const fecha = document.getElementById('horasFecha')?.value;
+  const pax = parseInt(document.getElementById('horasPax')?.value) || 1;
+  const horas = parseInt(document.getElementById('horasCantidad')?.value) || 1;
+  
+  if (pax < 1 || pax > 6) {
+    alert('El número de pasajeros debe ser entre 1 y 6');
+    return;
+  }
+  
+  if (!horasLocation) {
+    alert('Por favor selecciona punto de recojo');
+    return;
+  }
 
-    if (!horasHora || horasHora.trim() === '') {
-      alert('Por favor selecciona una hora');
-      return;
-    }
-    
-    const horaFormateada = formatearHoraParaFirebase(horasHora, horasAmpm);
-    
-    const precio = document.getElementById('horasPrice')?.textContent || 'S/ 38.00';
-    
-    const mapsLink = `https://www.google.com/maps/search/?api=1&query=${horasLocation.lat},${horasLocation.lng}`;
-    
-    const datosReserva = {
-      tipoReserva: 'horas',
-      email: currentUser?.email || '',
-      nombreCompleto: currentUser?.displayName || '',
-      lugarRecojo: horasAddress,
-      fechaServicio: fecha,
-      horaInicio: horaFormateada,
-      horaOriginal: `${horasHora} ${horasAmpm}`,
-      horasContratadas: horas,
-      pasajeros: pax,
-      precio: precio,
-      recojoLat: horasLocation.lat,
-      recojoLng: horasLocation.lng,
-      mapsLink: mapsLink
-    };
-    
-    const resultado = await guardarReservaHoras(datosReserva);
-    
-    if (resultado.success) {
-      modales.mostrarConfirmacionHoras();
-      limpiarTodo();
-    }
+  if (!horasHora || horasHora.trim() === '') {
+    alert('Por favor selecciona una hora');
+    return;
+  }
+  
+  const horaFormateada = formatearHoraParaFirebase(horasHora, horasAmpm);
+  
+  const precio = document.getElementById('horasPrice')?.textContent || 'S/ 38.00';
+  
+  const mapsLink = `https://www.google.com/maps/search/?api=1&query=${horasLocation.lat},${horasLocation.lng}`;
+  
+  const datosReserva = {
+    tipoReserva: 'horas',
+    email: currentUser?.email || '',
+    nombreCompleto: currentUser?.displayName || '',
+    lugarRecojo: horasAddress,
+    fechaServicio: fecha,
+    horaInicio: horaFormateada,
+    horaOriginal: `${horasHora} ${horasAmpm}`,
+    horasContratadas: horas,
+    pasajeros: pax,
+    precio: precio,
+    recojoLat: horasLocation.lat,
+    recojoLng: horasLocation.lng,
+    mapsLink: mapsLink,
+    observaciones: observaciones || ''  // ✅ ESTO ES LO QUE FALTA
   };
+  
+  const resultado = await guardarReservaHoras(datosReserva);
+  
+  if (resultado.success) {
+    modales.mostrarConfirmacionHoras();
+    limpiarTodo();
+  }
+};
 
   return (
     <section id="reservas" className="section">

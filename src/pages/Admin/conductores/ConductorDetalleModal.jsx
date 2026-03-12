@@ -14,22 +14,22 @@ const CampoInfo = memo(({ icon: Icon, label, field, value, editMode, tipo, onUpd
   }, [field, onUpdate]);
 
   return (
-    <div className="campo-info">
-      <div className="campo-label">
+    <div className="conductor-detalle-campo">
+      <div className="conductor-detalle-campo-label">
         <Icon size={16} />
         <span>{label}</span>
       </div>
       {editMode && tipo === 'aprobado' ? (
         <input
           type="text"
-          className="campo-input"
+          className="conductor-detalle-input"
           value={value || ''}
           onChange={handleChange}
           placeholder={label}
           autoComplete="off"
         />
       ) : (
-        <div className="campo-valor">{value || 'No especificado'}</div>
+        <div className="conductor-detalle-campo-valor">{value || 'No especificado'}</div>
       )}
     </div>
   );
@@ -41,10 +41,10 @@ const FotoVisualizador = memo(({ src, label, onClick }) => {
 
   if (!src || error) {
     return (
-      <div className="foto-visualizador">
+      <div className="conductor-detalle-foto-visualizador">
         <label>{label}</label>
-        <div className="foto-contenedor">
-          <div className="foto-placeholder">
+        <div className="conductor-detalle-foto-contenedor">
+          <div className="conductor-detalle-foto-placeholder">
             <Camera size={24} />
             <span>{error ? 'Error al cargar' : 'Sin imagen'}</span>
           </div>
@@ -54,10 +54,10 @@ const FotoVisualizador = memo(({ src, label, onClick }) => {
   }
 
   return (
-    <div className="foto-visualizador">
+    <div className="conductor-detalle-foto-visualizador">
       <label>{label}</label>
-      <div className="foto-contenedor" onClick={() => onClick(src)}>
-        {loading && <div className="foto-loading">Cargando...</div>}
+      <div className="conductor-detalle-foto-contenedor" onClick={() => onClick(src)}>
+        {loading && <div className="conductor-detalle-foto-loading">Cargando...</div>}
         <img 
           src={src} 
           alt={label}
@@ -73,9 +73,6 @@ const FotoVisualizador = memo(({ src, label, onClick }) => {
   );
 });
 
-// src/pages/Admin/conductores/ConductorDetalleModal.jsx
-// Solo reemplaza el componente FotoReemplazable con esta versión
-
 const FotoReemplazable = ({ src, label, campo, conductorId, onFotoActualizada }) => {
   const [editando, setEditando] = useState(false);
   const [subiendo, setSubiendo] = useState(false);
@@ -84,7 +81,6 @@ const FotoReemplazable = ({ src, label, campo, conductorId, onFotoActualizada })
   const fileInputRef = useRef(null);
   const [preview, setPreview] = useState(src);
 
-  // Actualizar preview cuando cambia src externo
   useEffect(() => {
     setPreview(src);
   }, [src]);
@@ -100,7 +96,6 @@ const FotoReemplazable = ({ src, label, campo, conductorId, onFotoActualizada })
     setSubiendo(true);
     setComprimiendo(true);
     
-    // MOSTRAR PREVIEW INMEDIATA
     const reader = new FileReader();
     reader.onloadend = () => {
       setPreview(reader.result);
@@ -108,28 +103,27 @@ const FotoReemplazable = ({ src, label, campo, conductorId, onFotoActualizada })
     };
     reader.readAsDataURL(file);
 
-    // Subir en segundo plano
     const fotosNuevas = { [campo]: file };
-const result = await actualizarConductor(conductorId, {}, fotosNuevas);
+    const result = await actualizarConductor(conductorId, {}, fotosNuevas);
 
-if (result.success && result.url) {
-  setPreview(result.url);
-  onFotoActualizada?.(campo, result.url);
-  setEditando(false);
-}
+    if (result.success && result.url) {
+      setPreview(result.url);
+      onFotoActualizada?.(campo, result.url);
+      setEditando(false);
+    }
     
     setSubiendo(false);
   };
 
   return (
-    <div className="foto-reemplazable">
-      <div className="foto-visualizador">
+    <div className="conductor-detalle-foto-reemplazable">
+      <div className="conductor-detalle-foto-visualizador">
         <label>{label}</label>
-        <div className="foto-contenedor">
+        <div className="conductor-detalle-foto-contenedor">
           {preview ? (
             <img src={preview} alt={label} />
           ) : (
-            <div className="foto-placeholder">
+            <div className="conductor-detalle-foto-placeholder">
               <Camera size={24} />
               <span>Sin imagen</span>
             </div>
@@ -138,7 +132,7 @@ if (result.success && result.url) {
       </div>
       
       {editando ? (
-        <div className="foto-edit-actions">
+        <div className="conductor-detalle-foto-edit-actions">
           <input
             ref={fileInputRef}
             type="file"
@@ -147,14 +141,14 @@ if (result.success && result.url) {
             style={{ display: 'none' }}
           />
           <button 
-            className="btn-subir"
+            className="conductor-detalle-btn-subir"
             onClick={handleClick}
             disabled={subiendo || comprimiendo}
           >
             {comprimiendo ? 'Comprimiendo...' : subiendo ? 'Subiendo...' : 'Seleccionar archivo'}
           </button>
           <button 
-            className="btn-cancelar"
+            className="conductor-detalle-btn-cancelar"
             onClick={() => {
               setEditando(false);
               setPreview(src);
@@ -166,7 +160,7 @@ if (result.success && result.url) {
         </div>
       ) : (
         <button 
-          className="btn-reemplazar"
+          className="conductor-detalle-btn-reemplazar"
           onClick={() => setEditando(true)}
         >
           <Camera size={14} /> Reemplazar
@@ -197,14 +191,14 @@ const ConductorDetalleModal = ({ conductor, onClose, tipo = 'pendiente' }) => {
     if (result.success) onClose();
   };
 
-const handleGuardarCambios = async () => {
-  const result = await actualizarConductor(conductor.id, editedData);
+  const handleGuardarCambios = async () => {
+    const result = await actualizarConductor(conductor.id, editedData);
 
-  if (result.success) {
-    Object.assign(conductor, editedData); // 🔹 sincroniza localmente
-    setEditMode(false);
-  }
-};
+    if (result.success) {
+      Object.assign(conductor, editedData);
+      setEditMode(false);
+    }
+  };
 
   const handleWhatsApp = () => {
     if (conductor.telefono) {
@@ -280,67 +274,67 @@ const handleGuardarCambios = async () => {
 
   return (
     <>
-      <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-content conductor-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="conductor-detalle-overlay" onClick={onClose}>
+        <div className="conductor-detalle-content" onClick={(e) => e.stopPropagation()}>
           
-          <div className="modal-header">
+          <div className="conductor-detalle-header">
             <h2>Detalles del Conductor</h2>
-            <div className="header-actions">
+            <div className="conductor-detalle-header-actions">
               {tipo === 'aprobado' && (
                 <button 
-                  className={`edit-mode-btn ${editMode ? 'active' : ''}`}
+                  className={`conductor-detalle-edit-btn ${editMode ? 'active' : ''}`}
                   onClick={() => editMode ? handleGuardarCambios() : setEditMode(true)}
                 >
                   {editMode ? <Save size={18} /> : <Edit2 size={18} />}
                   {editMode ? 'Guardar' : 'Editar'}
                 </button>
               )}
-              <button className="close-btn" onClick={onClose}>
+              <button className="conductor-detalle-close" onClick={onClose}>
                 <X size={24} />
               </button>
             </div>
           </div>
 
-          <div className="modal-body">
+          <div className="conductor-detalle-body">
             
-            <div className="fecha-postulacion-destacada">
+            <div className="conductor-detalle-fecha">
               <Calendar size={18} />
               <span>Postuló: {formatFecha(conductor.fechaRegistro)}</span>
               {tipo === 'aprobado' && conductor.fechaActualizacion && (
-                <span className="fecha-aprobado">
+                <span className="conductor-detalle-fecha-aprobado">
                   <CheckCircle size={14} /> Aprobado: {formatFecha(conductor.fechaActualizacion)}
                 </span>
               )}
             </div>
 
-            <div className="foto-perfil-section">
+            <div className="conductor-detalle-foto-perfil">
               {editMode && tipo === 'aprobado' ? (
-<FotoReemplazable 
-  src={conductor.fotos?.perfil}
-  label="Foto de perfil"
-  campo="perfil"
-  conductorId={conductor.id}
-  onFotoActualizada={(campo, url) => {
-    setEditedData(prev => ({
-      ...prev,
-      fotos: {
-        ...(prev.fotos || {}),
-        [campo]: url
-      }
-    }));
-  }}
-/>
+                <FotoReemplazable 
+                  src={conductor.fotos?.perfil}
+                  label="Foto de perfil"
+                  campo="perfil"
+                  conductorId={conductor.id}
+                  onFotoActualizada={(campo, url) => {
+                    setEditedData(prev => ({
+                      ...prev,
+                      fotos: {
+                        ...(prev.fotos || {}),
+                        [campo]: url
+                      }
+                    }));
+                  }}
+                />
               ) : (
-<FotoVisualizador 
-  src={(editMode ? editedData : conductor).fotos?.perfil}
-  label="Foto de perfil"
-  onClick={setSelectedFoto}
-/>
+                <FotoVisualizador 
+                  src={(editMode ? editedData : conductor).fotos?.perfil}
+                  label="Foto de perfil"
+                  onClick={setSelectedFoto}
+                />
               )}
             </div>
 
             <h3>Datos personales</h3>
-            <div className="campos-grid">
+            <div className="conductor-detalle-grid">
               <CampoInfo 
                 icon={User} 
                 label="Nombre completo" 
@@ -389,7 +383,7 @@ const handleGuardarCambios = async () => {
             </div>
 
             <h3>Datos del vehículo</h3>
-            <div className="campos-grid">
+            <div className="conductor-detalle-grid">
               <CampoInfo 
                 icon={Car} 
                 label="Marca" 
@@ -447,26 +441,26 @@ const handleGuardarCambios = async () => {
             </div>
 
             <h3>Fotos del vehículo</h3>
-            <div className="fotos-grid">
+            <div className="conductor-detalle-fotos-grid">
               {['vehiculoFrontal', 'vehiculoLateral', 'vehiculoInterior'].map(campo => (
                 <div key={campo}>
                   {editMode && tipo === 'aprobado' ? (
-<FotoReemplazable 
-  src={conductor.fotos?.[campo]}
-  label={campo === 'vehiculoFrontal' ? 'Frontal (placa visible)' : 
-         campo === 'vehiculoLateral' ? 'Lateral' : 'Interior (desde atrás)'}
-  campo={campo}
-  conductorId={conductor.id}
-  onFotoActualizada={(campo, url) => {
-    setEditedData(prev => ({
-      ...prev,
-      fotos: {
-        ...(prev.fotos || {}),
-        [campo]: url
-      }
-    }));
-  }}
-/>
+                    <FotoReemplazable 
+                      src={conductor.fotos?.[campo]}
+                      label={campo === 'vehiculoFrontal' ? 'Frontal (placa visible)' : 
+                             campo === 'vehiculoLateral' ? 'Lateral' : 'Interior (desde atrás)'}
+                      campo={campo}
+                      conductorId={conductor.id}
+                      onFotoActualizada={(campo, url) => {
+                        setEditedData(prev => ({
+                          ...prev,
+                          fotos: {
+                            ...(prev.fotos || {}),
+                            [campo]: url
+                          }
+                        }));
+                      }}
+                    />
                   ) : (
                     <FotoVisualizador 
                       src={conductor.fotos?.[campo]} 
@@ -480,25 +474,25 @@ const handleGuardarCambios = async () => {
             </div>
 
             <h3>Documentos</h3>
-            <div className="fotos-grid">
+            <div className="conductor-detalle-fotos-grid">
               {['tarjetaPropiedadFrente', 'tarjetaPropiedadTrasero', 'breveteFrente', 'breveteTrasero', 'soat', 'reciboLuz'].map(campo => (
                 <div key={campo}>
                   {editMode && tipo === 'aprobado' ? (
-<FotoReemplazable 
-  src={conductor.fotos?.[campo]}
-  label={campo.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-  campo={campo}
-  conductorId={conductor.id}
-  onFotoActualizada={(campo, url) => {
-    setEditedData(prev => ({
-      ...prev,
-      fotos: {
-        ...(prev.fotos || {}),
-        [campo]: url
-      }
-    }));
-  }}
-/>
+                    <FotoReemplazable 
+                      src={conductor.fotos?.[campo]}
+                      label={campo.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                      campo={campo}
+                      conductorId={conductor.id}
+                      onFotoActualizada={(campo, url) => {
+                        setEditedData(prev => ({
+                          ...prev,
+                          fotos: {
+                            ...(prev.fotos || {}),
+                            [campo]: url
+                          }
+                        }));
+                      }}
+                    />
                   ) : (
                     <FotoVisualizador 
                       src={conductor.fotos?.[campo]} 
@@ -511,12 +505,12 @@ const handleGuardarCambios = async () => {
             </div>
 
             <h3>Evaluación</h3>
-            <div className="preguntas-grid">
-              <div className="pregunta-item">
-                <div className="pregunta-label">Código de vestimenta</div>
+            <div className="conductor-detalle-preguntas-grid">
+              <div className="conductor-detalle-pregunta-item">
+                <div className="conductor-detalle-pregunta-label">Código de vestimenta</div>
                 {editMode && tipo === 'aprobado' ? (
                   <select
-                    className="campo-input"
+                    className="conductor-detalle-input"
                     value={editedData.codigoVestimenta || ''}
                     onChange={(e) => handleFieldUpdate('codigoVestimenta', e.target.value)}
                   >
@@ -526,56 +520,56 @@ const handleGuardarCambios = async () => {
                     <option value="duda">Tengo dudas</option>
                   </select>
                 ) : (
-                  <div className="pregunta-valor">{conductor.codigoVestimenta || 'No respondió'}</div>
+                  <div className="conductor-detalle-pregunta-valor">{conductor.codigoVestimenta || 'No respondió'}</div>
                 )}
               </div>
-              <div className="pregunta-item">
-                <div className="pregunta-label">Manejo de cliente exigente</div>
+              <div className="conductor-detalle-pregunta-item">
+                <div className="conductor-detalle-pregunta-label">Manejo de cliente exigente</div>
                 {editMode && tipo === 'aprobado' ? (
                   <textarea
-                    className="campo-input"
+                    className="conductor-detalle-input"
                     value={editedData.manejoClienteExigente || ''}
                     onChange={(e) => handleFieldUpdate('manejoClienteExigente', e.target.value)}
                     rows="3"
                   />
                 ) : (
-                  <div className="pregunta-valor">{conductor.manejoClienteExigente || 'No respondió'}</div>
+                  <div className="conductor-detalle-pregunta-valor">{conductor.manejoClienteExigente || 'No respondió'}</div>
                 )}
               </div>
-              <div className="pregunta-item">
-                <div className="pregunta-label">Significado de Premium</div>
+              <div className="conductor-detalle-pregunta-item">
+                <div className="conductor-detalle-pregunta-label">Significado de Premium</div>
                 {editMode && tipo === 'aprobado' ? (
                   <textarea
-                    className="campo-input"
+                    className="conductor-detalle-input"
                     value={editedData.significadoPremium || ''}
                     onChange={(e) => handleFieldUpdate('significadoPremium', e.target.value)}
                     rows="3"
                   />
                 ) : (
-                  <div className="pregunta-valor">{conductor.significadoPremium || 'No respondió'}</div>
+                  <div className="conductor-detalle-pregunta-valor">{conductor.significadoPremium || 'No respondió'}</div>
                 )}
               </div>
             </div>
           </div>
 
-          <div className="modal-footer">
+          <div className="conductor-detalle-footer">
             {tipo === 'aprobado' ? (
               <>
                 {!editMode && (
-                  <button className="btn-revocar" onClick={handleRevocar}>
+                  <button className="conductor-detalle-btn conductor-detalle-btn-revocar" onClick={handleRevocar}>
                     <RotateCcw size={18} /> Revocar
                   </button>
                 )}
-                <button className="btn-whatsapp-footer" onClick={handleWhatsApp}>
+                <button className="conductor-detalle-btn conductor-detalle-btn-whatsapp" onClick={handleWhatsApp}>
                   <Phone size={18} /> WhatsApp
                 </button>
               </>
             ) : tipo === 'pendiente' && (
               <>
-                <button className="btn-rechazar" onClick={handleRechazar}>
+                <button className="conductor-detalle-btn conductor-detalle-btn-rechazar" onClick={handleRechazar}>
                   <XCircle size={18} /> Rechazar
                 </button>
-                <button className="btn-aprobar" onClick={handleAprobar}>
+                <button className="conductor-detalle-btn conductor-detalle-btn-aprobar" onClick={handleAprobar}>
                   <CheckCircle size={18} /> Aprobar
                 </button>
               </>
@@ -586,10 +580,10 @@ const handleGuardarCambios = async () => {
       </div>
 
       {selectedFoto && (
-        <div className="foto-modal" onClick={() => setSelectedFoto(null)}>
-          <div className="foto-modal-content">
+        <div className="conductor-detalle-foto-modal" onClick={() => setSelectedFoto(null)}>
+          <div className="conductor-detalle-foto-modal-content">
             <img src={selectedFoto} alt="Foto ampliada" />
-            <button className="close-foto" onClick={() => setSelectedFoto(null)}>✕</button>
+            <button className="conductor-detalle-foto-modal-close" onClick={() => setSelectedFoto(null)}>✕</button>
           </div>
         </div>
       )}

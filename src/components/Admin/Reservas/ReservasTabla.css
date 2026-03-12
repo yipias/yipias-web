@@ -1,0 +1,215 @@
+/* src/components/Admin/Reservas/ReservasTabla.css - VERSIÓN LIMPIA */
+.reservas-tabla-container {
+  background: #12121a;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  border-radius: 18px;
+  overflow: auto;
+  margin-top: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* Thin custom scrollbar */
+.reservas-tabla-container::-webkit-scrollbar { height: 4px; width: 4px; }
+.reservas-tabla-container::-webkit-scrollbar-track { background: #1e1e2e; }
+.reservas-tabla-container::-webkit-scrollbar-thumb { background: #dc2626; border-radius: 4px; }
+.reservas-tabla-container::-webkit-scrollbar-thumb:hover { background: #ef4444; }
+
+.reservas-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1300px;
+}
+
+/* ── Header ── */
+.reservas-tabla thead tr {
+  border-bottom: 2px solid rgba(220, 38, 38, 0.3);
+}
+
+.reservas-tabla th {
+  background: #0d0d14;
+  color: #dc2626;
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 18px 18px;
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  white-space: nowrap;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.reservas-tabla th:first-child { border-radius: 18px 0 0 0; }
+.reservas-tabla th:last-child  { border-radius: 0 18px 0 0; }
+
+/* ── Body ── */
+.reservas-tabla td {
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(220, 38, 38, 0.1);
+  color: #e2e8f0;
+  font-size: 13.5px;
+  vertical-align: middle;
+  transition: background 0.2s;
+}
+
+.reservas-tabla tbody tr:hover td {
+  background: rgba(220, 38, 38, 0.03);
+}
+
+.reservas-tabla tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ── Número de orden ── */
+.numero-cell {
+  font-weight: 700;
+  color: #dc2626;
+  font-family: 'Syne', monospace;
+  font-size: 14px;
+  width: 40px;
+  text-align: center;
+}
+
+/* ── Fecha servicio (fecha arriba, hora abajo) ── */
+.fecha-servicio-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fecha-dia {
+  color: #fbbf24;
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.fecha-hora {
+  color: #94a3b8;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* ── Cliente cell ── */
+.cliente-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+
+.cliente-info strong {
+  color: #f1f5f9;
+  font-weight: 600;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  flex: 1;
+  font-size: 14px;
+}
+
+.cliente-buttons {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* ── DNI cell ── */
+.dni-cell {
+  font-family: 'JetBrains Mono', monospace;
+  color: #a78bfa;
+  font-weight: 500;
+}
+
+/* ── Teléfono cell ── */
+.telefono-cell {
+  font-family: 'JetBrains Mono', monospace;
+  color: #34d399;
+}
+
+/* ── Conductor cell ── */
+.conductor-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 200px;
+}
+
+.conductor-cell > *:first-child {
+  flex: 1;
+  min-width: 100px;
+}
+
+/* ── Icon buttons ── */
+.btn-icon {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #94a3b8;
+  transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+  flex-shrink: 0;
+}
+
+.btn-icon:hover {
+  border-color: #dc2626;
+  color: #ef4444;
+  transform: scale(1.08);
+}
+
+.btn-icon.btn-whatsapp:hover {
+  border-color: #25d366 !important;
+  color: #25d366 !important;
+}
+
+.conductor-btn:hover {
+  border-color: #3b82f6 !important;
+  color: #3b82f6 !important;
+}
+
+/* ── Price cell ── */
+.precio-cell {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: #22c55e;
+  white-space: nowrap;
+  letter-spacing: -0.3px;
+}
+
+/* ── Anchos de columna ── */
+.reservas-tabla th:nth-child(1) { width: 50px; }   /* # */
+.reservas-tabla th:nth-child(2) { width: 130px; }  /* Fecha/Hora */
+.reservas-tabla th:nth-child(3) { width: 180px; }  /* Cliente */
+.reservas-tabla th:nth-child(4) { width: 90px; }   /* DNI */
+.reservas-tabla th:nth-child(5) { width: 100px; }  /* Teléfono */
+.reservas-tabla th:nth-child(6) { width: 220px; }  /* Conductor */
+.reservas-tabla th:nth-child(7) { width: 110px; }  /* Estado */
+.reservas-tabla th:nth-child(8) { width: 90px; }   /* Precio */
+
+/* ── Empty state ── */
+.tabla-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #475569;
+  font-size: 14px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .reservas-tabla-container {
+    margin: 16px -16px;
+    width: calc(100% + 32px);
+    border-radius: 0;
+  }
+}

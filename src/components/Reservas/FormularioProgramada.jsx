@@ -1,5 +1,5 @@
 // src/components/Reservas/FormularioProgramada.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import SelectorHoraAMPM from './SelectorHoraAMPM';
 import './FormularioProgramada.css';
 
@@ -19,6 +19,7 @@ const FormularioProgramada = ({
   markers,
   setMarkers
 }) => {
+  const [observaciones, setObservaciones] = useState('');
 
   const handlePickupChange = (e) => {
     const newValue = e.target.value;
@@ -163,6 +164,18 @@ const FormularioProgramada = ({
         <span className="clear-input" data-target="progPax">✕</span>
       </div>
 
+      {/* OBSERVACIONES */}
+      <div className="input-wrapper">
+        <label>Observaciones <span className="optional">(opcional)</span></label>
+        <textarea
+          className="input observaciones-input"
+          placeholder="Ej: Esperar en la puerta principal, llevar silla de bebé, etc."
+          value={observaciones}
+          onChange={(e) => setObservaciones(e.target.value)}
+          rows="3"
+        />
+      </div>
+
       <div className="meta">
         <div><strong>Distancia estimada:</strong> <span id="progDistance">—</span></div>
         <div><strong>Precio estimado:</strong> <span className="price" id="progPrice">S/ 0.00</span></div>
@@ -173,7 +186,7 @@ const FormularioProgramada = ({
           type="button" 
           className="btn success btn-block" 
           id="progReserveBtn"
-          onClick={onReservar}
+          onClick={() => onReservar(observaciones)}
         >
           Reservar
         </button>

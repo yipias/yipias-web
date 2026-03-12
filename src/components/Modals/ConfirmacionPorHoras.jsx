@@ -1,9 +1,9 @@
 // src/components/Modals/ConfirmacionPorHoras.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { History, MessageCircle } from 'lucide-react'; // ← IMPORTAR ÍCONOS
+import { History, MessageCircle } from 'lucide-react';
 import { WHATSAPP_PHONE } from '../../utils/constants';
-import './Modals.css';
+import './ConfirmacionModals.css';
 
 const ConfirmacionPorHoras = ({ onClose }) => {
   const handleWhatsApp = () => {
@@ -13,11 +13,11 @@ const ConfirmacionPorHoras = ({ onClose }) => {
   };
 
   return (
-    <div className="modal" style={{ display: 'block' }} onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <span className="modal-close" onClick={onClose}>&times;</span>
-          <div className="modal-icon">
+    <div className="confirmacion-modal-overlay active" onClick={onClose}>
+      <div className="confirmacion-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="confirmacion-modal-header">
+          <span className="confirmacion-modal-close" onClick={onClose}>&times;</span>
+          <div className="confirmacion-modal-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
               <polyline points="22 4 12 14.01 9 11.01"></polyline>
@@ -25,20 +25,20 @@ const ConfirmacionPorHoras = ({ onClose }) => {
           </div>
           <h3>¡Reserva confirmada!</h3>
         </div>
-        <div className="modal-body">
+        <div className="confirmacion-modal-body">
           <p>Tu reserva por horas se ha realizado correctamente.</p>
-          <p className="modal-mensaje">
+          <p className="confirmacion-mensaje">
             Nos estaremos poniendo en contacto contigo en la brevedad del tiempo para confirmar los detalles.
           </p>
           
-          <p className="modal-consulta">
+          <p className="confirmacion-consulta">
             Puedes revisar el estado de tu reserva en cualquier momento en tu historial.
           </p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginTop: '1rem' }}>
+          <div className="confirmacion-botones">
             <Link 
               to="/mis-reservas" 
-              className="btn-historial"
+              className="confirmacion-btn-historial"
               onClick={onClose}
             >
               <History size={18} />
@@ -46,9 +46,8 @@ const ConfirmacionPorHoras = ({ onClose }) => {
             </Link>
 
             <button 
-              className="modal-whatsapp-btn" 
+              className="confirmacion-btn-whatsapp" 
               onClick={handleWhatsApp}
-              style={{ marginTop: 0 }}
             >
               <MessageCircle size={18} />
               Contactar por WhatsApp

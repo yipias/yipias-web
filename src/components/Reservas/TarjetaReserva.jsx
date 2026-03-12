@@ -1,16 +1,18 @@
 // src/components/Reservas/TarjetaReserva.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  MapPin, Calendar, Clock, Users, DollarSign, Car
+  MapPin, Calendar, Clock, Users, DollarSign, Car,
+  CheckCircle, XCircle, Clock as ClockIcon, Map
 } from 'lucide-react';
 import './TarjetaReserva.css';
 
 const TarjetaReserva = ({ reserva }) => {
   const mapRef = useRef(null);
   const [mapaListo, setMapaListo] = useState(false);
+  const [mostrarConductor, setMostrarConductor] = useState(false);
   const estado = reserva.estado || 'pendiente';
 
-  // ===== INICIALIZAR MAPA =====
+  // ===== MAPA =====
   useEffect(() => {
     if (!reserva.recojoLat || !reserva.recojoLng) return;
 
@@ -26,26 +28,16 @@ const TarjetaReserva = ({ reserva }) => {
           zoom: 13,
           disableDefaultUI: true,
           zoomControl: true,
-          mapTypeControl: false,
-          streetViewControl: false,
           styles: [
             { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
             { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
             { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
-            {
-              featureType: 'road',
-              elementType: 'geometry',
-              stylers: [{ color: '#38414e' }]
-            },
-            {
-              featureType: 'water',
-              elementType: 'geometry',
-              stylers: [{ color: '#17263c' }]
-            }
+            { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#38414e' }] },
+            { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#17263c' }] }
           ]
         });
 
-        // Marcador de recojo (A)
+        // Marcador A (recojo)
         new window.google.maps.Marker({
           position: { lat: reserva.recojoLat, lng: reserva.recojoLng },
           map: map,
@@ -56,7 +48,7 @@ const TarjetaReserva = ({ reserva }) => {
           label: { text: 'A', color: 'white', fontSize: '14px', fontWeight: 'bold' }
         });
 
-        // Marcador de destino (B) y ruta (si existe)
+        // Marcador B (destino) + ruta
         if (reserva.destinoLat && reserva.destinoLng) {
           new window.google.maps.Marker({
             position: { lat: reserva.destinoLat, lng: reserva.destinoLng },
@@ -68,7 +60,6 @@ const TarjetaReserva = ({ reserva }) => {
             label: { text: 'B', color: 'white', fontSize: '14px', fontWeight: 'bold' }
           });
 
-          // Dibujar ruta
           const directionsService = new window.google.maps.DirectionsService();
           const directionsRenderer = new window.google.maps.DirectionsRenderer({
             map: map,
@@ -81,9 +72,7 @@ const TarjetaReserva = ({ reserva }) => {
             destination: { lat: reserva.destinoLat, lng: reserva.destinoLng },
             travelMode: window.google.maps.TravelMode.DRIVING
           }, (result, status) => {
-            if (status === 'OK') {
-              directionsRenderer.setDirections(result);
-            }
+            if (status === 'OK') directionsRenderer.setDirections(result);
           });
         }
 
@@ -97,68 +86,98 @@ const TarjetaReserva = ({ reserva }) => {
     initMap();
   }, [reserva.recojoLat, reserva.recojoLng, reserva.destinoLat, reserva.destinoLng]);
 
-  // ===== FORMATEAR FECHAS - VERSIÓN CORREGIDA =====
+  // ===== FORMATEAR FECHAS =====
   const formatFecha = (fecha) => {
-    if (!fecha) return 'Fecha no disponible';
+    if (!fecha) return '—';
     
     try {
-      // Caso 1: Ya viene formateada como "DD/MM/YYYY"
-      if (typeof fecha === 'string' && fecha.includes('/')) {
-        return fecha; // Devolver exactamente como está
-      }
-      
-      // Caso 2: Viene de Firebase (timestamp)
+      if (typeof fecha === 'string' && fecha.includes('/')) return fecha;
       if (fecha?.seconds) {
         const date = new Date(fecha.seconds * 1000);
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const year = date.getFullYear();
-        return `${day}/${month}/${year}`;
+        return date.toLocaleDateString('es-PE');
       }
-      
-      // Caso 3: Viene como string ISO "2026-03-01"
       if (typeof fecha === 'string' && fecha.includes('-')) {
         const [year, month, day] = fecha.split('-');
         return `${day}/${month}/${year}`;
       }
-      
-      // Caso 4: Cualquier otro caso
       const date = new Date(fecha);
-      if (!isNaN(date.getTime())) {
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const year = date.getFullYear();
-        return `${day}/${month}/${year}`;
-      }
-      
-      return 'Fecha no disponible';
-    } catch (error) {
-      console.error('Error formateando fecha:', error);
-      return 'Fecha no disponible';
+      return date.toLocaleDateString('es-PE');
+    } catch {
+      return '—';
     }
   };
 
-  // ===== ESTADO DE LA RESERVA =====
+  // ===== ESTADO DE RESERVA (NORMALIZADO) =====
   const getEstadoInfo = () => {
-    switch(estado) {
-      case 'confirmado':
-        return {
-          texto: 'Confirmado',
-          desc: 'Reserva confirmada',
-          color: '#4caf50',
-          bg: 'rgba(76, 175, 80, 0.15)'
-        };
-      default:
-        return {
-          texto: 'Pendiente',
-          desc: 'En espera de confirmación',
-          color: '#ffc107',
-          bg: 'rgba(255, 193, 7, 0.15)'
-        };
-    }
+    const estadoLower = String(estado).toLowerCase().trim();
+    
+    const estados = {
+      pendiente: {
+        texto: 'Pendiente',
+        desc: 'Esperando confirmación',
+        color: '#f59e0b',
+        bg: 'rgba(245, 158, 11, 0.15)',
+        icon: <ClockIcon size={14} />
+      },
+      confirmada: {
+        texto: 'Confirmada',
+        desc: 'Reserva confirmada',
+        color: '#10b981',
+        bg: 'rgba(16, 185, 129, 0.15)',
+        icon: <CheckCircle size={14} />
+      },
+      cancelada: {
+        texto: 'Cancelada',
+        desc: 'Reserva cancelada',
+        color: '#ef4444',
+        bg: 'rgba(239, 68, 68, 0.15)',
+        icon: <XCircle size={14} />
+      },
+      'en camino': {
+        texto: 'En camino',
+        desc: 'Conductor en camino',
+        color: '#3b82f6',
+        bg: 'rgba(59, 130, 246, 0.15)',
+        icon: <Car size={14} />
+      },
+      'en transcurso': {
+        texto: 'En transcurso',
+        desc: 'Viaje en progreso',
+        color: '#8b5cf6',
+        bg: 'rgba(139, 92, 246, 0.15)',
+        icon: <ClockIcon size={14} />
+      },
+      llegó: {
+        texto: 'Llegó',
+        desc: 'Conductor en el lugar',
+        color: '#8b5cf6',
+        bg: 'rgba(139, 92, 246, 0.15)',
+        icon: <MapPin size={14} />
+      },
+      completada: {
+        texto: 'Completada',
+        desc: 'Viaje finalizado',
+        color: '#22c55e',
+        bg: 'rgba(34, 197, 94, 0.15)',
+        icon: <CheckCircle size={14} />
+      }
+    };
+
+    if (['pendiente'].includes(estadoLower)) return estados.pendiente;
+    if (['confirmada', 'confirmado'].includes(estadoLower)) return estados.confirmada;
+    if (['cancelada', 'cancelado'].includes(estadoLower)) return estados.cancelada;
+    if (['en camino', 'encamino'].includes(estadoLower)) return estados['en camino'];
+    if (['en transcurso', 'entranscurso', 'transcurso'].includes(estadoLower)) return estados['en transcurso'];
+    if (['llegó', 'llego'].includes(estadoLower)) return estados.llegó;
+    if (['completada', 'completado', 'finalizada'].includes(estadoLower)) return estados.completada;
+
+    return estados.pendiente;
   };
 
   const estadoInfo = getEstadoInfo();
+
+  // ===== CONDUCTOR ASIGNADO =====
+  const tieneConductor = reserva.conductorAsignado && reserva.conductorAsignado.id;
 
   return (
     <div className={`tarjeta-reserva ${estado}`}>
@@ -169,10 +188,14 @@ const TarjetaReserva = ({ reserva }) => {
           color: estadoInfo.color,
           borderColor: estadoInfo.color
         }}>
+          {estadoInfo.icon}
           <span className="estado-texto">{estadoInfo.texto}</span>
           <span className="estado-desc">{estadoInfo.desc}</span>
         </div>
-        <span className="fecha-reserva">{formatFecha(reserva.fechaReserva)}</span>
+        <span className="fecha-reserva">
+          <Calendar size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+          {formatFecha(reserva.fechaReserva)}
+        </span>
       </div>
 
       {/* CONTENIDO: MAPA + DATOS */}
@@ -197,26 +220,26 @@ const TarjetaReserva = ({ reserva }) => {
         {/* DATOS */}
         <div className="datos-contenedor">
           <div className="info-item">
-            <MapPin size={18} className="icon" />
-            <div>
+            <MapPin size={18} className="icon" style={{ color: '#22c55e' }} />
+            <div className="info-content">
               <span className="label">De:</span>
-              <span className="value">{reserva.lugarRecojo}</span>
+              <span className="value" title={reserva.lugarRecojo}>{reserva.lugarRecojo || '—'}</span>
             </div>
           </div>
           
           {reserva.tipoReserva === 'programada' && reserva.destino && (
             <div className="info-item">
-              <MapPin size={18} className="icon" style={{ color: '#dc3545' }} />
-              <div>
+              <MapPin size={18} className="icon" style={{ color: '#ef4444' }} />
+              <div className="info-content">
                 <span className="label">Para:</span>
-                <span className="value">{reserva.destino}</span>
+                <span className="value" title={reserva.destino}>{reserva.destino}</span>
               </div>
             </div>
           )}
 
           <div className="info-item">
             <Calendar size={18} className="icon" />
-            <div>
+            <div className="info-content">
               <span className="label">Fecha del viaje:</span>
               <span className="value">{formatFecha(reserva.fechaViaje || reserva.fechaServicio)}</span>
             </div>
@@ -224,45 +247,73 @@ const TarjetaReserva = ({ reserva }) => {
 
           <div className="info-item">
             <Clock size={18} className="icon" />
-            <div>
+            <div className="info-content">
               <span className="label">Hora de inicio:</span>
-              <span className="value">{reserva.horaOriginal || reserva.horaInicio}</span>
+              <span className="value">{reserva.horaOriginal || reserva.horaInicio || '—'}</span>
             </div>
           </div>
 
           <div className="info-item">
             <Users size={18} className="icon" />
-            <div>
+            <div className="info-content">
               <span className="label">Pasajeros:</span>
-              <span className="value">{reserva.pasajeros}</span>
+              <span className="value">{reserva.pasajeros || 1}</span>
             </div>
           </div>
 
-          {reserva.tipoReserva === 'horas' && (
+          {reserva.tipoReserva === 'horas' && reserva.horasContratadas && (
             <div className="info-item">
               <Clock size={18} className="icon" />
-              <div>
+              <div className="info-content">
                 <span className="label">Horas contratadas:</span>
-                <span className="value">{reserva.horasContratadas}</span>
+                <span className="value">{reserva.horasContratadas} h</span>
+              </div>
+            </div>
+          )}
+
+          {reserva.distancia && reserva.distancia !== '—' && (
+            <div className="info-item">
+              <Map size={18} className="icon" />
+              <div className="info-content">
+                <span className="label">Distancia:</span>
+                <span className="value">{reserva.distancia}</span>
               </div>
             </div>
           )}
 
           <div className="info-item precio">
             <DollarSign size={18} className="icon" />
-            <div>
+            <div className="info-content">
               <span className="label">Total:</span>
-              <span className="value">{reserva.precio}</span>
+              <span className="value">{reserva.precio || 'S/ 0.00'}</span>
             </div>
           </div>
+
+          {/* DATOS DEL CONDUCTOR (si está asignado) */}
+          {tieneConductor && mostrarConductor && (
+            <div className="conductor-info">
+              <h4>Conductor asignado</h4>
+              <p><strong>Nombre:</strong> {reserva.conductorAsignado.nombre}</p>
+              {reserva.conductorAsignado.vehiculo && (
+                <>
+                  <p><strong>Vehículo:</strong> {reserva.conductorAsignado.vehiculo.marca} {reserva.conductorAsignado.vehiculo.modelo}</p>
+                  <p><strong>Placa:</strong> {reserva.conductorAsignado.vehiculo.placa}</p>
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
       {/* FOOTER */}
       <div className="tarjeta-footer">
-        {estado === 'confirmado' && (
-          <button className="btn-conductor">
-            <Car size={16} /> Ver conductor
+        {tieneConductor && (
+          <button 
+            className="btn-conductor"
+            onClick={() => setMostrarConductor(!mostrarConductor)}
+          >
+            <Car size={16} /> 
+            {mostrarConductor ? 'Ocultar conductor' : 'Ver conductor'}
           </button>
         )}
         {reserva.mapsLink && (

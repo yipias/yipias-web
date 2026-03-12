@@ -1,5 +1,5 @@
 // src/components/Reservas/FormularioPorHoras.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import SelectorHoraAMPM from './SelectorHoraAMPM';
 import './FormularioPorHoras.css';
 
@@ -17,6 +17,7 @@ const FormularioPorHoras = ({
   markers,
   setMarkers
 }) => {
+  const [observaciones, setObservaciones] = useState('');
 
   const handleHorasChange = (e) => {
     const newValue = e.target.value;
@@ -132,6 +133,18 @@ const FormularioPorHoras = ({
         <span className="clear-input" data-target="horasPax">✕</span>
       </div>
 
+      {/* OBSERVACIONES */}
+      <div className="input-wrapper">
+        <label>Observaciones <span className="optional">(opcional)</span></label>
+        <textarea
+          className="input observaciones-input"
+          placeholder="Ej: Esperar en la puerta principal, llevar silla de bebé, etc."
+          value={observaciones}
+          onChange={(e) => setObservaciones(e.target.value)}
+          rows="3"
+        />
+      </div>
+
       <div className="meta">
         <div><strong>Precio estimado:</strong> <span className="price" id="horasPrice">S/ 38.00</span></div>
       </div>
@@ -141,7 +154,7 @@ const FormularioPorHoras = ({
           type="button" 
           className="btn success btn-block" 
           id="horasReserveBtn"
-          onClick={onReservar}
+          onClick={() => onReservar(observaciones)}
         >
           Reservar
         </button>

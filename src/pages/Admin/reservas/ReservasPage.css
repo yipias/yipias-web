@@ -1,0 +1,122 @@
+/* src/pages/Admin/reservas/ReservasPage.css */
+
+.reservas-page {
+  padding: 28px 32px;
+  min-height: 100%;
+}
+
+/* ── Header ── */
+.reservas-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.reservas-header h2 {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-family: 'Syne', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #f1f5f9;
+  letter-spacing: -0.4px;
+}
+
+.btn-exportar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-exportar:hover {
+  background: linear-gradient(135deg, #15803d 0%, #166534 100%);
+  border-color: rgba(34, 197, 94, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.25);
+}
+
+.btn-exportar:active {
+  transform: translateY(0);
+}
+
+/* ── Total reservas ── */
+.reservas-total {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 16px;
+}
+
+.reservas-total strong {
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+/* ── Loading ── */
+.reservas-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  gap: 16px;
+  color: #64748b;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(255, 255, 255, 0.08);
+  border-top-color: #dc2626;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Error ── */
+.reservas-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  gap: 16px;
+  color: #ef4444;
+}
+
+.reservas-error button {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  color: #ef4444;
+  padding: 8px 20px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.reservas-error button:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .reservas-page { padding: 16px; }
+  .reservas-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .reservas-header h2 { font-size: 20px; }
+}

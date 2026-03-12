@@ -21,6 +21,7 @@ import AdminLayout from './pages/Admin/AdminLayout';
 import ConductoresPage from './pages/Admin/conductores/ConductoresPage';
 import TarifarioPage from './pages/Admin/tarifario/TarifarioPage';
 import ClientesPage from './pages/Admin/clientes/ClientesPage';
+import ReservasPage from './pages/Admin/reservas/ReservasPage'; // ← NUEVA IMPORTACIÓN
 
 import ScrollToTop from './components/ScrollToTop';
 import AuthModal from './components/Auth/AuthModal';
@@ -70,6 +71,7 @@ function App() {
           <Route index element={<Navigate to="/admin/conductores" replace />} />
           <Route path="conductores" element={<ConductoresPage />} />
           <Route path="clientes" element={<ClientesPage />} />
+          <Route path="reservas" element={<ReservasPage />} /> {/* ← NUEVA RUTA */}
           <Route path="tarifario" element={<TarifarioPage />} />
         </Route>
 

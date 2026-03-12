@@ -40,8 +40,19 @@ const ReservasTabla = ({ reservas, conductores, onActualizarEstado, onAsignarCon
     fetchUsuarios();
   }, []);
 
-  // Ordenar reservas por fecha de servicio (más próxima primero)
+  // Ordenar reservas: primero no finalizadas (por fecha), luego finalizadas (por fecha)
   const reservasOrdenadas = [...reservas].sort((a, b) => {
+    const estadoA = a.estado || 'pendiente';
+    const estadoB = b.estado || 'pendiente';
+    
+    const esFinalizadaA = estadoA === 'finalizada';
+    const esFinalizadaB = estadoB === 'finalizada';
+    
+    // Si una es finalizada y la otra no, la finalizada va después
+    if (esFinalizadaA && !esFinalizadaB) return 1;
+    if (!esFinalizadaA && esFinalizadaB) return -1;
+    
+    // Si ambas son finalizadas o ambas no finalizadas, ordenar por fecha
     const fechaA = a.fechaViaje || a.fechaServicio || '9999-99-99';
     const fechaB = b.fechaViaje || b.fechaServicio || '9999-99-99';
     return fechaA.localeCompare(fechaB);

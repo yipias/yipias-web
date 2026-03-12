@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   MapPin, Calendar, Clock, Users, DollarSign, Car,
-  CheckCircle, XCircle, Clock as ClockIcon, Map
+  CheckCircle, XCircle, Clock as ClockIcon, Map, Phone
 } from 'lucide-react';
 import './TarjetaReserva.css';
 
@@ -179,6 +179,25 @@ const TarjetaReserva = ({ reserva }) => {
   // ===== CONDUCTOR ASIGNADO =====
   const tieneConductor = reserva.conductorAsignado && reserva.conductorAsignado.id;
 
+  // Estados en los que se puede contactar al conductor
+  const estadosContactables = ['en camino', 'llegó', 'en transcurso'];
+  const estadoLower = String(estado).toLowerCase().trim();
+  const puedeContactarConductor = tieneConductor && estadosContactables.some(e => estadoLower.includes(e));
+
+  // EFECTO PARA CERRAR LA SECCIÓN DEL CONDUCTOR CUANDO YA NO ES CONTACTABLE
+  useEffect(() => {
+    if (!puedeContactarConductor) {
+      setMostrarConductor(false);
+    }
+  }, [puedeContactarConductor]);
+
+  const handleWhatsAppConductor = () => {
+    if (reserva.conductorAsignado?.telefono) {
+      const mensaje = `Hola ${reserva.conductorAsignado.nombre}, soy el cliente de la reserva.`;
+      window.open(`https://wa.me/${reserva.conductorAsignado.telefono.replace(/\D/g, '')}?text=${encodeURIComponent(mensaje)}`, '_blank');
+    }
+  };
+
   return (
     <div className={`tarjeta-reserva ${estado}`}>
       {/* HEADER */}
@@ -299,6 +318,14 @@ const TarjetaReserva = ({ reserva }) => {
                   <p><strong>Vehículo:</strong> {reserva.conductorAsignado.vehiculo.marca} {reserva.conductorAsignado.vehiculo.modelo}</p>
                   <p><strong>Placa:</strong> {reserva.conductorAsignado.vehiculo.placa}</p>
                 </>
+              )}
+              {reserva.conductorAsignado.telefono && puedeContactarConductor && (
+                <button 
+                  className="btn-whatsapp-conductor"
+                  onClick={handleWhatsAppConductor}
+                >
+                  <Phone size={14} /> Contactar conductor
+                </button>
               )}
             </div>
           )}

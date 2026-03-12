@@ -46,7 +46,7 @@ const ReservasPage = () => {
     fetchUsuarios();
   }, []);
 
-  // ===== FILTRADO CORREGIDO (busca en todos los campos) =====
+  // ===== FILTRADO CORREGIDO (busca en todos los campos + conductor) =====
   const reservasFiltradas = useMemo(() => {
     return reservas.filter(reserva => {
       // Obtener datos del cliente desde usuariosMap
@@ -63,7 +63,7 @@ const ReservasPage = () => {
         return false;
       }
 
-      // Filtro por búsqueda (nombre, email, teléfono, DNI)
+      // Filtro por búsqueda (nombre, email, teléfono, DNI, CONDUCTOR)
       if (filtros.busqueda) {
         const texto = filtros.busqueda.toLowerCase().trim();
         
@@ -77,13 +77,17 @@ const ReservasPage = () => {
         const telefonoCliente = (cliente.telefono || '').toLowerCase();
         const dniCliente = (cliente.dni || '').toLowerCase();
 
+        // Campos del conductor (NUEVO)
+        const nombreConductor = (reserva.conductorAsignado?.nombre || '').toLowerCase();
+
         const coincide =
           nombreReserva.includes(texto) ||
           emailReserva.includes(texto) ||
           telefonoReserva.includes(texto) ||
           nombreCliente.includes(texto) ||
           telefonoCliente.includes(texto) ||
-          dniCliente.includes(texto);
+          dniCliente.includes(texto) ||
+          nombreConductor.includes(texto); // ← NUEVO: buscar por nombre del conductor
 
         if (!coincide) return false;
       }
@@ -102,6 +106,7 @@ const ReservasPage = () => {
         'Cliente': cliente.nombreCompleto || r.nombreCompleto || r.email || '',
         'DNI': cliente.dni || '',
         'Teléfono': cliente.telefono || r.telefono || '',
+        'Conductor': r.conductorAsignado?.nombre || '',
         'Origen': r.lugarRecojo || '',
         'Destino': r.destino || '',
         'Distancia': r.distancia || '',

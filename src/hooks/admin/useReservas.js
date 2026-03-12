@@ -61,12 +61,29 @@ export const useReservas = () => {
     }
   };
 
-  // Asignar conductor a reserva
+  // Asignar o quitar conductor de una reserva
   const asignarConductor = async (reservaId, conductorId) => {
     try {
-      const conductor = conductores.find(c => c.id === conductorId);
       const reservaRef = doc(db, 'reservas', reservaId);
       
+      // Si conductorId es null, quitamos el conductor
+      if (conductorId === null) {
+        await updateDoc(reservaRef, {
+          conductorAsignado: null,
+          // Opcional: no cambiar el estado automáticamente
+          // updatedAt: new Date().toISOString()
+        });
+        return { success: true };
+      }
+
+      // Si hay conductorId, asignamos el conductor
+      const conductor = conductores.find(c => c.id === conductorId);
+      
+      if (!conductor) {
+        console.error('Conductor no encontrado');
+        return { success: false, error: 'Conductor no encontrado' };
+      }
+
       await updateDoc(reservaRef, {
         conductorAsignado: {
           id: conductorId,
@@ -84,7 +101,7 @@ export const useReservas = () => {
             vehiculoFrontal: conductor.fotos?.vehiculoFrontal
           }
         },
-        estado: 'confirmada'
+        estado: 'confirmada' // Esto cambia el estado automáticamente al asignar
       });
       
       return { success: true };

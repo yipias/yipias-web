@@ -188,7 +188,7 @@
   color: #dc2626;
 }
 
-/* ── Foto vehículo: drag + zoom (una sola definición) ── */
+/* ── Foto vehículo: drag + zoom ── */
 .conductor-foto-vehiculo-wrap {
   position: relative;
   width: 100%;
@@ -196,13 +196,12 @@
   border-radius: 14px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.06);
-  background-color: rgba(0, 0, 0, 0.4); /* fallback mientras carga */
-  /* backgroundImage, backgroundSize, backgroundPosition se aplican desde el JSX */
+  background-color: rgba(0, 0, 0, 0.4);
   user-select: none;
   -webkit-user-select: none;
 }
 
-/* Hint inferior */
+/* ── Hint: oculto por defecto, visible en hover, oculto al arrastrar ── */
 .vehiculo-drag-hint {
   position: absolute;
   bottom: 8px;
@@ -219,9 +218,19 @@
   border-radius: 20px;
   pointer-events: none;
   white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.25s ease;
 }
 
-/* Badge porcentaje de zoom */
+.conductor-foto-vehiculo-wrap:hover .vehiculo-drag-hint {
+  opacity: 1;
+}
+
+.conductor-foto-vehiculo-wrap:active .vehiculo-drag-hint {
+  opacity: 0;
+}
+
+/* ── Badge porcentaje de zoom ── */
 .vehiculo-zoom-badge {
   position: absolute;
   top: 8px;

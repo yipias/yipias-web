@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { X, ExternalLink, Users } from 'lucide-react';
 import './ModalCliente.css';
 
-const ModalCliente = ({ reserva, onClose }) => {
+const ModalCliente = ({ reserva, numeroPedido, onClose }) => {
   const [usuarioData, setUsuarioData] = useState(null);
 
   useEffect(() => {
@@ -56,7 +56,12 @@ const ModalCliente = ({ reserva, onClose }) => {
       <div className="cliente-modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="cliente-modal-header">
           <img src="/img/YipiAs_logo.png" alt="YipiAs" className="cliente-modal-logo" />
-          <h2>Solicitud de Viaje</h2>
+          <div className="cliente-modal-titulo">
+            <h2>Solicitud de Viaje</h2>
+            {numeroPedido && (
+              <span className="cliente-modal-numero">Nº {numeroPedido}</span>
+            )}
+          </div>
           <button className="cliente-modal-close" onClick={onClose}>
             <X size={24} />
           </button>

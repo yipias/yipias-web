@@ -9,6 +9,7 @@ import './ReservasTabla.css';
 
 const ReservasTabla = ({ reservas, conductores, onActualizarEstado, onAsignarConductor }) => {
   const [modalCliente, setModalCliente] = useState(null);
+  const [modalClienteNumero, setModalClienteNumero] = useState(null);
   const [modalConductor, setModalConductor] = useState(null);
   const [usuariosMap, setUsuariosMap] = useState({});
 
@@ -38,6 +39,18 @@ const ReservasTabla = ({ reservas, conductores, onActualizarEstado, onAsignarCon
     
     fetchUsuarios();
   }, []);
+
+  // Mapa de id → número de pedido, ordenado por fechaReserva ascendente
+  const numeroPedidoMap = React.useMemo(() => {
+    const ordenadas = [...reservas].sort((a, b) => {
+      const fa = a.fechaReserva?.toMillis?.() ?? a.fechaReserva ?? 0;
+      const fb = b.fechaReserva?.toMillis?.() ?? b.fechaReserva ?? 0;
+      return fa - fb;
+    });
+    const map = {};
+    ordenadas.forEach((r, i) => { map[r.id] = i + 1; });
+    return map;
+  }, [reservas]);
 
   const reservasOrdenadas = [...reservas].sort((a, b) => {
     const estadoA = a.estado || 'pendiente';
@@ -130,7 +143,10 @@ const ReservasTabla = ({ reservas, conductores, onActualizarEstado, onAsignarCon
                     <div className="cliente-buttons">
                       <button 
                         className="rt-btn-icono rt-btn-ver-cliente"
-                        onClick={() => setModalCliente(reserva)}
+                        onClick={() => {
+                          setModalCliente(reserva);
+                          setModalClienteNumero(numeroPedidoMap[reserva.id]);
+                        }}
                         title="Ver detalles del servicio"
                       >
                         <Eye size={14} />
@@ -199,7 +215,8 @@ const ReservasTabla = ({ reservas, conductores, onActualizarEstado, onAsignarCon
       {modalCliente && (
         <ModalCliente 
           reserva={modalCliente}
-          onClose={() => setModalCliente(null)}
+          numeroPedido={modalClienteNumero}
+          onClose={() => { setModalCliente(null); setModalClienteNumero(null); }}
         />
       )}
 

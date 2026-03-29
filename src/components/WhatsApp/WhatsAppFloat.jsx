@@ -4,7 +4,7 @@ import { WHATSAPP_PHONE } from '../../utils/constants';
 import './WhatsAppFloat.css';
 
 const WhatsAppFloat = () => {
-  const mensaje = "¡Hola! Deseo más información";
+  const mensaje = "¡Hola, YipiAs! Vengo de la web y tengo una consulta.";
   
   return (
     <a 

@@ -20,8 +20,8 @@ const Hero = () => {
       style={{ backgroundImage: "url('/img/piura_fondo.png')" }}
     >
       <div className="container hero-content">
-        <h1>Explora Piura en modo Premium</h1>
-        <p className="lead">Traslados turísticos y en la ciudad. Reserva en segundos.</p>
+        <h1>Explora el Perú en modo Premium</h1>
+        <p className="lead">Traslados turísticos y en la ciudad, hacia balnearios y también para tus viajes de negocios. Reservas anticipadas y un servicio ejecutivo que cuesta lo que vale..</p>
         <a 
           className="btn btn-red" 
           href="#reservas"

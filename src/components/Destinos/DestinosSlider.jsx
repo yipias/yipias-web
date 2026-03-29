@@ -10,11 +10,11 @@ const DestinosSlider = () => {
     { img: 'catacaos.jpg', titulo: 'Catacaos', desc: 'Artesanías y gastronomía' },
     { img: 'mancora.jpg', titulo: 'Máncora', desc: 'Playas, gastronomía y surf' },
     { img: 'sechura.jpeg', titulo: 'Sechura', desc: 'Desierto y cultura' },
-    { img: 'punta-sal.jpg', titulo: 'Punta Sal', desc: 'Royal Decameron y más' },
-    { img: 'vichayito.jpg', titulo: 'Vichayito', desc: 'Playas, hoteles y gastronomía' },
-    { img: 'zorritos.jpg', titulo: 'Zorritos', desc: 'Hotelería Playera y más' },
-    { img: 'nuro.png', titulo: 'Órganos', desc: 'El Ñuro y más playas' },
-    { img: 'morropon.jpg', titulo: 'Huancabamba', desc: 'Canchaque, Morropón y más' }
+    { img: 'plaza_mayor.jpg', titulo: 'Plaza Mayor de Lima', desc: 'Centros históricos del Perú.' },
+    { img: 'catedral_lima.jpg', titulo: 'Catedral de Lima', desc: 'Corazón católico del Perú.' },
+    { img: 'malecon_miraflores.jpg', titulo: 'Malecones', desc: 'Malecón de Miraflores, y muchos más.' },
+    { img: 'chan_chan.webp', titulo: 'Ruinas', desc: 'Ruinas de Chan Chan' },
+    { img: 'huacas.jpg', titulo: 'Huacas', desc: 'Huaca del Sol, de la Luna y muchas más.' }
   ];
 
   useEffect(() => {

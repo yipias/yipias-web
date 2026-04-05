@@ -77,7 +77,7 @@ const FormularioConductor = ({ onSubmit, loading }) => {
   const timeoutRef = useRef(null);
   const fileInputRefs = useRef({});
 
-  const ciudades = ['Lima', 'Tacna', 'Piura', 'Chachapoyas'];
+  const ciudades = ['Lima', 'Tacna', 'Piura', 'Chachapoyas', 'Trujillo'];
   const opcionesAire = ['Sí', 'No', 'Otros'];
 
   // ===== CARGAR DATOS GUARDADOS AL INICIAR =====

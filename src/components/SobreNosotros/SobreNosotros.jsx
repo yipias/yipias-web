@@ -42,25 +42,24 @@ const SobreNosotros = () => {
         {/* Divisor */}
         <div className="about-divider reveal"></div>
         
-        {/* Contenido de texto */}
-        <div className="about-content reveal">
-          <p className="about-text">
-            Somos una empresa dedicada al servicio de <span className="about-highlight">transporte seguro y confiable</span>, 
-            orientada a personas que llegan a Piura con el propósito de disfrutar de sus playas, 
-            su reconocido arte culinario y su valioso patrimonio histórico.
-          </p>
-          
-          <p className="about-text">
-            Nuestra empresa se distingue por ofrecer un servicio de <span className="about-highlight">alta calidad</span>, 
-            respaldado por una flota de vehículos modernos, así como por choferes debidamente calificados, 
-            comprometidos con la seguridad, puntualidad y comodidad de nuestros usuarios.
-          </p>
-          
-          <p className="about-text">
-            Operamos formalmente bajo el <span className="about-highlight">RUC N.° 20610695257</span>, 
-            registrados legalmente como Plataformas y Soluciones S.A.C. Emitimos facturas y boletas.
-          </p>
-        </div>
+{/* Contenido de texto */}
+<div className="about-content reveal">
+  <p className="about-text">
+    <span className="about-highlight">Yipias Premium: Ingeniería en Movilidad.</span> No operamos una flota; diseñamos soluciones. Somos la plataforma digital que conecta estratégicamente la necesidad de clientes exigentes con conductores profesionales de alto estándar.
+  </p>
+
+  <p className="about-text">
+    <span className="about-highlight">Cobertura Nacional:</span> Nuestra red une los puntos más estratégicos del Perú: <span className="about-highlight">Norte:</span> Piura, balnearios y Trujillo. <span className="about-highlight">Centro:</span> Lima empresarial. <span className="about-highlight">Sur:</span> Tacna. <span className="about-highlight">Oriente:</span> Chachapoyas.
+  </p>
+
+  <p className="about-text">
+    <span className="about-highlight">Nuestro Valor:</span> Nuestra filosofía es clara: "La diferencia no está en el precio, está en el servicio". Como plataforma, actuamos como el filtro de calidad más estricto para garantizar seguridad, modernidad y confort.
+  </p>
+
+  <p className="about-text">
+    <span className="about-highlight">Formalidad Garantizada:</span> Respaldo legal de Plataformas y Soluciones S.A.C. (RUC N.° 20610695257). Emitimos facturas y boletas electrónicas, brindando total seguridad jurídica a usuarios particulares y corporativos.
+  </p>
+</div>
         
         {/* Datos legales */}
         <div className="about-legal reveal">
